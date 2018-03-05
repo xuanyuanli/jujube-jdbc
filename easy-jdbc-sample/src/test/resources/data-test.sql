@@ -9,3 +9,4 @@ INSERT INTO `user`(id,name,age) VALUES(8,'清华大学',10);
 INSERT INTO `user`(id,name,age) VALUES(9,'日本',1);
 INSERT INTO `user`(id,name,age) VALUES(10,'美国',10);
 INSERT INTO `user`(id,name,age) VALUES(11,'Java',25);
+INSERT INTO `user`(id,name,age) VALUES(12,'百度爱奇艺',25);

@@ -2,6 +2,8 @@ package org.dazao.persistence.app;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
+
 import org.dazao.entity.User;
 import org.dazao.persistence.UserDao;
 import org.dazao.persistentce.app.EasyJdbcApp;
@@ -20,8 +22,25 @@ public class EasyJdbcAppTest {
     private UserDao userDao;
 
     @Test
-    public void test() {
+    public void findById() {
         User user = userDao.findById(1L);
         assertThat(user.getName()).isEqualTo("百度");
+    }
+
+    @Test
+    public void findByNameLike() {
+        List<User> users = userDao.findByNameLike("百度%");
+        for (User user : users) {
+            System.out.println(user);
+        }
+        assertThat(users.size()).isEqualTo(2);
+        assertThat(users.get(0).getName()).isEqualTo("百度");
+        assertThat(users.get(1).getName()).isEqualTo("百度爱奇艺");
+    }
+
+    @Test
+    public void findByIdGtSortByAgeDesc() {
+        List<User> users = userDao.findByIdGtSortByAgeDesc(1);
+        assertThat(users.get(0).getAge()).isEqualTo(999);
     }
 }
