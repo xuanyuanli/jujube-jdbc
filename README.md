@@ -50,6 +50,13 @@ public class EasyJdbcAppTest {
         List<User> users = userDao.findByIdGtSortByAgeDesc(1);
         assertThat(users.get(0).getAge()).isEqualTo(999);
     }
+
+    @Test
+    public void paginationByNameLength() {
+        PageableRequest request = new PageableRequest();
+        Pageable<Record> result = userDao.paginationByNameLength(request, 4);
+        assertThat(result.getSize()).isGreaterThan(2);
+    }
 }
 ```
 再看我们的UserDao，其实非常简单：
@@ -72,11 +79,60 @@ public class UserDao extends BaseDao<User> {
         return null;
     }
 
+    public Pageable<Record> paginationByNameLength(PageableRequest request, int len) {
+        String sql = "select * from user u where length(u.name) >= ?";
+        return paginationBySql(sql, request, len);
+    }
+
 }
 ```
-有兴趣，可以看一下BaseDao的代码，里面有大量的预先定义方法。  
+有兴趣，可以看一下BaseDao的代码，里面有大量的预定义方法。  
 至于方法没有主体，只用了@JpaQuery注解，则是借鉴了Spring JPA的神奇之处。
 
-# 待续
-关于分页；  
-关于设计理念；
+# Spring Jpa理念
+在查询时，通常需要同时根据多个属性进行查询，且查询的条件也格式各样（大于某个值、在某个范围等等），Spring Data JPA 为此提供了一些表达条件查询的关键字，大致如下：
+
+- And --- 等价于 SQL 中的 and 关键字，比如 findByUsernameAndPassword(String user, Striang pwd)；
+
+- Or --- 等价于 SQL 中的 or 关键字，比如 findByUsernameOrAddress(String user, String addr)；
+
+- Between --- 等价于 SQL 中的 between 关键字，比如 findBySalaryBetween(int max, int min)；
+
+- LessThan --- 等价于 SQL 中的 "<"，比如 findBySalaryLessThan(int max)；
+
+- GreaterThan --- 等价于 SQL 中的">"，比如 findBySalaryGreaterThan(int min)；
+
+- IsNull --- 等价于 SQL 中的 "is null"，比如 findByUsernameIsNull()；
+
+- IsNotNull --- 等价于 SQL 中的 "is not null"，比如 findByUsernameIsNotNull()；
+
+- NotNull --- 与 IsNotNull 等价；
+
+- Like --- 等价于 SQL 中的 "like"，比如 findByUsernameLike(String user)；
+
+- NotLike --- 等价于 SQL 中的 "not like"，比如 findByUsernameNotLike(String user)；
+
+- OrderBy --- 等价于 SQL 中的 "order by"，比如 findByUsernameOrderBySalaryAsc(String user)；
+
+- Not --- 等价于 SQL 中的 "！ ="，比如 findByUsernameNot(String user)；
+
+- In --- 等价于 SQL 中的 "in"，比如 findByUsernameIn(Collection<String> userList) ，方法的参数可以是 Collection 类型，也可以是数组或者不定长参数；
+
+- NotIn --- 等价于 SQL 中的 "not in"，比如 findByUsernameNotIn(Collection<String> userList) ，方法的参数可以是 Collection 类型，也可以是数组或者不定长参数；
+
+除了上述规则，框架还可以实现排序，用到SortBy关键字，如：
+```
+    @JpaQuery
+    public List<User> findByIdGtSortByAgeDesc(int i) {
+        return null;
+    }
+```
+这里是根据年龄进行了倒序查询，Desc后缀表示倒序，Asc表示正序（也是默认值）。  
+
+# 分页
+BaseDao里面有几个分页的方法，最常用的是paginationBySql。  
+这里涉及到两个类：
+
+- PageableRequest 分页请求，主要内容有：当前是第几页，每页显示多少条等
+- Pageable 分页信息，主要内容有：分页数据集合，总的元素数等
+
