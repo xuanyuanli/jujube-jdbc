@@ -73,7 +73,7 @@ public class UserDao extends BaseDao<User> {
 
 }
 ```
-有兴趣，可以看一下BaseDao的代码，里面有大量的预先定义方法。  
+有兴趣，可以看一下BaseDao的代码，里面有大量的预定义方法。  
 至于方法没有主体，只用了@JpaQuery注解，则是借鉴了Spring JPA的神奇之处。
 
 # 待续
