@@ -135,3 +135,6 @@ BaseDao里面有几个分页的方法，最常用的是paginationBySql。
 - PageableRequest 分页请求，主要内容有：当前是第几页，每页显示多少条等
 - Pageable 分页信息，主要内容有：分页数据集合，总的元素数等
 
+# 待完成
+- 根据数据库表直接生成Entity的工具类
+
