@@ -1,5 +1,5 @@
 # easy-jdbc
-一款简洁的ORM框架，希望可以提供不同的思路。更接近SQL思维，融入了Record、JPA的思维模式，简化了SQL的开发。
+一款简洁的ORM框架，希望可以提供不同的思路。更接近SQL思维，融入了Record、JPA的思维模式，简化了持久层的开发。
 
 # 思路与借鉴
 吸取了很多营养，才有了这个开源项目。主要包括了：Hibernate、Spring Jpa和JFinal。  
