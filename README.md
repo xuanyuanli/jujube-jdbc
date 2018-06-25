@@ -1,64 +1,86 @@
 # easy-jdbc
-一款简洁的ORM框架，希望可以提供不同的思路。更接近SQL思维，融入了Record、JPA的思维模式，简化了持久层的开发。
+一款简洁的ORM框架，更接近原生SQL思维，融合了Mybatis、JPA的思维模型，简化了持久层的开发。
 
-# 思路与借鉴
-吸取了很多营养，才有了这个开源项目。主要包括了：Hibernate、Spring Jpa和JFinal。  
-Hibernate是ORM流行起来的标榜，简化了JDBC开发，后来越来越重；  
-Spring JPA的出现让人惊喜，大大提高了效率，学习成本较高；  
-JFinal的Model模式简洁高效，却免不了写SQL和稍显麻烦的对象取值；  
+# 一、初衷
+当我们出现邪恶的想法：自己造轮子，那么一定是遇到了什么困难导致了很多优秀的开源项目不足以满足你的胃口了。  
+那么在Java持久层方面，主流的选择有那些？他们又有什么弊端呢？   
+## 1、Spring JDBC
+可谓是非常简单的一层JDBC封装了，简洁又方便，缺点在于手动写sql，带来的效率低下和不便于管理。
+## 2、JFianl Model
+和JFinal的整个理论非常契合，简洁到极致，问题是不太容易淡出抽取出来使用，而且也需要大量手写SQL
+## 3、Hibernate
+一直很优秀，从出生就金光闪闪，独特的对象-关系数据库映射让人眼前一亮，比较明显的缺点是联合查询的弱势。
+## 4、Spring JPA
+强大的函数名语法解析用起来让人欲罢不能，将提高效率进行到底，缺点和Hibernate类似。
+## 5、Mybatis
+解脱了Hibernate的繁重，ORM层变得很清新，缺点在于如果不愿舍弃JPA的巨大优势肿么办呢？
+## 6、speedment
+随着微服务的CQRS和函数式编程的兴起，speedment的春风也吹起来了，可以看成是Hibernate进阶版本，缺点是还是需要手动写查询逻辑。
+## 6、思路和借鉴
+上述所有的框架中，最让我舒服的就是Spring JPA了，只写方法名就完成了程序的逻辑编写，这样的特性你怎么忍心舍弃呢？  
+不过JPA的联合查询实在让人不能忍啊，而且用`select *`这种方式效率确实不高。  
+坐在苹果树下思考了一下，为什么不能把Spring JPA和Mybatis结合起来呢？这样不就能能钞票美女一起抓么？  
+说干就干，管他邪恶与否呢？没有亚当夏娃被邪恶引诱，也不会有无穷匮已的百姓和灿烂的文明啊！
 
-MyBatis可以定制化SQL，渐渐成为了大公司主流。不过对于中小公司来说，阿里的MyBatis规范如：  
-> 不要用 resultClass 当返回参数，即使所有类属性名与数据库字段一一对应，也需要定义 ； 反过来，每一个表也必然有一个与之对应。  
-> 在表查询中，一律不要使用 * 作为查询的字段列表，需要哪些字段必须明确写明。  
-> 不允许直接拿 HashMap 与 Hashtable 作为查询结果集的输出。  
-
-有时候遵守起来不会那么严谨。
-
-考虑到中小公司业务迭代快，前期效率优先，如果有一款上手快、效率高的持久层ORM，那么无疑会很大程度的提高生产力。
-
-# 示例
-所有底层框架已完成，先看一下示例。  
-示例项目在easy-jdbc-sample中，使用了Spring Boot+H2来启动，直接看测试代码：
+# 二、示例
+中间干的过程已快进，先来看一下成果。    
+示例项目在easy-jdbc-sample中，使用了Spring Boot+H2来启动，先看看看测试代码：
 ```
 @SpringBootTest(classes = EasyJdbcApp.class)
 @RunWith(SpringRunner.class)
 @ActiveProfiles({ "test" })
-public class EasyJdbcAppTest {
-    @Autowired
-    private UserDao userDao;
+public class UserDaoTest {
+	@Autowired
+	private UserDao userDao;
 
-    @Test
-    public void findById() {
-        User user = userDao.findById(1L);
-        assertThat(user.getName()).isEqualTo("百度");
-    }
+	@Test
+	public void testFindNameById() {
+		String name = userDao.findNameById(1);
+		assertThat(name).isEqualTo("百度");
+	}
 
-    @Test
-    public void findByNameLike() {
-        List<User> users = userDao.findByNameLike("百度%");
-        for (User user : users) {
-            System.out.println(user);
-        }
-        assertThat(users.size()).isEqualTo(2);
-        assertThat(users.get(0).getName()).isEqualTo("百度");
-        assertThat(users.get(1).getName()).isEqualTo("百度爱奇艺");
-    }
+	@Test
+	public void testFindNameByAge() {
+		List<String> names = userDao.findNameByAge(5);
+		assertThat(names).hasSize(2).contains("新浪", "人人网");
+	}
 
-    @Test
-    public void findByIdGtSortByAgeDesc() {
-        List<User> users = userDao.findByIdGtSortByAgeDesc(1);
-        assertThat(users.get(0).getAge()).isEqualTo(999);
-    }
+	@Test
+	public void testFindByName() {
+		User user = userDao.findByName("宇宙");
+		assertThat(user.getId()).isEqualTo(4);
+	}
 
-    @Test
-    public void paginationByNameLength() {
-        PageableRequest request = new PageableRequest();
-        Pageable<Record> result = userDao.paginationByNameLength(request, 4);
-        assertThat(result.getSize()).isGreaterThan(2);
-    }
+	@Test
+	public void testFindByNameLike() {
+		List<User> users = userDao.findByNameLike("%人%");
+		assertThat(users).hasSize(2);
+		List<String> names = Collections3.extractToListString(users, "name");
+		assertThat(names).contains("女人", "人人网");
+	}
+
+	@Test
+	public void testFindByIdGtSortByAgeDesc() {
+		List<User> users = userDao.findByIdGtSortByAgeDesc(2);
+		assertThat(users).hasSize(8);
+		assertThat(users.get(0).getName()).isEqualTo("女人");
+	}
+
+	@Test
+	public void testGetCountByNameLike() {
+		int count = userDao.getCountByNameLike("%人%");
+		assertThat(count).isEqualTo(2);
+	}
+
+	@Test
+	public void testPaginationByNameLength() {
+		PageableRequest request = PageableRequest.buildPageRequest(null);
+		Pageable<Record> pageable = userDao.paginationByNameLength(request, 3);
+		assertThat(pageable.getTotalElements()).isEqualTo(3);
+	}
 }
 ```
-再看我们的UserDao，其实非常简单：
+再看我们的UserDao，还是比较简洁：
 ```
 @Repository
 public class UserDao extends BaseDao<User> {
@@ -67,7 +89,22 @@ public class UserDao extends BaseDao<User> {
     protected String getTableName() {
         return "user";
     }
+    
+    @JpaQuery
+    public String findNameById(long id) {
+        return null;
+    }
+    
+    @JpaQuery
+    public List<String> findNameByAge(int age) {
+        return null;
+    }
 
+    @JpaQuery
+    public User findByName(String name) {
+        return null;
+    }
+    
     @JpaQuery
     public List<User> findByNameLike(String name) {
         return null;
@@ -77,19 +114,25 @@ public class UserDao extends BaseDao<User> {
     public List<User> findByIdGtSortByAgeDesc(int i) {
         return null;
     }
-
-    public Pageable<Record> paginationByNameLength(PageableRequest request, int len) {
-        String sql = "select * from user u where length(u.name) >= ?";
-        return paginationBySql(sql, request, len);
+    
+    @JpaQuery
+    public int getCountByNameLike(String name) {
+        return 0;
     }
 
+    public Pageable<Record> paginationByNameLength(PageableRequest request, int len) {
+        String sql = "select u.*,d.name department_name from user u left join department d on d.id = u.department_id where length(u.name) >= ?";
+        return paginationBySql(sql, request, len);
+    }
 }
 ```
-有兴趣，可以看一下BaseDao的代码，里面有大量的预定义方法。  
-至于方法没有主体，只用了@JpaQuery注解，则是借鉴了Spring JPA的神奇之处。
+同学们已经注意到@JpaQuery注解的方法都是没有主体的，这点就是继承了Spring JPA的神奇之处了，至于分页的要用到的联合查询则需要手动写SQL了。  
 
-# Spring Jpa理念
-在查询时，通常需要同时根据多个属性进行查询，且查询的条件也格式各样（大于某个值、在某个范围等等），Spring Data JPA 为此提供了一些表达条件查询的关键字，大致如下：
+---
+
+我写的方法都没有注释，其实是约定大于配置，如果了解了方法名构建的规则，一看方法名就知道这个原子操作是个什么意思了。  
+# 三、Spring Jpa理念与扩展
+先来看一下Spring JPA的理念：在查询时，通常需要同时根据多个属性进行查询，且查询的条件也格式各样（大于某个值、在某个范围等等），Spring Data JPA 为此提供了一些表达条件查询的关键字，大致如下：
 
 - And --- 等价于 SQL 中的 and 关键字，比如 findByUsernameAndPassword(String user, Striang pwd)；
 
@@ -128,13 +171,18 @@ public class UserDao extends BaseDao<User> {
 ```
 这里是根据年龄进行了倒序查询，Desc后缀表示倒序，Asc表示正序（也是默认值）。  
 
-# 分页
+上节的代码中还出现了getCountBy系列方法，规则和Spring JPA一致，是用来查询总数的。  
+
+## 1、特殊情况
+还有一个问题，加入我定义了这么一个方法`List<User> findByNameLike(String name)`，但有时候我只希望findByNameLike只返回一条数据，原则上我们修改返回值为User即可，框架会智能分析出你是需要一条数据。如果不幸的时候一个Dao中想要同时定义`List<User> findByNameLike(String name)`和`User findByNameLike(String name)`那肯定是不符合规则的，我们可以这么写`User findOneByNameLike(String name)`也是可以被正确解析的
+
+# 四、分页
 BaseDao里面有几个分页的方法，最常用的是paginationBySql。  
 这里涉及到两个类：
 
 - PageableRequest 分页请求，主要内容有：当前是第几页，每页显示多少条等
 - Pageable 分页信息，主要内容有：分页数据集合，总的元素数等
 
-# 待完成
-- 根据数据库表直接生成Entity的工具类
+# 五、代码生成工具
+
 
