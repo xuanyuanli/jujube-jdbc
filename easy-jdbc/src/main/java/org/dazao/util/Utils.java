@@ -27,7 +27,7 @@ import java.util.Properties;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
-import org.dazao.constant.Constants;
+import org.dazao.constant.EasyJdbcConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -330,11 +330,11 @@ public class Utils {
     public static void printRuntimeStack(String taskName) {
         StackTraceElement[] stackElements = new Throwable().getStackTrace();
         if (stackElements != null) {
-            Constants.LOGGER_DEBUG.info("--------------start | " + taskName);
+            EasyJdbcConstants.LOGGER_DEBUG.info("--------------start | " + taskName);
             for (int i = 0; i < stackElements.length; i++) {
-                Constants.LOGGER_DEBUG.info("{}", stackElements[i]);
+                EasyJdbcConstants.LOGGER_DEBUG.info("{}", stackElements[i]);
             }
-            Constants.LOGGER_DEBUG.info("\n\n");
+            EasyJdbcConstants.LOGGER_DEBUG.info("\n\n");
         }
 
     }

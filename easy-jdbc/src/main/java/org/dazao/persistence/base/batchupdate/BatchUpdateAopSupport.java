@@ -10,7 +10,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.dazao.constant.Constants;
+import org.dazao.constant.EasyJdbcConstants;
 import org.dazao.persistence.base.BaseDao;
 import org.dazao.util.Beans;
 import org.dazao.util.Dates;
@@ -26,7 +26,7 @@ public class BatchUpdateAopSupport {
     @Autowired
     private StringRedisTemplate redisTemplate;
 
-    @AfterReturning(value = "@annotation(" + Constants.BASE_PACKAGE_NAME + ".persistence.base.batchupdate.BatchUpdate)", returning = "ro")
+    @AfterReturning(value = "@annotation(" + EasyJdbcConstants.BASE_PACKAGE_NAME + ".persistence.base.batchupdate.BatchUpdate)", returning = "ro")
     public void batchUpdate(JoinPoint joinPoint, Object ro) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod(); // 当前访问的方法

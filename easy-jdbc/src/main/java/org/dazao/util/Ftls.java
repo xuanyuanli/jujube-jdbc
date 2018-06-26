@@ -8,7 +8,7 @@ import java.io.Writer;
 import java.util.Map;
 import java.util.Properties;
 
-import org.dazao.constant.Constants;
+import org.dazao.constant.EasyJdbcConstants;
 import org.dazao.support.freemarker.ClassloaderTemplateLoader;
 
 import freemarker.cache.StringTemplateLoader;
@@ -38,8 +38,8 @@ public class Ftls {
         Properties props = new Properties();
         props.put("tag_syntax", "auto_detect");
         props.put("template_update_delay", "5");
-        props.put("defaultEncoding", Constants.PROJECT_ENCODING.name());
-        props.put("url_escaping_charset", Constants.PROJECT_ENCODING.name());
+        props.put("defaultEncoding", EasyJdbcConstants.PROJECT_ENCODING.name());
+        props.put("url_escaping_charset", EasyJdbcConstants.PROJECT_ENCODING.name());
         props.put("boolean_format", "true,false");
         props.put("datetime_format", "yyyy-MM-dd HH:mm:ss");
         props.put("date_format", "yyyy-MM-dd");
@@ -56,7 +56,7 @@ public class Ftls {
         }
 
         string_template_configuration = new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
-        string_template_configuration.setDefaultEncoding(Constants.PROJECT_ENCODING.name());
+        string_template_configuration.setDefaultEncoding(EasyJdbcConstants.PROJECT_ENCODING.name());
         stringTemplateLoader = new StringTemplateLoader();
         string_template_configuration.setTemplateLoader(stringTemplateLoader);
         try {
@@ -76,7 +76,7 @@ public class Ftls {
      *            FreeMarker数据模型
      */
     public static void processFileTemplateToFile(String templateName, String outputPath, Map<String, Object> root) {
-        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(Utils.createFile(outputPath)), Constants.PROJECT_ENCODING);) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(Utils.createFile(outputPath)), EasyJdbcConstants.PROJECT_ENCODING);) {
             processFileTemplateTo(templateName, root, writer);
         } catch (IOException e) {
             throw new RuntimeException(e);

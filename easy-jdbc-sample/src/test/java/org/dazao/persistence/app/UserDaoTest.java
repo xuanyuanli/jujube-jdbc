@@ -55,7 +55,7 @@ public class UserDaoTest {
 	public void testFindByIdGtSortByAgeDesc() {
 		List<User> users = userDao.findByIdGtSortByAgeDesc(2);
 		assertThat(users).hasSize(8);
-		assertThat(users.get(0).getName()).isEqualTo("女人");
+		assertThat(users.get(0).getName()).isEqualTo("宇宙");
 	}
 
 	@Test

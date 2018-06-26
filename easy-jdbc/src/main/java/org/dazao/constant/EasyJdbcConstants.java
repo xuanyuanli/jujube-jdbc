@@ -7,13 +7,11 @@ import org.slf4j.LoggerFactory;
 
 /** 项目常量类 */
 
-public interface Constants {
+public interface EasyJdbcConstants {
 
     // ------------------------ 项目接口 相关 ------------------------
     /** 基础包名 */
     public static final String BASE_PACKAGE_NAME = "org.dazao";
-    /** Entity基类 */
-    public static final String BASEENTITY_NAME = "BaseEntity";
     /** 文件目录分隔符 */
     public static final String FILE_SEPARATOR = "/";
     /** H2的驱动 */

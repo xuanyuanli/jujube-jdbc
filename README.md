@@ -23,8 +23,8 @@
 说干就干，管他邪恶与否呢？没有亚当夏娃被邪恶引诱，也不会有无穷匮已的百姓和灿烂的文明啊！
 
 # 二、示例
-中间干的过程已快进，先来看一下成果。    
-示例项目在easy-jdbc-sample中，使用了Spring Boot+H2来启动，先看看看测试代码：
+中间耕耘的过程已快进，先来看一下成果。    
+示例项目在easy-jdbc-sample中，使用了Spring Boot+H2来启动，先看看测试代码：
 ```
 @SpringBootTest(classes = EasyJdbcApp.class)
 @RunWith(SpringRunner.class)
@@ -184,5 +184,46 @@ BaseDao里面有几个分页的方法，最常用的是paginationBySql。
 - Pageable 分页信息，主要内容有：分页数据集合，总的元素数等
 
 # 五、代码生成工具
+在entity-generator项目中打开EntityGeneratorDemo：
+```
+	public static void main(String[] args) {
+		Config config = new Config("user", "D:\\workspace\\easy-jdbc\\entity-generator\\src\\main\\java", "org.demo.entity", "org.demo.persistence");
+		config.setForceCoverDao(false);
+		config.setForceCoverEntity(true);
+		config.setCreateDao(true);
+		EntityGenerator.generateEntity(config);
+	}
+```
+条件：
+- classpath下需要有application.properties文件，必须的字段如下：
+```
+spring.datasource.url=jdbc:mysql://192.168.99.100:3306/demo?characterEncoding=utf8&useSSL=false
+spring.datasource.username=root
+spring.datasource.password=Aa123456
+spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+```
+- Config配置中需要输入数据库表名、要生成到的项目代码根目录、entity所在包、dao所在包等信息
 
+运行这个类即可在响应的路径中生成Entity和Dao类了。
+
+# 六、使用
+大致的步骤为：
+- git clone下代码，安装easy-jdbc项目到本地仓库或发布到远程仓库（后续我会把项目发布到maven中央仓库，这一步就可以省略了）
+- 在需要的项目中引入依赖：
+```
+        <dependency>
+            <groupId>org.dazao</groupId>
+            <artifactId>easy-jdbc</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+```
+- 在项目的Spring组件的扫描路径添加上`org.dazao.persistence`。如果用的是applicationContext.xml的形式，如：
+```
+<context:component-scan base-package="com.yourproject;org.dazao.persistence"></context:component-scan>
+```
+如果是用的是Spring Boot，如：
+```
+@ComponentScan({ "com.yourproject", "org.dazao.persistence" })
+```
+- 打开entity-generator项目的EntityGeneratorDemo来生成需要的entity和dao
 

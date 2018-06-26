@@ -8,7 +8,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.dazao.constant.Constants;
+import org.dazao.constant.EasyJdbcConstants;
 import org.dazao.persistence.base.BaseDao;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 public class JpaQueryAopSupport {
 
-    @Around("@annotation(" + Constants.BASE_PACKAGE_NAME + ".persistence.base.jpa.JpaQuery)")
+    @Around("@annotation(" + EasyJdbcConstants.BASE_PACKAGE_NAME + ".persistence.base.jpa.JpaQuery)")
     public Object cacheAround(final ProceedingJoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();// 参数值
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();

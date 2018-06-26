@@ -21,7 +21,7 @@ public class Profiles {
     /** 是否是测试环境 */
     public static boolean isTestProfile() {
         try {
-            Beans.forName(Constants.H2_DRIVER_CLASS_NAME);
+            Beans.forName(EasyJdbcConstants.H2_DRIVER_CLASS_NAME);
             return true;
         } catch (Exception e) {
             return false;
