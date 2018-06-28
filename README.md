@@ -132,7 +132,7 @@ public class UserDao extends BaseDao<User> {
 
 我写的方法都没有注释，其实是约定大于配置，如果了解了方法名构建的规则，一看方法名就知道这个原子操作是个什么意思了。  
 # 三、Spring Jpa理念与扩展
-先来看一下Spring JPA的理念：在查询时，通常需要同时根据多个属性进行查询，且查询的条件也格式各样（大于某个值、在某个范围等等），Spring Data JPA 为此提供了一些表达条件查询的关键字，大致如下：
+先来看一下Spring JPA的理念：在查询时，通常需要同时根据多个属性进行查询，且查询的条件也各式各样（大于某个值、在某个范围等等），Spring Data JPA 为此提供了一些表达条件查询的关键字，大致如下：
 
 - And --- 等价于 SQL 中的 and 关键字，比如 findByUsernameAndPassword(String user, Striang pwd)；
 
@@ -174,7 +174,7 @@ public class UserDao extends BaseDao<User> {
 上节的代码中还出现了getCountBy系列方法，规则和Spring JPA一致，是用来查询总数的。  
 
 ## 1、特殊情况
-还有一个问题，加入我定义了这么一个方法`List<User> findByNameLike(String name)`，但有时候我只希望findByNameLike只返回一条数据，原则上我们修改返回值为User即可，框架会智能分析出你是需要一条数据。如果不幸的时候一个Dao中想要同时定义`List<User> findByNameLike(String name)`和`User findByNameLike(String name)`那肯定是不符合规则的，我们可以这么写`User findOneByNameLike(String name)`也是可以被正确解析的
+还有一个问题，假如我定义了这么一个方法`List<User> findByNameLike(String name)`，但有时候我只希望findByNameLike返回一条数据，原则上我们修改返回值为User即可，框架会智能分析出你是需要什么类型的数据。如果不幸的是一个Dao中想要同时定义`List<User> findByNameLike(String name)`和`User findByNameLike(String name)`那肯定是不符合规则的，我们可以这么写`User findOneByNameLike(String name)`也是可以被正确解析的
 
 # 四、分页
 BaseDao里面有几个分页的方法，最常用的是paginationBySql。  
@@ -217,7 +217,7 @@ spring.datasource.driver-class-name=com.mysql.jdbc.Driver
             <version>1.0.0</version>
         </dependency>
 ```
-- 在项目的Spring组件的扫描路径添加上`org.dazao.persistence`。如果用的是applicationContext.xml的形式，如：
+- 因为这个框架是基于Spring JDBC的，所以你需要先配置一下DataSource和JdbcTemplate。之后在项目的Spring组件的扫描路径添加上`org.dazao.persistence`。如果用的是applicationContext.xml的形式，如：
 ```
 <context:component-scan base-package="com.yourproject;org.dazao.persistence"></context:component-scan>
 ```
