@@ -1,13 +1,5 @@
 package org.dazao.persistence.base;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.dazao.lang.Record;
 import org.dazao.persistence.base.dialect.Dialect;
@@ -26,6 +18,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 基础Dao支持。子类都要重写getTableName()方法 <br>
@@ -70,7 +70,7 @@ public abstract class BaseDao<T extends BaseEntity> extends Logable {
         if (sql.length() == 0) {
             return 0;
         }
-        return save(sql.toString(), params.toArray());
+        return save(sql, params.toArray());
     }
 
     /** 更新 */
@@ -127,7 +127,8 @@ public abstract class BaseDao<T extends BaseEntity> extends Logable {
             throw new IllegalArgumentException("此为删除全部，请谨慎操作");
         }
         String sql = dialect.forDbDelete(getTableName(), spec.getFilterSql());
-        return getJdbcTemplate().update(sql, spec.getFilterParams()) > 0 ? true : false;
+        boolean result = getJdbcTemplate().update(sql, spec.getFilterParams()) > 0;
+        return result ? true : false;
     }
 
     /** 批量更新数据 */

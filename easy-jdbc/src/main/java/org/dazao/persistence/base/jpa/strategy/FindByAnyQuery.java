@@ -1,21 +1,15 @@
 package org.dazao.persistence.base.jpa.strategy;
 
-import java.lang.reflect.Method;
-import java.util.List;
-
-import org.dazao.persistence.base.jpa.JpaQueryProxyDao;
+import com.google.common.collect.Lists;
 import org.dazao.persistence.base.jpa.handler.DefaultHandlerChain;
 import org.dazao.persistence.base.jpa.handler.HandlerContext;
 import org.dazao.persistence.base.spec.Spec;
 import org.dazao.util.Pojos;
 
-import com.google.common.collect.Lists;
+import java.lang.reflect.Method;
+import java.util.List;
 
 public class FindByAnyQuery extends QueryStrategy {
-
-    public FindByAnyQuery(JpaQueryProxyDao proxyDao) {
-        super(proxyDao);
-    }
 
     private static final String FIND_ONE_BY = "findOneBy";
     private static final String FIND_BY = "findBy";

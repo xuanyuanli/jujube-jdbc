@@ -1,5 +1,7 @@
 package org.dazao.persistence.base.jpa.strategy;
 
+import org.dazao.persistence.base.jpa.JpaQueryProxyDaoHolder;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +13,7 @@ public class Querier {
     public Object query(Method method, Object[] args) {
         for (QueryStrategy strategy : strategies) {
             if (strategy.accept(method)) {
+                strategy.setProxyDao(JpaQueryProxyDaoHolder.getJpaQueryProxyDao());
                 return strategy.query(method, args);
             }
         }

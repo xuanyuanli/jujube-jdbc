@@ -1,8 +1,8 @@
 package org.dazao.persistence.base.jpa.strategy;
 
-import java.lang.reflect.Method;
-
 import org.dazao.persistence.base.jpa.JpaQueryProxyDao;
+
+import java.lang.reflect.Method;
 
 /** 查询策略 */
 public abstract class QueryStrategy {
@@ -11,8 +11,7 @@ public abstract class QueryStrategy {
 
     protected JpaQueryProxyDao proxyDao;
 
-    public QueryStrategy(JpaQueryProxyDao proxyDao) {
-        super();
+    void setProxyDao(JpaQueryProxyDao proxyDao) {
         this.proxyDao = proxyDao;
     }
 

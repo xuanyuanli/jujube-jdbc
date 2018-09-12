@@ -1,9 +1,6 @@
 package org.dazao.persistence.base.jpa.strategy;
 
-import java.lang.reflect.Method;
-import java.util.List;
-
-import org.dazao.persistence.base.jpa.JpaQueryProxyDao;
+import com.google.common.collect.Lists;
 import org.dazao.persistence.base.jpa.handler.DefaultHandlerChain;
 import org.dazao.persistence.base.jpa.handler.Handler;
 import org.dazao.persistence.base.jpa.handler.HandlerContext;
@@ -12,16 +9,13 @@ import org.dazao.support.entity.RecordEntity;
 import org.dazao.util.Collections3;
 import org.dazao.util.Texts;
 
-import com.google.common.collect.Lists;
+import java.lang.reflect.Method;
+import java.util.List;
 
 public class FindAnyByAnyQuery extends QueryStrategy {
 
     private static final String FIND_BY2 = "find(.+?)By(.+)";
     private static final String FIND_BY2_PREFIX = "find(.+?)By";
-
-    public FindAnyByAnyQuery(JpaQueryProxyDao proxyDao) {
-        super(proxyDao);
-    }
 
     @Override
     boolean accept(Method method) {

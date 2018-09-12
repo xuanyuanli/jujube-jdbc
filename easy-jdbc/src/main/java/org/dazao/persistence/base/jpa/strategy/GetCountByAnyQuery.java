@@ -1,21 +1,15 @@
 package org.dazao.persistence.base.jpa.strategy;
 
-import java.lang.reflect.Method;
-
-import org.dazao.persistence.base.jpa.JpaQueryProxyDao;
+import com.google.common.collect.Lists;
 import org.dazao.persistence.base.jpa.handler.DefaultHandlerChain;
 import org.dazao.persistence.base.jpa.handler.HandlerContext;
 import org.dazao.persistence.base.spec.Spec;
 
-import com.google.common.collect.Lists;
+import java.lang.reflect.Method;
 
 public class GetCountByAnyQuery extends QueryStrategy {
 
     private static final String GET_COUNT_BY = "getCountBy";
-
-    public GetCountByAnyQuery(JpaQueryProxyDao proxyDao) {
-        super(proxyDao);
-    }
 
     @Override
     boolean accept(Method method) {

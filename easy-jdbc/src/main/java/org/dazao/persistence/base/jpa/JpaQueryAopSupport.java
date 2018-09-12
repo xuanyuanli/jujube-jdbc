@@ -1,8 +1,5 @@
 package org.dazao.persistence.base.jpa;
 
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-
 import org.apache.commons.lang3.math.NumberUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -12,12 +9,15 @@ import org.dazao.constant.EasyJdbcConstants;
 import org.dazao.persistence.base.BaseDao;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+
 @Component
 @Aspect
 public class JpaQueryAopSupport {
 
     @Around("@annotation(" + EasyJdbcConstants.BASE_PACKAGE_NAME + ".persistence.base.jpa.JpaQuery)")
-    public Object cacheAround(final ProceedingJoinPoint joinPoint) {
+    public Object japQueryAround(final ProceedingJoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();// 参数值
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod(); // 当前访问的方法

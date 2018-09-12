@@ -1,17 +1,12 @@
 package org.dazao.persistence.base.jpa.strategy;
 
-import java.lang.reflect.Method;
-
-import org.dazao.persistence.base.jpa.JpaQueryProxyDao;
 import org.dazao.persistence.base.jpa.handler.Handler;
 import org.dazao.support.entity.RecordEntity;
 
+import java.lang.reflect.Method;
+
 /** find*ById方法 */
 public class FindAnyByIdQuery extends QueryStrategy {
-
-    public FindAnyByIdQuery(JpaQueryProxyDao proxyDao) {
-        super(proxyDao);
-    }
 
     private static final String FIND_BY_ID = "findById";
     private static final String BY_ID = "ById";
