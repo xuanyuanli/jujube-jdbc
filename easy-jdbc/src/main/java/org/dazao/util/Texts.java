@@ -1,5 +1,9 @@
 package org.dazao.util;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.dazao.support.entity.BaseEntity;
+
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
@@ -8,10 +12,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.dazao.support.entity.BaseEntity;
 
 /**
  * 文本字符相关工具类
@@ -88,7 +88,7 @@ public class Texts {
      */
     public static String replaceBlank(String str) {
         String regex = "\\s*|\t|\r|\n";
-        Pattern compile = Pattern.compile(regex);
+        Pattern compile = PatternHolder.getPattern(regex);
         return compile.matcher(str).replaceAll("");
     }
 
@@ -145,12 +145,7 @@ public class Texts {
     public static List<RegexQueryInfo> regQuery(String reg, String instr, boolean ignoreCase) {
         List<RegexQueryInfo> list = new ArrayList<Texts.RegexQueryInfo>();
         String regex = reg;
-        Pattern pattern = null;
-        if (ignoreCase) {
-            pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-        } else {
-            pattern = Pattern.compile(regex);
-        }
+        Pattern pattern = PatternHolder.getPattern(reg,ignoreCase);
         Matcher matcher = pattern.matcher(instr);
         while (matcher.find()) {
             RegexQueryInfo info = new RegexQueryInfo();
@@ -182,12 +177,7 @@ public class Texts {
      */
     public static String regReplace(String reg, String repstr, String instr, boolean ignoreCase) {
         String regex = reg;
-        Pattern pattern = null;
-        if (ignoreCase) {
-            pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-        } else {
-            pattern = Pattern.compile(regex);
-        }
+        Pattern pattern = PatternHolder.getPattern(reg,ignoreCase);
         Matcher matcher = pattern.matcher(instr);
         return matcher.replaceAll(repstr);
     }
@@ -261,7 +251,7 @@ public class Texts {
         if (StringUtils.isBlank(source)) {
             return false;
         }
-        Pattern pat = Pattern.compile(regEx);
+        Pattern pat = PatternHolder.getPattern(regEx);
         Matcher mat = pat.matcher(source);
         boolean rs = mat.find();
         return rs;
@@ -327,7 +317,7 @@ public class Texts {
      * 只返回第一个匹配的结果，数组中第一个元素包含正则表达式匹配的字符串，余下的元素是与圆括号内的子表达式相匹配的子串
      */
     public static String[] getGroups(String regex, String source) {
-        Pattern pattern = Pattern.compile(regex);
+        Pattern pattern = PatternHolder.getPattern(regex);
         Matcher matcher = pattern.matcher(source);
         String[] groups = new String[0];
         if (matcher.find()) {
@@ -342,7 +332,7 @@ public class Texts {
 
     /** 获取匹配到的文本 */
     public static String getGroup(String regex, String source) {
-        Pattern pattern = Pattern.compile(regex);
+        Pattern pattern = PatternHolder.getPattern(regex);
         Matcher matcher = pattern.matcher(source);
         if (matcher.find()) {
             return matcher.group();

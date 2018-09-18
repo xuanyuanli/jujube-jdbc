@@ -67,7 +67,7 @@ public class PageableRequest implements Serializable {
         return start;
     }
 
-    public <T extends Serializable> Pageable<T> newPageable() {
+    public <T> Pageable<T> newPageable() {
         return new Pageable<T>(index, size, start);
     }
 
@@ -90,5 +90,9 @@ public class PageableRequest implements Serializable {
             pageRequest.setSize(Pageable.DEFAULT_SIZE);
         }
         return pageRequest;
+    }
+
+    public static PageableRequest buildPageRequest() {
+        return buildPageRequest(null);
     }
 }

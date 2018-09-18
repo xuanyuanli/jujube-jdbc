@@ -1,11 +1,11 @@
 package org.dazao.support.pagination;
 
+import org.dazao.lang.Record;
+import org.dazao.util.DataTypeConvertor;
+
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
-
-import org.dazao.lang.Record;
-import org.dazao.util.DataTypeConvertor;
 
 /**
  * 
@@ -14,7 +14,7 @@ import org.dazao.util.DataTypeConvertor;
  * @author 李衡 Email：li15038043160@163.com
  * @since 2013-6-3 下午2:39:51
  */
-public class Pageable<T extends Serializable> implements Iterable<T>, Serializable {
+public class Pageable<T> implements Iterable<T>, Serializable {
 
     private static final long serialVersionUID = -566814709144497590L;
 

@@ -1,16 +1,15 @@
 package org.dazao.persistence.base.util;
 
-import java.util.List;
-
+import com.google.common.collect.Lists;
 import org.dazao.persistence.base.dialect.MysqlDialect;
 import org.dazao.util.Texts;
 import org.dazao.util.Texts.RegexQueryInfo;
 
-import com.google.common.collect.Lists;
+import java.util.List;
 
 /**
  * Sql解析工具
- * 
+ *
  * @author 李衡 Email：li15038043160@163.com
  * @since 2015年1月27日 上午11:20:24
  */
@@ -52,7 +51,9 @@ public class Sqls {
         return result;
     }
 
-    /** 用子查询把对原始sql进行包裹 */
+    /**
+     * 用子查询把对原始sql进行包裹
+     */
     public static String warpSql(String sql) {
         return "select * from (" + sql + ") t_" + Thread.currentThread().getId() + "_" + System.currentTimeMillis();
     }
@@ -109,8 +110,15 @@ public class Sqls {
         return obj;
     }
 
+    /**获得安全的字段值*/
     public static String getSecurityFieldName(String fieldName) {
-        return "`" + fieldName + "`";
+        int index = fieldName.indexOf(".");
+        if (index != -1) {
+            index++;
+            return fieldName.substring(0, index) + "`" + fieldName.substring(index) + "`";
+        } else {
+            return "`" + fieldName + "`";
+        }
     }
 
     /**
@@ -119,8 +127,7 @@ public class Sqls {
     public static String inJoin(Object obj) {
         StringBuilder sb = new StringBuilder();
         if (obj instanceof Iterable) {
-            @SuppressWarnings("rawtypes")
-            Iterable coll = (Iterable) obj;
+            @SuppressWarnings("rawtypes") Iterable coll = (Iterable) obj;
             for (Object object : coll) {
                 sb.append(singleQuotes(object)).append(",");
             }
@@ -135,5 +142,17 @@ public class Sqls {
             throw new RuntimeException("in的值格式不正确。可以为String，Object[]，Iterable");
         }
         return sb.substring(0, sb.length() - 1);
+    }
+
+    public static String likeWrap(String name) {
+        return "%" + name + "%";
+    }
+
+    public static String leftLikeWrap(String name) {
+        return "%" + name;
+    }
+
+    public static String rightLikeWrap(String name) {
+        return name + "%";
     }
 }

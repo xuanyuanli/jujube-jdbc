@@ -1,21 +1,19 @@
 
 package org.dazao.persistence.base.spec;
 
+import com.google.common.collect.Lists;
 import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-
-import org.dazao.persistence.base.spec.Spec;
+import org.dazao.persistence.base.util.Sqls;
 import org.dazao.support.pagination.SearchSpec;
 import org.junit.Test;
 
-import com.google.common.collect.Lists;
+import java.util.List;
 
 public class SpecTest {
 
     @Test
     public void testEq() {
-        Spec spec = new Spec().eq("name", "abc");
+        Spec spec = new Spec().eq("name", "abc").eq("eq",null).eq("eq","");
         assertThat(spec.getSpecMap()).hasSize(1);
         assertThat(spec.getFilterSql()).isEqualTo("`name`= ?");
         assertThat(spec.getFilterParams()).hasSize(1).contains("abc");
@@ -23,10 +21,10 @@ public class SpecTest {
 
     @Test
     public void testLike() {
-        Spec spec = new Spec().like("name", "abc");
+        Spec spec = new Spec().like("name", Sqls.leftLikeWrap("abc")).like("name","").like("",null);
         assertThat(spec.getSpecMap()).hasSize(1);
         assertThat(spec.getFilterSql()).isEqualTo("`name` like ?");
-        assertThat(spec.getFilterParams()).hasSize(1).contains("abc");
+        assertThat(spec.getFilterParams()).hasSize(1).contains("%abc");
     }
 
     @Test

@@ -1,18 +1,18 @@
 package org.dazao.persistence.base.spec;
 
-import static org.dazao.persistence.base.spec.SpecSupport.Op.BETWEEN;
-import static org.dazao.persistence.base.spec.SpecSupport.Op.EQ;
-import static org.dazao.persistence.base.spec.SpecSupport.Op.GT;
-import static org.dazao.persistence.base.spec.SpecSupport.Op.GTE;
-import static org.dazao.persistence.base.spec.SpecSupport.Op.IN;
-import static org.dazao.persistence.base.spec.SpecSupport.Op.ISNOTEMPTY;
-import static org.dazao.persistence.base.spec.SpecSupport.Op.ISNOTNULL;
-import static org.dazao.persistence.base.spec.SpecSupport.Op.ISNULL;
-import static org.dazao.persistence.base.spec.SpecSupport.Op.LIKE;
-import static org.dazao.persistence.base.spec.SpecSupport.Op.LT;
-import static org.dazao.persistence.base.spec.SpecSupport.Op.LTE;
-import static org.dazao.persistence.base.spec.SpecSupport.Op.NOT;
-import static org.dazao.persistence.base.spec.SpecSupport.Op.join;
+import com.google.common.collect.Maps;
+import lombok.EqualsAndHashCode;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
+import org.dazao.lang.Record;
+import org.dazao.persistence.base.spec.SpecSupport.Op;
+import static org.dazao.persistence.base.spec.SpecSupport.Op.*;
+import org.dazao.persistence.base.util.Sqls;
+import org.dazao.support.pagination.SearchSpec;
+import org.dazao.util.Beans;
+import org.dazao.util.CamelCase;
+import org.dazao.util.Texts;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -20,23 +20,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
-import org.dazao.lang.Record;
-import org.dazao.persistence.base.spec.SpecSupport.Op;
-import org.dazao.persistence.base.util.Sqls;
-import org.dazao.support.pagination.SearchSpec;
-import org.dazao.util.Beans;
-import org.dazao.util.CamelCase;
-import org.dazao.util.Texts;
-
-import com.google.common.collect.Maps;
-
-import lombok.EqualsAndHashCode;
-
 /**
  * 构建查询规格（Specification）
- * 
+ *
  * @author 李衡 Email：li15038043160@163.com
  */
 @EqualsAndHashCode
@@ -59,23 +45,47 @@ public class Spec implements Cloneable {
      * 等于
      */
     public Spec eq(String fieldName, Object value) {
-        specMap.put(join(EQ, fieldName), value);
+        //不为null；如果为String类型，不为空
+        if (isNotBlank(value)) {
+            specMap.put(join(EQ, fieldName), value);
+        }
         return this;
+    }
+
+    boolean isNotBlank(Object value) {
+        if (value == null) {
+            return false;
+        }
+        if ((value instanceof String && ((String) value).length() == 0)) {
+            return false;
+        }
+        return true;
     }
 
     /**
      * like
      */
     public Spec like(String fieldName, Object value) {
-        specMap.put(join(LIKE, fieldName), value);
+        if (verifyLikeValue(value)) {
+            specMap.put(join(LIKE, fieldName), value);
+        }
         return this;
+    }
+
+    boolean verifyLikeValue(Object value) {
+        if (!"%".equals(value) && !"%%".equals(value)) {
+            return true;
+        }
+        return false;
     }
 
     /**
      * not like
      */
     public Spec notlike(String fieldName, Object value) {
-        specMap.put(join(Op.NOTLIKE, fieldName), value);
+        if (verifyLikeValue(value)) {
+            specMap.put(join(Op.NOTLIKE, fieldName), value);
+        }
         return this;
     }
 
@@ -83,7 +93,9 @@ public class Spec implements Cloneable {
      * 大于
      */
     public Spec gt(String fieldName, Object value) {
-        specMap.put(join(GT, fieldName), value);
+        if (isNotBlank(value)) {
+            specMap.put(join(GT, fieldName), value);
+        }
         return this;
     }
 
@@ -91,7 +103,9 @@ public class Spec implements Cloneable {
      * 小于
      */
     public Spec lt(String fieldName, Object value) {
-        specMap.put(join(LT, fieldName), value);
+        if (isNotBlank(value)) {
+            specMap.put(join(LT, fieldName), value);
+        }
         return this;
     }
 
@@ -99,7 +113,9 @@ public class Spec implements Cloneable {
      * 大于等于
      */
     public Spec gte(String fieldName, Object value) {
-        specMap.put(join(GTE, fieldName), value);
+        if (isNotBlank(value)) {
+            specMap.put(join(GTE, fieldName), value);
+        }
         return this;
     }
 
@@ -107,7 +123,9 @@ public class Spec implements Cloneable {
      * 小于等于
      */
     public Spec lte(String fieldName, Object value) {
-        specMap.put(join(LTE, fieldName), value);
+        if (isNotBlank(value)) {
+            specMap.put(join(LTE, fieldName), value);
+        }
         return this;
     }
 
@@ -115,7 +133,9 @@ public class Spec implements Cloneable {
      * 不等于<>
      */
     public Spec not(String fieldName, Object value) {
-        specMap.put(join(NOT, fieldName), value);
+        if (isNotBlank(value)) {
+            specMap.put(join(NOT, fieldName), value);
+        }
         return this;
     }
 
@@ -147,8 +167,9 @@ public class Spec implements Cloneable {
      * in
      */
     public Spec in(String fieldName, Iterable<?> value) {
-        Validate.isTrue(value != null && value.iterator().hasNext());
-        specMap.put(join(IN, fieldName), value);
+        if (value != null && value.iterator().hasNext()) {
+            specMap.put(join(IN, fieldName), value);
+        }
         return this;
     }
 
@@ -164,9 +185,8 @@ public class Spec implements Cloneable {
 
     /**
      * or
-     * 
-     * @param rule
-     *            最少为两个入参
+     *
+     * @param rule 最少为两个入参
      */
     public Spec or(Spec... rule) {
         Validate.isTrue(rule != null && rule.length >= 2);
@@ -189,11 +209,15 @@ public class Spec implements Cloneable {
      * between
      */
     public Spec between(String fieldName, Object valuePrev, Object valueNext) {
-        specMap.put(join(BETWEEN, fieldName), new Object[] { valuePrev, valueNext });
+        if (valuePrev != null && valueNext != null && StringUtils.isNotBlank(ObjectUtils.toString(valuePrev)) && StringUtils.isNotBlank(ObjectUtils.toString(valueNext))) {
+            specMap.put(join(BETWEEN, fieldName), new Object[]{valuePrev, valueNext});
+        }
         return this;
     }
 
-    /** 返回排序对象 */
+    /**
+     * 返回排序对象
+     */
     public Sort sort() {
         return sort;
     }
@@ -216,13 +240,17 @@ public class Spec implements Cloneable {
         return having;
     }
 
-    /** 查询条数限制 */
+    /**
+     * 查询条数限制
+     */
     public Spec limit(int size) {
         limit = size;
         return this;
     }
 
-    /** 从第几条开始查询 */
+    /**
+     * 从第几条开始查询
+     */
     public Spec limitBegin(int end) {
         limitBegin = end;
         return this;
@@ -250,16 +278,17 @@ public class Spec implements Cloneable {
         return specMap.isEmpty();
     }
 
-    /** 获得过滤条件的sql */
+    /**
+     * 获得过滤条件的sql
+     */
     public String getFilterSql() {
         return getFilterSql(null);
     }
 
     /**
      * 获得过滤条件的sql
-     * 
-     * @param alias
-     *            表别名
+     *
+     * @param alias 表别名
      */
     public String getFilterSql(String alias) {
         namedParam.clear();
@@ -270,18 +299,18 @@ public class Spec implements Cloneable {
         return result;
     }
 
-    /** 获得过滤条件的params(必须先执行getFilterSql方法，namedParam才会有值) */
+    /**
+     * 获得过滤条件的params(必须先执行getFilterSql方法，namedParam才会有值)
+     */
     public Object[] getFilterParams() {
         return namedParam.toArray();
     }
 
     /**
      * 构建数据规格说明
-     * 
-     * @param specMap
-     *            规格
-     * @param namedParam
-     *            命名参数值（如果是=，为了安全，则需要使用命名参数）
+     *
+     * @param specMap    规格
+     * @param namedParam 命名参数值（如果是=，为了安全，则需要使用命名参数）
      * @return
      */
     private String buildQuerySpecification(Spec spec, String alias) {
@@ -293,88 +322,88 @@ public class Spec implements Cloneable {
         while (filterIterator.hasNext()) {
             SpecSupport filter = filterIterator.next();
             switch (filter.operator) {
-            case EQ:
-                specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append("= ?");
-                namedParam.add(filter.value);
-                break;
-            case LIKE:
-                specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" like ").append("?");
-                namedParam.add(filter.value);
-                break;
-            case NOTLIKE:
-                specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" not like ").append("?");
-                namedParam.add(filter.value);
-                break;
-            case GT:
-                specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" > ").append("?");
-                namedParam.add(filter.value);
-                break;
-            case LT:
-                specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" < ").append("?");
-                namedParam.add(filter.value);
-                break;
-            case GTE:
-                specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" >= ").append("?");
-                namedParam.add(filter.value);
-                break;
-            case LTE:
-                specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" <= ").append("?");
-                namedParam.add(filter.value);
-                break;
-            case BETWEEN:
-                Object[] arr = (Object[]) filter.value;
-                specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" between ").append("?").append(" and ").append("?");
-                namedParam.add(arr[0]);
-                namedParam.add(arr[1]);
-                break;
-            case ISNOTNULL:
-                specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" is not null");
-                break;
-            case ISNULL:
-                specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" is null");
-                break;
-            case ISEMPTY:
-                specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" = ''");
-                break;
-            case ISNOTEMPTY:
-                specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" <> ''");
-                break;
-            case NOT:
-                specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" <> ").append("?");
-                namedParam.add(filter.value);
-                break;
-            case IN:
-                specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" in(").append(Sqls.inJoin(filter.value)).append(")");
-                break;
-            case NOTIN:
-                specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" not in(").append(Sqls.inJoin(filter.value)).append(")");
-                break;
-            case OR:
-            case AND:
-                Spec[] specs = (Spec[]) filter.value;
-                StringBuilder innerSpecSql = new StringBuilder("(");
-                for (Spec rule : specs) {
-                    // innerSpecSql 为空，开始进行or-and操作，前面没有or-and符号
-                    if (innerSpecSql.length() == 1) {
-                        if (rule.size() == 1) { // 如果当前Spec中只有一个条件，则不用加括号
-                            innerSpecSql.append(buildQuerySpecification(rule, alias));
-                        } else {
-                            innerSpecSql.append("(").append(buildQuerySpecification(rule, alias)).append(")");
-                        }
-                    } else { // 之后就是中间环节，要加or-and符号
-                        innerSpecSql.append(" ").append(filter.operator.name().toLowerCase()); // or-and
-                        if (rule.size() == 1) {
-                            innerSpecSql.append(" ").append(buildQuerySpecification(rule, alias));
-                        } else {
-                            innerSpecSql.append(" (").append(buildQuerySpecification(rule, alias)).append(")");
+                case EQ:
+                    specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append("= ?");
+                    namedParam.add(filter.value);
+                    break;
+                case LIKE:
+                    specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" like ").append("?");
+                    namedParam.add(filter.value);
+                    break;
+                case NOTLIKE:
+                    specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" not like ").append("?");
+                    namedParam.add(filter.value);
+                    break;
+                case GT:
+                    specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" > ").append("?");
+                    namedParam.add(filter.value);
+                    break;
+                case LT:
+                    specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" < ").append("?");
+                    namedParam.add(filter.value);
+                    break;
+                case GTE:
+                    specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" >= ").append("?");
+                    namedParam.add(filter.value);
+                    break;
+                case LTE:
+                    specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" <= ").append("?");
+                    namedParam.add(filter.value);
+                    break;
+                case BETWEEN:
+                    Object[] arr = (Object[]) filter.value;
+                    specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" between ").append("?").append(" and ").append("?");
+                    namedParam.add(arr[0]);
+                    namedParam.add(arr[1]);
+                    break;
+                case ISNOTNULL:
+                    specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" is not null");
+                    break;
+                case ISNULL:
+                    specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" is null");
+                    break;
+                case ISEMPTY:
+                    specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" = ''");
+                    break;
+                case ISNOTEMPTY:
+                    specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" <> ''");
+                    break;
+                case NOT:
+                    specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" <> ").append("?");
+                    namedParam.add(filter.value);
+                    break;
+                case IN:
+                    specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" in(").append(Sqls.inJoin(filter.value)).append(")");
+                    break;
+                case NOTIN:
+                    specSql.append(getTableAliasPrefix(alias) + Sqls.getSecurityFieldName(filter.fieldName)).append(" not in(").append(Sqls.inJoin(filter.value)).append(")");
+                    break;
+                case OR:
+                case AND:
+                    Spec[] specs = (Spec[]) filter.value;
+                    StringBuilder innerSpecSql = new StringBuilder("(");
+                    for (Spec rule : specs) {
+                        // innerSpecSql 为空，开始进行or-and操作，前面没有or-and符号
+                        if (innerSpecSql.length() == 1) {
+                            if (rule.size() == 1) { // 如果当前Spec中只有一个条件，则不用加括号
+                                innerSpecSql.append(buildQuerySpecification(rule, alias));
+                            } else {
+                                innerSpecSql.append("(").append(buildQuerySpecification(rule, alias)).append(")");
+                            }
+                        } else { // 之后就是中间环节，要加or-and符号
+                            innerSpecSql.append(" ").append(filter.operator.name().toLowerCase()); // or-and
+                            if (rule.size() == 1) {
+                                innerSpecSql.append(" ").append(buildQuerySpecification(rule, alias));
+                            } else {
+                                innerSpecSql.append(" (").append(buildQuerySpecification(rule, alias)).append(")");
+                            }
                         }
                     }
-                }
-                innerSpecSql.append(")");
-                specSql.append(innerSpecSql);
-                break;
-            default:
-                throw new RuntimeException("非法操作符");
+                    innerSpecSql.append(")");
+                    specSql.append(innerSpecSql);
+                    break;
+                default:
+                    throw new RuntimeException("非法操作符");
             }
             if (filterIterator.hasNext()) {
                 specSql.append(" and ");
@@ -405,7 +434,9 @@ public class Spec implements Cloneable {
         return new Spec();
     }
 
-    /** searchSpec转换为Spec */
+    /**
+     * searchSpec转换为Spec
+     */
     public static Spec valueOf(SearchSpec searchSpec) {
         Spec spec = newS();
         Record simpleSearchSpec = searchSpec.getSimpleSpec();
@@ -439,8 +470,7 @@ public class Spec implements Cloneable {
 
     @Override
     public String toString() {
-        return Texts.format("Spec [sql:({0})  params:({1})  sort:({2})  groupby:({3})  having:({4}) limit:({5},{6})]", getFilterSql(), StringUtils.join(getFilterParams(), ","),
-                String.valueOf(sort), groupBy, having, limitBegin + "", limit + "");
+        return Texts.format("Spec [sql:({0})  params:({1})  sort:({2})  groupby:({3})  having:({4}) limit:({5},{6})]", getFilterSql(), StringUtils.join(getFilterParams(), ","), String.valueOf(sort), groupBy, having, limitBegin + "", limit + "");
     }
 
     public boolean containsKey(Spec spec) {

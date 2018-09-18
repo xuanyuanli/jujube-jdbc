@@ -1,22 +1,22 @@
 package org.dazao.persistence.app;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-
+import org.dazao.EasyJdbcApp;
 import org.dazao.entity.User;
 import org.dazao.lang.Record;
 import org.dazao.persistence.UserDao;
-import org.dazao.persistentce.app.EasyJdbcApp;
 import org.dazao.support.pagination.Pageable;
 import org.dazao.support.pagination.PageableRequest;
 import org.dazao.util.Collections3;
+import org.dazao.util.Jsons;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
 
 @SpringBootTest(classes = EasyJdbcApp.class)
 @RunWith(SpringRunner.class)
@@ -66,8 +66,18 @@ public class UserDaoTest {
 
 	@Test
 	public void testPaginationByNameLength() {
-		PageableRequest request = PageableRequest.buildPageRequest(null);
+		PageableRequest request = PageableRequest.buildPageRequest();
 		Pageable<Record> pageable = userDao.paginationByNameLength(request, 3);
 		assertThat(pageable.getTotalElements()).isEqualTo(3);
 	}
+
+    @Test
+    public void testPaginationByUser() {
+        PageableRequest request = PageableRequest.buildPageRequest();
+        User user = new User();
+        user.setName("人");
+        Pageable<Record> pageable = userDao.paginationByUser(request, user);
+        System.out.println(Jsons.toJson(pageable));
+        assertThat(pageable.getTotalElements()).isEqualTo(2);
+    }
 }

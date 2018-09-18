@@ -30,9 +30,9 @@ import java.util.Map;
 /**
  * 基础Dao支持。子类都要重写getTableName()方法 <br>
  * 备注：
- * 
+ *
  * <pre>
- * 1、查询单行数据，如果为空，则返回null 
+ * 1、查询单行数据，如果为空，则返回null
  * 2、查询单个数据，如果为空，则返回null；如果为int、float、long、double，则返回默认值
  * 3、查询多行数据，永远不会返回null。判断时用isEmpty()方法即可
  * </pre>
@@ -61,7 +61,9 @@ public abstract class BaseDao<T extends BaseEntity> extends Logable {
 
     public static final Dialect dialect = Dialect.DEFAULT;
 
-    /** 保存 */
+    /**
+     * 保存
+     */
     public long save(T t) {
         Record currenRecord = Record.valueOf(t);
 
@@ -73,7 +75,9 @@ public abstract class BaseDao<T extends BaseEntity> extends Logable {
         return save(sql, params.toArray());
     }
 
-    /** 更新 */
+    /**
+     * 更新
+     */
     public boolean update(T t) {
         Record currenRecord = Record.valueOf(t);
 
@@ -96,7 +100,7 @@ public abstract class BaseDao<T extends BaseEntity> extends Logable {
 
     /**
      * 存在则更新，不存在则保存(注意：如果id是自增的，请放心使用此方法；否则，则慎用)
-     * 
+     *
      * @return id
      */
     public long saveOrUpdate(T t) {
@@ -115,13 +119,17 @@ public abstract class BaseDao<T extends BaseEntity> extends Logable {
         return (long) id;
     }
 
-    /** 根据id删除数据 */
+    /**
+     * 根据id删除数据
+     */
     public boolean deleteById(long id) {
         String sql = dialect.forDbDeleteById(getTableName(), getPrimayKeyName());
         return getJdbcTemplate().update(sql, id) > 0 ? true : false;
     }
 
-    /** 根据条件删除数据 */
+    /**
+     * 根据条件删除数据
+     */
     protected boolean delete(Spec spec) {
         if (spec.isEmpty()) {
             throw new IllegalArgumentException("此为删除全部，请谨慎操作");
@@ -131,7 +139,9 @@ public abstract class BaseDao<T extends BaseEntity> extends Logable {
         return result ? true : false;
     }
 
-    /** 批量更新数据 */
+    /**
+     * 批量更新数据
+     */
     public void batchUpdate(String sql) {
         getJdbcTemplate().update(sql);
     }
@@ -140,7 +150,9 @@ public abstract class BaseDao<T extends BaseEntity> extends Logable {
         getJdbcTemplate().update(sql, param);
     }
 
-    /** 批量更新数据 */
+    /**
+     * 批量更新数据
+     */
     public void batchUpdate(List<T> list) {
         for (T t : list) {
             try {
@@ -151,22 +163,30 @@ public abstract class BaseDao<T extends BaseEntity> extends Logable {
         }
     }
 
-    /** 根据id获得数据 */
+    /**
+     * 根据id获得数据
+     */
     public T findById(long id) {
         return findOne(newSpec().eq(getPrimayKeyName(), id));
     }
 
-    /** 根据id查询是否存在此数据 */
+    /**
+     * 根据id查询是否存在此数据
+     */
     public boolean exists(long id) {
         return findById(getPrimayKeyName(), id) != null;
     }
 
-    /** 根据id获得对应fields数据 */
+    /**
+     * 根据id获得对应fields数据
+     */
     public T findById(String fields, long id) {
         return findOne(fields, newSpec().eq(getPrimayKeyName(), id));
     }
 
-    /** 根据sql和params获得数据，用于where后还有order by，group by等的情况.永远不会返回null */
+    /**
+     * 根据sql和params获得数据，用于where后还有order by，group by等的情况.永远不会返回null
+     */
     protected List<T> find(String sql, Object[] params) {
         List<Record> list = _find(sql, params);
         List<T> records = DataTypeConvertor.convertListRecordToListBean(realGenericType, list);
@@ -183,23 +203,31 @@ public abstract class BaseDao<T extends BaseEntity> extends Logable {
         return new Record(getJdbcTemplate().queryForMap(sql, params));
     }
 
-    /** 构建查询规格获得数据.永远不会返回null */
+    /**
+     * 构建查询规格获得数据.永远不会返回null
+     */
     public List<T> findAll() {
         String sql = dialect.forDbSimpleQuery("*", getTableName());
         return find(sql, toArrary());
     }
 
-    /** 获得所有id */
+    /**
+     * 获得所有id
+     */
     public List<Long> findIds() {
         return Collections3.extractToList(find(getPrimayKeyName(), newSpec()), getPrimayKeyName());
     }
 
-    /** 构建查询规格获得数据.永远不会返回null */
+    /**
+     * 构建查询规格获得数据.永远不会返回null
+     */
     protected List<T> find(Spec spec) {
         return find("*", spec);
     }
 
-    /** 构建查询规格获得数据，可自定义select与from之间要查询的字段.永远不会返回null */
+    /**
+     * 构建查询规格获得数据，可自定义select与from之间要查询的字段.永远不会返回null
+     */
     protected List<T> find(String fields, Spec spec) {
         String sql = dialect.forDbSimpleQuery(fields, getTableName(), spec.getFilterSql());
         if (StringUtils.isNotBlank(spec.getGroupBy())) {
@@ -216,7 +244,9 @@ public abstract class BaseDao<T extends BaseEntity> extends Logable {
         return find(sql, spec.getFilterParams());
     }
 
-    /** 构建查询规格获得数据，可自定义select与from之间要查询的字段.永远不会返回null */
+    /**
+     * 构建查询规格获得数据，可自定义select与from之间要查询的字段.永远不会返回null
+     */
     protected List<Record> _find(String fields, Spec spec) {
         String sql = dialect.forDbSimpleQuery(fields, getTableName(), spec.getFilterSql());
         if (StringUtils.isNotBlank(spec.getGroupBy())) {
@@ -233,12 +263,16 @@ public abstract class BaseDao<T extends BaseEntity> extends Logable {
         return _find(sql, spec.getFilterParams());
     }
 
-    /** 构建查询规格获得一条数据 */
+    /**
+     * 构建查询规格获得一条数据
+     */
     protected T findOne(Spec spec) {
         return findOne("*", spec);
     }
 
-    /** 构建查询规格获得一条数据，可自定义select与from之间要查询的字段 */
+    /**
+     * 构建查询规格获得一条数据，可自定义select与from之间要查询的字段
+     */
     protected T findOne(String fields, Spec spec) {
         spec.limit(1);
         List<T> list = find(fields, spec);
@@ -248,7 +282,9 @@ public abstract class BaseDao<T extends BaseEntity> extends Logable {
         return null;
     }
 
-    /** 根据sql和params获得数据 */
+    /**
+     * 根据sql和params获得数据
+     */
     protected T findOne(String sql, Object[] params) {
         sql = dialect.forDbPaginationQuery(sql, 0, 1);
         Map<String, Object> map = queryForMap(sql, params);
@@ -258,7 +294,9 @@ public abstract class BaseDao<T extends BaseEntity> extends Logable {
         return null;
     }
 
-    /** 总数的查询 */
+    /**
+     * 总数的查询
+     */
     protected long getCount(Spec spec) {
         spec.limitBegin(0).limit(Integer.MAX_VALUE);
         String sql = dialect.forDbSimpleQuery("count(*) as num", getTableName(), spec.getFilterSql());
@@ -279,12 +317,15 @@ public abstract class BaseDao<T extends BaseEntity> extends Logable {
         }
     }
 
-    public Pageable<Record> pagination(String fields, Spec spec, PageableRequest request) {
+    /**
+     * 主要用于针对一张表的分页
+     */
+    public Pageable<T> pagination(String fields, Spec spec, PageableRequest request) {
         if (fields.contains("*")) { // 防止sql报错
             fields = fields.replace("*", getTableName() + ".*");
         }
         request = PageableRequest.buildPageRequest(request);
-        Pageable<Record> result = request.newPageable();
+        Pageable<T> result = request.newPageable();
         result.setTotalElements(request.getTotalElements());
         if (request.getIndex() == 1 || request.getTotalElements() < 1) {
             Spec countSpec = spec.clone();
@@ -296,19 +337,22 @@ public abstract class BaseDao<T extends BaseEntity> extends Logable {
         spec.limitBegin(result.getStart()).limit(result.getSize());
         result.setData(new ArrayList<>());
         if (result.getTotalElements() > 0) {
-            result.setData(_find(fields, spec));
+            result.setData(find(fields, spec));
         }
         return result;
     }
 
-    public Pageable<Record> pagination(Spec spec, PageableRequest request) {
+    /**
+     * 主要用于针对一张表的分页
+     */
+    public Pageable<T> pagination(Spec spec, PageableRequest request) {
         return pagination("*", spec, request);
     }
 
     /**
      * 根据sql进行分页处理
      */
-    public Pageable<Record> paginationBySql(String sql, PageableRequest request, Object... filterParams) {
+    protected Pageable<Record> paginationBySql(String sql, PageableRequest request, Object... filterParams) {
         request = PageableRequest.buildPageRequest(request);
         Pageable<Record> pageable = request.newPageable();
         pageable.setTotalElements(request.getTotalElements());
@@ -328,7 +372,9 @@ public abstract class BaseDao<T extends BaseEntity> extends Logable {
         return pageable;
     }
 
-    /** 根据sql进行分页处理，用于两个集合union分页 */
+    /**
+     * 根据sql进行分页处理，用于两个集合union分页
+     */
     protected Pageable<Record> paginationBySqlOfUnion(PageableRequest request, String sqlA, String sqlB, Object[] filterParamsA, Object[] filterParamsB) {
         request = PageableRequest.buildPageRequest(request);
         Pageable<Record> pageable = request.newPageable();
@@ -422,5 +468,23 @@ public abstract class BaseDao<T extends BaseEntity> extends Logable {
     }
 
     protected abstract String getTableName();
+
+
+    protected String likeWrap(String field) {
+        return Sqls.likeWrap(field);
+    }
+
+    protected   String leftLikeWrap(String field) {
+        return  Sqls.leftLikeWrap(field);
+    }
+
+    protected   String rightLikeWrap(String field) {
+        return  Sqls.likeWrap(field);
+    }
+
+    protected  boolean isNotBlank(String value){
+        return  StringUtils.isNotBlank(value);
+    }
+
 
 }
