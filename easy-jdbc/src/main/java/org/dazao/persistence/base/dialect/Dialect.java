@@ -1,6 +1,6 @@
 package org.dazao.persistence.base.dialect;
 
-import com.yfs.lang.Record;
+import org.jujubeframework.lang.Record;
 
 import java.util.List;
 

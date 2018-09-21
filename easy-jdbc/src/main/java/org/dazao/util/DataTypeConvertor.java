@@ -1,7 +1,7 @@
 package org.dazao.util;
 
-import com.yfs.lang.Record;
-import com.yfs.util.Pojos;
+import org.jujubeframework.lang.Record;
+import org.jujubeframework.util.Pojos;
 import org.dazao.support.entity.BaseEntity;
 import org.dazao.support.entity.RecordEntity;
 import org.dazao.support.pagination.Pageable;
@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * 数据类型的转换工具类
  * 
- * @author John Li Email：jujudeframework@163.com
+ * @author John Li Email：jujubeframework@163.com
  */
 public class DataTypeConvertor {
 

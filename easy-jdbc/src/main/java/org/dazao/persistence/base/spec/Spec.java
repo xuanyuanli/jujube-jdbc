@@ -1,10 +1,10 @@
 package org.dazao.persistence.base.spec;
 
 import com.google.common.collect.Maps;
-import com.yfs.lang.Record;
-import com.yfs.util.Beans;
-import com.yfs.util.CamelCase;
-import com.yfs.util.Texts;
+import org.jujubeframework.lang.Record;
+import org.jujubeframework.util.Beans;
+import org.jujubeframework.util.CamelCase;
+import org.jujubeframework.util.Texts;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * 构建查询规格（Specification）
  *
- * @author John Li Email：jujudeframework@163.com
+ * @author John Li Email：jujubeframework@163.com
  */
 @EqualsAndHashCode
 public class Spec implements Cloneable {

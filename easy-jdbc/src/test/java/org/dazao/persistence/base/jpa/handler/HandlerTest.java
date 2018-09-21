@@ -1,7 +1,7 @@
 package org.dazao.persistence.base.jpa.handler;
 
 import com.google.common.collect.Lists;
-import com.yfs.util.Texts;
+import org.jujubeframework.util.Texts;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.dazao.persistence.base.spec.Spec;
 import org.junit.Test;

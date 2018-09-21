@@ -2,8 +2,8 @@ package org.dazao.generator;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.yfs.util.CamelCase;
-import com.yfs.util.Ftls;
+import org.jujubeframework.util.CamelCase;
+import org.jujubeframework.util.Ftls;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.dazao.client.local.LocalJdbcTemplate;
@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * 代码生成工具
  * 
- * @author John Li Email：jujudeframework@163.com
+ * @author John Li Email：jujubeframework@163.com
  */
 public class EntityGenerator {
 	private static Logger logger = LoggerFactory.getLogger(EntityGenerator.class);
@@ -244,7 +244,7 @@ public class EntityGenerator {
 	/**
 	 * 首字母小写
 	 * 
-	 * @author John Li Email：jujudeframework@163.com
+	 * @author John Li Email：jujubeframework@163.com
 	 * @param source
 	 * @return
 	 */

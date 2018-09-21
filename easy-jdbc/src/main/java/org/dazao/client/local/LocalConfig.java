@@ -1,6 +1,6 @@
 package org.dazao.client.local;
 
-import com.yfs.util.Utils;
+import org.jujubeframework.util.Utils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;

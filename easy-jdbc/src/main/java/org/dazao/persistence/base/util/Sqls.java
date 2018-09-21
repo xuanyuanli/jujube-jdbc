@@ -1,7 +1,7 @@
 package org.dazao.persistence.base.util;
 
 import com.google.common.collect.Lists;
-import com.yfs.util.Texts;
+import org.jujubeframework.util.Texts;
 import org.dazao.persistence.base.dialect.MysqlDialect;
 
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Sql解析工具
  *
- * @author John Li Email：jujudeframework@163.com
+ * @author John Li Email：jujubeframework@163.com
  */
 @SuppressWarnings("AlibabaUndefineMagicConstant")
 public class Sqls {

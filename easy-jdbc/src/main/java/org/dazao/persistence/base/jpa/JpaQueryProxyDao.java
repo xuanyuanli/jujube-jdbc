@@ -1,6 +1,6 @@
 package org.dazao.persistence.base.jpa;
 
-import com.yfs.util.Beans;
+import org.jujubeframework.util.Beans;
 import org.dazao.persistence.base.BaseDao;
 import org.dazao.persistence.base.spec.Spec;
 import org.dazao.support.entity.RecordEntity;

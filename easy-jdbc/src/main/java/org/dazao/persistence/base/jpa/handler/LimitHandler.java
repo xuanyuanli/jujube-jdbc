@@ -1,6 +1,6 @@
 package org.dazao.persistence.base.jpa.handler;
 
-import com.yfs.util.Texts;
+import org.jujubeframework.util.Texts;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.dazao.persistence.base.spec.Spec;
 

@@ -1,6 +1,6 @@
 package org.dazao.persistence.base.jpa.handler;
 
-import com.yfs.util.CamelCase;
+import org.jujubeframework.util.CamelCase;
 import org.dazao.persistence.base.spec.Spec;
 
 import java.util.List;

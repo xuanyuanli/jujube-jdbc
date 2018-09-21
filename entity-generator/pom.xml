@@ -31,8 +31,8 @@
 	</dependencyManagement>
 	<dependencies>
 		<dependency>
-			<groupId>org.jujudeframework</groupId>
-			<artifactId>jujude-core</artifactId>
+			<groupId>org.jujubeframework</groupId>
+			<artifactId>jujube-core</artifactId>
 			<version>1.0.1</version>
 		</dependency>
         <dependency>

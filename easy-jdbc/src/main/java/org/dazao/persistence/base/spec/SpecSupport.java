@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 构建Spec的支持类
  * 
- * @author John Li Email：jujudeframework@163.com
+ * @author John Li Email：jujubeframework@163.com
  */
 public class SpecSupport {
 
@@ -113,7 +113,7 @@ public class SpecSupport {
         /**
          * 获得正确的查询形式
          * 
-         * @author John Li Email：jujudeframework@163.com
+         * @author John Li Email：jujubeframework@163.com
          */
         public static String join(Op op, String field) {
             return op + SpecSupport.SEPARATOR + field;

@@ -1,8 +1,8 @@
 package org.dazao.persistence.base.batchupdate;
 
-import com.yfs.util.Beans;
-import com.yfs.util.Dates;
-import com.yfs.util.Jsons;
+import org.jujubeframework.util.Beans;
+import org.jujubeframework.util.Dates;
+import org.jujubeframework.util.Jsons;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;

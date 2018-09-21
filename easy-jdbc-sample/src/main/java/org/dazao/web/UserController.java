@@ -1,6 +1,6 @@
 package org.dazao.web;
 
-import com.yfs.util.Jsons;
+import org.jujubeframework.util.Jsons;
 import org.dazao.persistence.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

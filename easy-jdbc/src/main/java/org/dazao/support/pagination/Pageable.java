@@ -1,6 +1,6 @@
 package org.dazao.support.pagination;
 
-import com.yfs.lang.Record;
+import org.jujubeframework.lang.Record;
 import org.dazao.util.DataTypeConvertor;
 
 import java.io.Serializable;
@@ -11,7 +11,7 @@ import java.util.List;
  * 
  * 分页中间类
  * 
- * @author John Li Email：jujudeframework@163.com
+ * @author John Li Email：jujubeframework@163.com
  */
 public class Pageable<T> implements Iterable<T>, Serializable {
 

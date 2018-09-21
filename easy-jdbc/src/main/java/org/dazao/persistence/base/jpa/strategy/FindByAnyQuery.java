@@ -1,7 +1,7 @@
 package org.dazao.persistence.base.jpa.strategy;
 
 import com.google.common.collect.Lists;
-import com.yfs.util.Pojos;
+import org.jujubeframework.util.Pojos;
 import org.dazao.persistence.base.jpa.handler.DefaultHandlerChain;
 import org.dazao.persistence.base.jpa.handler.HandlerContext;
 import org.dazao.persistence.base.spec.Spec;

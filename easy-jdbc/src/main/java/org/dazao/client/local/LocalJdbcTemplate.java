@@ -1,6 +1,6 @@
 package org.dazao.client.local;
 
-import com.yfs.util.CamelCase;
+import org.jujubeframework.util.CamelCase;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Jdbc相关工具
  * 
- * @author John Li Email：jujudeframework@163.com
+ * @author John Li Email：jujubeframework@163.com
  */
 public class LocalJdbcTemplate {
 
@@ -141,7 +141,7 @@ public class LocalJdbcTemplate {
     /**
      * 获得表结构
      * 
-     * @author John Li Email：jujudeframework@163.com
+     * @author John Li Email：jujubeframework@163.com
      */
     public static List<Column> getTableStructure(Connection conn, String tableName, String schema, List<String> imports) throws SQLException {
         List<Column> columns = new ArrayList<>();

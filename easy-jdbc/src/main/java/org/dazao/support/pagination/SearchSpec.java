@@ -1,6 +1,6 @@
 package org.dazao.support.pagination;
 
-import com.yfs.lang.Record;
+import org.jujubeframework.lang.Record;
 
 /**
  * 分页列表搜索规则

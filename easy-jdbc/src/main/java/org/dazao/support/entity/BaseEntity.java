@@ -1,15 +1,15 @@
 package org.dazao.support.entity;
 
-import com.yfs.lang.Record;
-import com.yfs.util.Jsons;
-import com.yfs.util.Pojos;
+import org.jujubeframework.lang.Record;
+import org.jujubeframework.util.Jsons;
+import org.jujubeframework.util.Pojos;
 import org.apache.commons.beanutils.BeanUtils;
 
 /**
  * entity的基类，所有entity都要继承这个类<br>
  * 此类没有实现序列化，如果子类需要，自行添加
  * 
- * @author John Li Email：jujudeframework@163.com
+ * @author John Li Email：jujubeframework@163.com
  *
  */
 public interface BaseEntity {

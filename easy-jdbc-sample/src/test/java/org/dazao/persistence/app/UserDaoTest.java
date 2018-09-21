@@ -1,8 +1,8 @@
 package org.dazao.persistence.app;
 
-import com.yfs.lang.Record;
-import com.yfs.util.Collections3;
-import com.yfs.util.Jsons;
+import org.jujubeframework.lang.Record;
+import org.jujubeframework.util.Collections3;
+import org.jujubeframework.util.Jsons;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.dazao.EasyJdbcApp;
 import org.dazao.entity.User;

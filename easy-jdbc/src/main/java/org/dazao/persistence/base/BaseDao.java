@@ -1,8 +1,8 @@
 package org.dazao.persistence.base;
 
-import com.yfs.lang.Record;
-import com.yfs.util.Beans;
-import com.yfs.util.Collections3;
+import org.jujubeframework.lang.Record;
+import org.jujubeframework.util.Beans;
+import org.jujubeframework.util.Collections3;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.dazao.persistence.base.dialect.Dialect;

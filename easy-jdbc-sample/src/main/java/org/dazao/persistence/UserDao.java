@@ -1,6 +1,6 @@
 package org.dazao.persistence;
 
-import com.yfs.lang.Record;
+import org.jujubeframework.lang.Record;
 import org.dazao.entity.User;
 import org.dazao.persistence.base.BaseDao;
 import org.dazao.persistence.base.jpa.JpaQuery;

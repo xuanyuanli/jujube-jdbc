@@ -1,8 +1,8 @@
 package org.dazao.persistence.base.jpa.strategy;
 
 import com.google.common.collect.Lists;
-import com.yfs.util.Collections3;
-import com.yfs.util.Texts;
+import org.jujubeframework.util.Collections3;
+import org.jujubeframework.util.Texts;
 import org.dazao.persistence.base.jpa.handler.DefaultHandlerChain;
 import org.dazao.persistence.base.jpa.handler.Handler;
 import org.dazao.persistence.base.jpa.handler.HandlerContext;

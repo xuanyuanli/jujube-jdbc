@@ -1,6 +1,6 @@
 package org.dazao.constant;
 
-import com.yfs.util.Beans;
+import org.jujubeframework.util.Beans;
 
 /**
  * Spring Profiles
