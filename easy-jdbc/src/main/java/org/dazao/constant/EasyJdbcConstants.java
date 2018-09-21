@@ -1,11 +1,12 @@
 package org.dazao.constant;
 
-import java.nio.charset.Charset;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.charset.Charset;
+
 /** 项目常量类 */
+
 
 public interface EasyJdbcConstants {
 

@@ -1,18 +1,18 @@
 package org.dazao.persistence.base.spec;
 
 import com.google.common.collect.Maps;
+import com.yfs.lang.Record;
+import com.yfs.util.Beans;
+import com.yfs.util.CamelCase;
+import com.yfs.util.Texts;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
-import org.dazao.lang.Record;
 import org.dazao.persistence.base.spec.SpecSupport.Op;
 import static org.dazao.persistence.base.spec.SpecSupport.Op.*;
 import org.dazao.persistence.base.util.Sqls;
 import org.dazao.support.pagination.SearchSpec;
-import org.dazao.util.Beans;
-import org.dazao.util.CamelCase;
-import org.dazao.util.Texts;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * 构建查询规格（Specification）
  *
- * @author 李衡 Email：li15038043160@163.com
+ * @author John Li Email：jujudeframework@163.com
  */
 @EqualsAndHashCode
 public class Spec implements Cloneable {
@@ -73,7 +73,9 @@ public class Spec implements Cloneable {
     }
 
     boolean verifyLikeValue(Object value) {
-        if (!"%".equals(value) && !"%%".equals(value)) {
+        String symbol1 = "%";
+        String symbol2 = "%%";
+        if (!symbol1.equals(value) && !symbol2.equals(value)) {
             return true;
         }
         return false;
@@ -380,27 +382,7 @@ public class Spec implements Cloneable {
                     break;
                 case OR:
                 case AND:
-                    Spec[] specs = (Spec[]) filter.value;
-                    StringBuilder innerSpecSql = new StringBuilder("(");
-                    for (Spec rule : specs) {
-                        // innerSpecSql 为空，开始进行or-and操作，前面没有or-and符号
-                        if (innerSpecSql.length() == 1) {
-                            if (rule.size() == 1) { // 如果当前Spec中只有一个条件，则不用加括号
-                                innerSpecSql.append(buildQuerySpecification(rule, alias));
-                            } else {
-                                innerSpecSql.append("(").append(buildQuerySpecification(rule, alias)).append(")");
-                            }
-                        } else { // 之后就是中间环节，要加or-and符号
-                            innerSpecSql.append(" ").append(filter.operator.name().toLowerCase()); // or-and
-                            if (rule.size() == 1) {
-                                innerSpecSql.append(" ").append(buildQuerySpecification(rule, alias));
-                            } else {
-                                innerSpecSql.append(" (").append(buildQuerySpecification(rule, alias)).append(")");
-                            }
-                        }
-                    }
-                    innerSpecSql.append(")");
-                    specSql.append(innerSpecSql);
+                    andHander(alias, specSql, filter);
                     break;
                 default:
                     throw new RuntimeException("非法操作符");
@@ -412,6 +394,31 @@ public class Spec implements Cloneable {
         return specSql.toString();
     }
 
+    private void andHander(String alias, StringBuilder specSql, SpecSupport filter) {
+        Spec[] specs = (Spec[]) filter.value;
+        StringBuilder innerSpecSql = new StringBuilder("(");
+        for (Spec rule : specs) {
+            // innerSpecSql 为空，开始进行or-and操作，前面没有or-and符号
+            if (innerSpecSql.length() == 1) {
+                if (rule.size() == 1) { // 如果当前Spec中只有一个条件，则不用加括号
+                    innerSpecSql.append(buildQuerySpecification(rule, alias));
+                } else {
+                    innerSpecSql.append("(").append(buildQuerySpecification(rule, alias)).append(")");
+                }
+            } else { // 之后就是中间环节，要加or-and符号
+                innerSpecSql.append(" ").append(filter.operator.name().toLowerCase()); // or-and
+                if (rule.size() == 1) {
+                    innerSpecSql.append(" ").append(buildQuerySpecification(rule, alias));
+                } else {
+                    innerSpecSql.append(" (").append(buildQuerySpecification(rule, alias)).append(")");
+                }
+            }
+        }
+        innerSpecSql.append(")");
+        specSql.append(innerSpecSql);
+    }
+
+    /**获得别名前缀*/
     private String getTableAliasPrefix(String alias) {
         if (StringUtils.isBlank(alias)) {
             return "";
@@ -419,6 +426,7 @@ public class Spec implements Cloneable {
         return alias + ".";
     }
 
+    @Override
     public Spec clone() {
         Spec spec = new Spec();
         spec.specMap = Maps.newLinkedHashMap(this.specMap);

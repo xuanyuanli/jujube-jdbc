@@ -1,27 +1,25 @@
 package org.dazao.generator;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.yfs.util.CamelCase;
+import com.yfs.util.Ftls;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
+import org.dazao.client.local.LocalJdbcTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
-import org.dazao.client.local.LocalJdbcTemplate;
-import org.dazao.client.local.LocalJdbcTemplate.Column;
-import org.dazao.util.CamelCase;
-import org.dazao.util.Ftls;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
 /**
  * 代码生成工具
  * 
- * @author 李衡 Email：li15038043160@163.com
+ * @author John Li Email：jujudeframework@163.com
  */
 public class EntityGenerator {
 	private static Logger logger = LoggerFactory.getLogger(EntityGenerator.class);
@@ -52,7 +50,7 @@ public class EntityGenerator {
 			String tableComment = LocalJdbcTemplate.getTableComment(conn, config.getTableName());
 			String className = config.getTableName().replace(REPLACE_TABLE_NAME, "");
 			className = CamelCase.toCapitalizeCamelCase(className);
-			List<Column> columns = LocalJdbcTemplate.getTableStructure(conn, config.getTableName(), schema, imports);
+			List<LocalJdbcTemplate.Column> columns = LocalJdbcTemplate.getTableStructure(conn, config.getTableName(), schema, imports);
 
 			root.put("needComment", config.isNeedComment());
 			root.put("basePackage", config.getEntityPackageName());
@@ -102,7 +100,8 @@ public class EntityGenerator {
 
 		String filePath = getPath(config,entityName + "Dao");
 		boolean isExists = new File(filePath).exists();
-		if ((isExists && config.isForceCoverDao()) || !isExists) {
+        boolean bool = (isExists && config.isForceCoverDao()) || !isExists;
+        if (bool) {
 			Ftls.processFileTemplateToFile("codeGenerator/dao.ftl", filePath, root);
 			logger.info("生成dao文件：" + filePath);
 		}
@@ -130,7 +129,8 @@ public class EntityGenerator {
 	private static String getPath(Config config, String className) {
 		String fileName = "";
 		String projectRootPath = config.getProjectRootPath();
-		if (!projectRootPath.endsWith("/") && !projectRootPath.endsWith("\\")) {
+        boolean bool = !projectRootPath.endsWith("/") && !projectRootPath.endsWith("\\");
+        if (bool) {
 			projectRootPath += File.separator;
 		}
 		if (className.endsWith("Dao")) {
@@ -244,8 +244,7 @@ public class EntityGenerator {
 	/**
 	 * 首字母小写
 	 * 
-	 * @since 2014年6月19日 下午3:13:39
-	 * @author 李衡 Email：li15038043160@163.com
+	 * @author John Li Email：jujudeframework@163.com
 	 * @param source
 	 * @return
 	 */

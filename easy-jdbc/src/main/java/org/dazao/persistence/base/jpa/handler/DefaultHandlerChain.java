@@ -1,15 +1,19 @@
 package org.dazao.persistence.base.jpa.handler;
 
+import org.dazao.persistence.base.spec.Spec;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dazao.persistence.base.spec.Spec;
-
+/**
+ * @author John Li
+ */
 public class DefaultHandlerChain implements HandlerChain {
 
     private List<Handler> chain = new ArrayList<>();
     private int pos = 0;
 
+    @Override
     public void handler(Spec spec, String methodName, List<Object> args) {
         if (pos < chain.size()) {
             chain.get(pos++).handler(spec, methodName, args, this);

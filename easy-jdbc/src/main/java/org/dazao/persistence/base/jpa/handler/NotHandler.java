@@ -1,10 +1,11 @@
 package org.dazao.persistence.base.jpa.handler;
 
-import java.util.List;
-
 import org.dazao.persistence.base.spec.Spec;
 
+import java.util.List;
+
 /** Not Handler */
+
 public class NotHandler implements Handler {
     private static final String NOT = "Not";
 

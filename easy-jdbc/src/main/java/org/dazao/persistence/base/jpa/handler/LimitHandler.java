@@ -1,11 +1,15 @@
 package org.dazao.persistence.base.jpa.handler;
 
-import java.util.List;
-
+import com.yfs.util.Texts;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.dazao.persistence.base.spec.Spec;
-import org.dazao.util.Texts;
 
+import java.util.List;
+
+
+/**
+ * @author John Li
+ */
 public class LimitHandler implements Handler {
 
     private static final String LIMIT_D = "Limit(\\d+)$";

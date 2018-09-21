@@ -4,30 +4,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Handler的一些集合 */
+
 public class HandlerContext {
     /** 简单处理，如eq、like等 */
-    public static final List<Handler> simpleHandler = new ArrayList<>();
+    public static final List<Handler> SIMPLE_HANDLER = new ArrayList<>();
     /** 复杂处理，如and */
-    public static final List<Handler> complexHandler = new ArrayList<>();
+    public static final List<Handler> COMPLEX_HANDLER = new ArrayList<>();
     /** 前置处理，如limit、sort */
-    public static final List<Handler> prepositionHandler = new ArrayList<>();
+    public static final List<Handler> PREPOSITION_HANDLER = new ArrayList<>();
     static {
-        simpleHandler.add(new LikeHandler());
-        simpleHandler.add(new NotHandler());
-        simpleHandler.add(new IsNullHandler());
-        simpleHandler.add(new IsNotNullHandler());
-        simpleHandler.add(new IsNotEmptyHandler());
-        simpleHandler.add(new BetweenHandler());
-        simpleHandler.add(new GteHandler());
-        simpleHandler.add(new GtHandler());
-        simpleHandler.add(new LteHandler());
-        simpleHandler.add(new LtHandler());
-        simpleHandler.add(new InHandler());
-        simpleHandler.add(new EqHandler());
+        SIMPLE_HANDLER.add(new LikeHandler());
+        SIMPLE_HANDLER.add(new NotHandler());
+        SIMPLE_HANDLER.add(new IsNullHandler());
+        SIMPLE_HANDLER.add(new IsNotNullHandler());
+        SIMPLE_HANDLER.add(new IsNotEmptyHandler());
+        SIMPLE_HANDLER.add(new BetweenHandler());
+        SIMPLE_HANDLER.add(new GteHandler());
+        SIMPLE_HANDLER.add(new GtHandler());
+        SIMPLE_HANDLER.add(new LteHandler());
+        SIMPLE_HANDLER.add(new LtHandler());
+        SIMPLE_HANDLER.add(new InHandler());
+        SIMPLE_HANDLER.add(new EqHandler());
 
-        complexHandler.add(new AndHandler());
+        COMPLEX_HANDLER.add(new AndHandler());
 
-        prepositionHandler.add(new LimitHandler());
-        prepositionHandler.add(new SortHandler());
+        PREPOSITION_HANDLER.add(new LimitHandler());
+        PREPOSITION_HANDLER.add(new SortHandler());
     }
 }

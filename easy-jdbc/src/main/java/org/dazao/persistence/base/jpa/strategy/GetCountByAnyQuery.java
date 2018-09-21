@@ -7,7 +7,8 @@ import org.dazao.persistence.base.spec.Spec;
 
 import java.lang.reflect.Method;
 
-public class GetCountByAnyQuery extends QueryStrategy {
+
+public class GetCountByAnyQuery extends BaseQueryStrategy {
 
     private static final String GET_COUNT_BY = "getCountBy";
 
@@ -22,8 +23,8 @@ public class GetCountByAnyQuery extends QueryStrategy {
         String tmname = mname.replaceAll(GET_COUNT_BY, EMPTY);
         Spec spec = Spec.newS();
         DefaultHandlerChain selfChain = new DefaultHandlerChain();
-        selfChain.addHandlers(HandlerContext.complexHandler);
-        selfChain.addHandlers(HandlerContext.simpleHandler);
+        selfChain.addHandlers(HandlerContext.COMPLEX_HANDLER);
+        selfChain.addHandlers(HandlerContext.SIMPLE_HANDLER);
         selfChain.handler(spec, tmname, Lists.newArrayList(args));
         return proxyDao.getCount(spec);
     }

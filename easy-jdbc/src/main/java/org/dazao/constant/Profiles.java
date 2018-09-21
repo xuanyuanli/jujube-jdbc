@@ -1,8 +1,12 @@
 package org.dazao.constant;
 
-import org.dazao.util.Beans;
+import com.yfs.util.Beans;
 
-/** Spring Profiles */
+/**
+ * Spring Profiles
+ *
+ * @author John Li
+ */
 public class Profiles {
 
     private static final String SPRING_PROFILES_ACTIVE = "spring.profiles.active";
@@ -18,7 +22,9 @@ public class Profiles {
         return System.getProperty(SPRING_PROFILES_ACTIVE);
     }
 
-    /** 是否是测试环境 */
+    /**
+     * 是否是测试环境
+     */
     public static boolean isTestProfile() {
         try {
             Beans.forName(EasyJdbcConstants.H2_DRIVER_CLASS_NAME);

@@ -1,18 +1,12 @@
 package org.dazao.persistence.base.jpa.handler;
 
+import com.google.common.collect.Lists;
+import com.yfs.util.Texts;
 import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-
-import org.dazao.persistence.base.jpa.handler.DefaultHandlerChain;
-import org.dazao.persistence.base.jpa.handler.EqHandler;
-import org.dazao.persistence.base.jpa.handler.Handler;
-import org.dazao.persistence.base.jpa.handler.HandlerContext;
 import org.dazao.persistence.base.spec.Spec;
-import org.dazao.util.Texts;
 import org.junit.Test;
 
-import com.google.common.collect.Lists;
+import java.util.List;
 
 public class HandlerTest {
 
@@ -32,9 +26,9 @@ public class HandlerTest {
     public void testHandler1() {
         Spec spec = Spec.newS();
         DefaultHandlerChain selfChain = new DefaultHandlerChain();
-        selfChain.addHandlers(HandlerContext.prepositionHandler);
-        selfChain.addHandlers(HandlerContext.complexHandler);
-        selfChain.addHandlers(HandlerContext.simpleHandler);
+        selfChain.addHandlers(HandlerContext.PREPOSITION_HANDLER);
+        selfChain.addHandlers(HandlerContext.COMPLEX_HANDLER);
+        selfChain.addHandlers(HandlerContext.SIMPLE_HANDLER);
         String tmname = "AgeAndNameLikeAndTypeBetweenAndSourceInAndTitleIsNullAndSubTitleIsNotNullAndMobileNotSortByIdDescLimit10";
         List<Object> args = Lists.newArrayList("12", "微软", 3, 6, Lists.newArrayList(1, 2, 3), "15911105446");
         selfChain.handler(spec, tmname, args);
@@ -49,8 +43,8 @@ public class HandlerTest {
     public void testHandler2() {
         Spec spec = Spec.newS();
         DefaultHandlerChain selfChain = new DefaultHandlerChain();
-        selfChain.addHandlers(HandlerContext.complexHandler);
-        selfChain.addHandlers(HandlerContext.simpleHandler);
+        selfChain.addHandlers(HandlerContext.COMPLEX_HANDLER);
+        selfChain.addHandlers(HandlerContext.SIMPLE_HANDLER);
         String tmname = "IdAndIndustryTitleIsNotEmpty";
         List<Object> args = Lists.newArrayList(12);
         selfChain.handler(spec, tmname, args);
@@ -75,9 +69,9 @@ public class HandlerTest {
     public void testHandler4() {
         Spec spec = Spec.newS();
         DefaultHandlerChain selfChain = new DefaultHandlerChain();
-        selfChain.addHandlers(HandlerContext.prepositionHandler);
-        selfChain.addHandlers(HandlerContext.complexHandler);
-        selfChain.addHandlers(HandlerContext.simpleHandler);
+        selfChain.addHandlers(HandlerContext.PREPOSITION_HANDLER);
+        selfChain.addHandlers(HandlerContext.COMPLEX_HANDLER);
+        selfChain.addHandlers(HandlerContext.SIMPLE_HANDLER);
         String tmname = "AgeGtAndTypeLteAndSourceGteAndIdLt";
         List<Object> args = Lists.newArrayList(3, 6, 1, 2);
         selfChain.handler(spec, tmname, args);

@@ -1,18 +1,22 @@
 package org.dazao.persistence.base.jpa.strategy;
 
 import com.google.common.collect.Lists;
+import com.yfs.util.Collections3;
+import com.yfs.util.Texts;
 import org.dazao.persistence.base.jpa.handler.DefaultHandlerChain;
 import org.dazao.persistence.base.jpa.handler.Handler;
 import org.dazao.persistence.base.jpa.handler.HandlerContext;
 import org.dazao.persistence.base.spec.Spec;
 import org.dazao.support.entity.RecordEntity;
-import org.dazao.util.Collections3;
-import org.dazao.util.Texts;
 
 import java.lang.reflect.Method;
 import java.util.List;
 
-public class FindAnyByAnyQuery extends QueryStrategy {
+
+/**
+ * @author John Li
+ */
+public class FindAnyByAnyQuery extends BaseQueryStrategy {
 
     private static final String FIND_BY2 = "find(.+?)By(.+)";
     private static final String FIND_BY2_PREFIX = "find(.+?)By";
@@ -33,9 +37,9 @@ public class FindAnyByAnyQuery extends QueryStrategy {
 
         Spec spec = Spec.newS();
         DefaultHandlerChain selfChain = new DefaultHandlerChain();
-        selfChain.addHandlers(HandlerContext.prepositionHandler);
-        selfChain.addHandlers(HandlerContext.complexHandler);
-        selfChain.addHandlers(HandlerContext.simpleHandler);
+        selfChain.addHandlers(HandlerContext.PREPOSITION_HANDLER);
+        selfChain.addHandlers(HandlerContext.COMPLEX_HANDLER);
+        selfChain.addHandlers(HandlerContext.SIMPLE_HANDLER);
         selfChain.handler(spec, tmname, Lists.newArrayList(args));
 
         boolean isFindOne = false;

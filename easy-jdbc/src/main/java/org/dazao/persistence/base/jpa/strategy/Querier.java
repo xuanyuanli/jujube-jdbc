@@ -6,21 +6,27 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Query Context */
+/**
+ * Query Context
+ *
+ * @author John Li
+ */
 public class Querier {
-    private List<QueryStrategy> strategies = new ArrayList<>();
+    private List<BaseQueryStrategy> strategies = new ArrayList<>();
 
     public Object query(Method method, Object[] args) {
-        for (QueryStrategy strategy : strategies) {
+        for (BaseQueryStrategy strategy : strategies) {
             if (strategy.accept(method)) {
                 strategy.setProxyDao(JpaQueryProxyDaoHolder.getJpaQueryProxyDao());
-                return strategy.query(method, args);
+                Object query = strategy.query(method, args);
+                JpaQueryProxyDaoHolder.remove();
+                return query;
             }
         }
         return null;
     }
 
-    public void addStrategy(QueryStrategy strategy) {
+    public void addStrategy(BaseQueryStrategy strategy) {
         strategies.add(strategy);
     }
 }

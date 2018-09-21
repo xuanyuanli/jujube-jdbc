@@ -1,18 +1,15 @@
 package org.dazao.persistence.base.spec;
 
+import com.google.common.collect.Maps;
+
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import com.google.common.collect.Maps;
-
 /**
  * 构建Spec的支持类
  * 
- * @author 李衡 Email：li15038043160@163.com
+ * @author John Li Email：jujudeframework@163.com
  */
 public class SpecSupport {
 
@@ -46,25 +43,20 @@ public class SpecSupport {
 
             // 从缓存中取出QueryFilter，如果存在，则改为当前的value
             SpecSupport filter = KEY_CACHE.get(key);
-            if (filter != null && validateValue(value, filter.operator)) {
+            if (filter != null) {
                 filter.value = value;
                 filters.put(key, filter);
                 continue;
             }
 
             // 拆分operator与filedAttribute
-            String[] names = key.split(separator);
+            String[] names = key.split(SEPARATOR);
             if (names.length != 2) {
                 throw new RuntimeException(key + "is not a valid filter name");
             }
             // names[0]是操作符；names[1]是字段名；value是字段值
             Op operator = Op.valueOf(names[0].toUpperCase());
             String filedName = names[1];
-
-            // 如果value为空，则continue；除非他用的是判断中的三个操作符
-            if (!validateValue(value, operator)) {
-                continue;
-            }
 
             // 创建searchFilter
             filter = new SpecSupport(filedName, operator, value);
@@ -74,39 +66,9 @@ public class SpecSupport {
         return filters;
     }
 
-    /**
-     * 验证value正确性
-     */
-    private static boolean validateValue(Object value, Op operator) {
-        boolean result = true;
-        if (!operator.equals(Op.ISNOTEMPTY) && !operator.equals(Op.ISNOTNULL) && !operator.equals(Op.ISNULL) && !operator.equals(Op.ISEMPTY)) { // 如果是这四个操作符，则不需验证
-            if (operator.equals(Op.BETWEEN)) {
-                try {
-                    Object[] arr = (Object[]) value;
-                    if (arr.length != 2) {
-                        result = false;
-                    }
-                    if (result && StringUtils.isBlank(ObjectUtils.toString(arr[0])) || StringUtils.isBlank(ObjectUtils.toString(arr[1]))) {
-                        result = false;
-                    }
-                } catch (Exception e) { // 不能转换为数组，则不合法
-                    result = false;
-                }
-            } else if (operator.equals(Op.OR)) {
-                // do nothing
-            } else {
-                // do nothing
-                // if (StringUtils.isBlank(ObjectUtils.toString(value))) {
-                // result = false;
-                // }
-            }
-        }
-        return result;
-    }
+    static final String SEPARATOR = "__";// 两个下划线
 
-    static final String separator = "__";// 两个下划线
-
-    // key缓存。可以省去一些解析为QueryFilter的时间
+    /** key缓存。可以省去一些解析为QueryFilter的时间 */
     private static final ConcurrentHashMap<String, SpecSupport> KEY_CACHE = new ConcurrentHashMap<String, SpecSupport>();
 
     /**
@@ -151,11 +113,10 @@ public class SpecSupport {
         /**
          * 获得正确的查询形式
          * 
-         * @since 2013年10月29日 上午10:30:13
-         * @author 李衡 Email：li15038043160@163.com
+         * @author John Li Email：jujudeframework@163.com
          */
         public static String join(Op op, String field) {
-            return op + SpecSupport.separator + field;
+            return op + SpecSupport.SEPARATOR + field;
         }
 
     }

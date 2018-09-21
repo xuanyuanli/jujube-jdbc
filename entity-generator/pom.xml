@@ -31,10 +31,15 @@
 	</dependencyManagement>
 	<dependencies>
 		<dependency>
-			<groupId>org.dazao</groupId>
-			<artifactId>easy-jdbc</artifactId>
-			<version>${easyjdbc.version}</version>
+			<groupId>org.jujudeframework</groupId>
+			<artifactId>jujude-core</artifactId>
+			<version>1.0.1</version>
 		</dependency>
+        <dependency>
+            <groupId>org.dazao</groupId>
+            <artifactId>easy-jdbc</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>

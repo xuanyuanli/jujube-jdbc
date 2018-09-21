@@ -1,9 +1,15 @@
 package org.dazao.persistence.base.jpa;
 
+import lombok.NoArgsConstructor;
 import org.dazao.persistence.base.jpa.strategy.*;
 
-/**jpa query代理类的上下文保存者*/
-public abstract class JpaQueryProxyDaoHolder {
+/**
+ * jpa query代理类的上下文保存者
+ *
+ * @author John Li
+ */
+@NoArgsConstructor
+public class JpaQueryProxyDaoHolder {
     private static final ThreadLocal<JpaQueryProxyDao> HOLDER = new ThreadLocal<>();
 
     public static void setJpaQueryProxyDao(JpaQueryProxyDao target) {
@@ -14,6 +20,9 @@ public abstract class JpaQueryProxyDaoHolder {
         return HOLDER.get();
     }
 
+    public  static  void remove(){
+        HOLDER.remove();
+    }
     /**
      * 查询上下文
      */

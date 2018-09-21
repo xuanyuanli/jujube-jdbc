@@ -1,19 +1,24 @@
 package org.dazao.persistence.base.spec;
 
+import org.dazao.persistence.base.util.Sqls;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.dazao.persistence.base.util.Sqls;
 
 /**
  * 排序规则<br>
  * 排序的构建规则是：如果排序字段以“_D”结尾，则倒序；否则，就是正序
+ * @author John Li
  */
 public class Sort {
     private List<String> sorts = new ArrayList<String>();
-    /** 不计入排序的字段 */
+    /**
+     * 不计入排序的字段
+     */
     public static final String DEFAULT = "default";
-    /** 倒序后缀 */
+    /**
+     * 倒序后缀
+     */
     private static final String DESC_SUFFIX = "_D";
 
     private Spec spec;
@@ -100,18 +105,21 @@ public class Sort {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         Sort other = (Sort) obj;
-        if (sorts == null) {
-            if (other.sorts != null)
-                return false;
-        } else if (!sorts.equals(other.sorts))
+        if (sorts == null && other.sorts != null) {
             return false;
+        } else if (!sorts.equals(other.sorts)) {
+            return false;
+        }
         return true;
     }
 

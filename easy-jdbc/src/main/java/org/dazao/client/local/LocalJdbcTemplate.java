@@ -1,20 +1,8 @@
 package org.dazao.client.local;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.sql.DataSource;
-
+import com.yfs.util.CamelCase;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.dazao.util.CamelCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -25,14 +13,20 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import javax.sql.DataSource;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Jdbc相关工具
  * 
- * @author 李衡 Email：li15038043160@163.com
+ * @author John Li Email：jujudeframework@163.com
  */
 public class LocalJdbcTemplate {
 
     private static final Logger logger = LoggerFactory.getLogger(LocalJdbcTemplate.class);
+    public static final int INT_LIMIT = 10;
 
     private LocalJdbcTemplate() {
     }
@@ -147,8 +141,7 @@ public class LocalJdbcTemplate {
     /**
      * 获得表结构
      * 
-     * @since 2014年1月7日 上午11:18:29
-     * @author 李衡 Email：li15038043160@163.com
+     * @author John Li Email：jujudeframework@163.com
      */
     public static List<Column> getTableStructure(Connection conn, String tableName, String schema, List<String> imports) throws SQLException {
         List<Column> columns = new ArrayList<>();
@@ -205,7 +198,7 @@ public class LocalJdbcTemplate {
         case Types.SMALLINT:
         case Types.TINYINT:
         case Types.BOOLEAN:
-            if (precision > 10) {
+            if (precision > INT_LIMIT) {
                 javaType = "Long";
             } else {
                 javaType = "Integer";

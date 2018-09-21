@@ -1,17 +1,16 @@
 package org.dazao.support.entity;
 
+import com.yfs.lang.Record;
+import com.yfs.util.Jsons;
+import com.yfs.util.Pojos;
 import org.apache.commons.beanutils.BeanUtils;
-import org.dazao.lang.Record;
-import org.dazao.util.Jsons;
-import org.dazao.util.Pojos;
 
 /**
  * entity的基类，所有entity都要继承这个类<br>
  * 此类没有实现序列化，如果子类需要，自行添加
  * 
- * @author 李衡 Email：li15038043160@163.com
- * @since 2013-5-10 下午3:22:19
- * 
+ * @author John Li Email：jujudeframework@163.com
+ *
  */
 public interface BaseEntity {
 

@@ -1,20 +1,20 @@
 package org.dazao.util;
 
+import com.yfs.lang.Record;
+import com.yfs.util.Pojos;
+import org.dazao.support.entity.BaseEntity;
+import org.dazao.support.entity.RecordEntity;
+import org.dazao.support.pagination.Pageable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.dazao.lang.Record;
-import org.dazao.support.entity.BaseEntity;
-import org.dazao.support.entity.RecordEntity;
-import org.dazao.support.pagination.Pageable;
-import org.dazao.util.Pojos;
-
 /**
  * 数据类型的转换工具类
  * 
- * @author 李衡 Email：li15038043160@163.com
+ * @author John Li Email：jujudeframework@163.com
  */
 public class DataTypeConvertor {
 

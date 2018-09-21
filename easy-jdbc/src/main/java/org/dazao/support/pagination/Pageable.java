@@ -1,6 +1,6 @@
 package org.dazao.support.pagination;
 
-import org.dazao.lang.Record;
+import com.yfs.lang.Record;
 import org.dazao.util.DataTypeConvertor;
 
 import java.io.Serializable;
@@ -11,8 +11,7 @@ import java.util.List;
  * 
  * 分页中间类
  * 
- * @author 李衡 Email：li15038043160@163.com
- * @since 2013-6-3 下午2:39:51
+ * @author John Li Email：jujudeframework@163.com
  */
 public class Pageable<T> implements Iterable<T>, Serializable {
 
@@ -61,7 +60,6 @@ public class Pageable<T> implements Iterable<T>, Serializable {
 
     /** 获得总共多少页 */
     public long getTotalPages() {
-        // 也可以使用Math.ceil(a);
         return (totalElements + size - 1) / size;
     }
 

@@ -2,7 +2,8 @@ package org.dazao.persistence.base.jpa.strategy;
 
 import java.lang.reflect.Method;
 
-public class NoRealizeQuery extends QueryStrategy {
+
+public class NoRealizeQuery extends BaseQueryStrategy {
 
     @Override
     boolean accept(Method method) {

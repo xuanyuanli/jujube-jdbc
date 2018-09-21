@@ -16,21 +16,24 @@
 
 package org.dazao.persistence.base.dialect;
 
+import com.yfs.lang.Record;
+
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.dazao.lang.Record;
-
 /**
  * MysqlDialect.
+ *
+ * @author John Li
  */
 public class MysqlDialect implements Dialect {
 
     private static final String SQL_CONTAIN_SYMBOL = "`";
+    public static final String DOT = ".";
 
     private String getSecurityTableName(String tableName) {
         String result = tableName.trim();
-        if (!result.contains(".")) {
+        if (!result.contains(DOT)) {
             result = SQL_CONTAIN_SYMBOL + result + SQL_CONTAIN_SYMBOL;
         }
         return result;
@@ -49,13 +52,15 @@ public class MysqlDialect implements Dialect {
     @Override
     public String forDbFindById(String tableName, String primaryKey, String columns) {
         StringBuilder sql = new StringBuilder("select ");
-        if (columns.trim().equals("*")) {
+        String symbol = "*";
+        if (symbol.equals(columns.trim())) {
             sql.append(columns);
         } else {
             String[] columnsArray = columns.split(",");
             for (int i = 0; i < columnsArray.length; i++) {
-                if (i > 0)
+                if (i > 0) {
                     sql.append(", ");
+                }
                 sql.append(SQL_CONTAIN_SYMBOL).append(columnsArray[i].trim()).append(SQL_CONTAIN_SYMBOL);
             }
         }
@@ -130,7 +135,7 @@ public class MysqlDialect implements Dialect {
 
     /*
      * @see
-     * com.guboy.core.support.persistence.dialect.Dialect1#paginationSql(java
+     * com.guboy.core.support.persistence.DIALECT.Dialect1#paginationSql(java
      * .lang.String, int, int)
      */
     @Override

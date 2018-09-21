@@ -1,10 +1,14 @@
 package org.dazao.persistence.base.jpa.handler;
 
-import java.util.List;
-
 import org.dazao.persistence.base.spec.Spec;
 
-/** Between Handler */
+import java.util.List;
+
+/**
+ * Between Handler
+ *
+ * @author John Li
+ */
 public class BetweenHandler implements Handler {
     private static final String BETWEEN = "Between";
 

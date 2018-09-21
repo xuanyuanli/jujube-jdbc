@@ -1,19 +1,21 @@
 package org.dazao.persistence.base.datasource;
 
-import java.lang.reflect.Method;
-import java.util.concurrent.ConcurrentHashMap;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.dazao.support.log.Logable;
+
+import java.lang.reflect.Method;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 数据源切片
+ * @author John Li
  */
-public class DateSourceDaoAspect extends Logable {
+@Slf4j
+public class DateSourceDaoAspect {
 
-    static final ConcurrentHashMap<String, Boolean> cache = new ConcurrentHashMap<>();
+    static final ConcurrentHashMap<String, Boolean> CACHE = new ConcurrentHashMap<>();
 
     /**
      * 决策是否只读
@@ -42,15 +44,16 @@ public class DateSourceDaoAspect extends Logable {
      */
     private boolean isChoiceReadDB(Method method) {
         String methodName = method.getName();
-        Boolean result = cache.get(methodName);
+        Boolean result = CACHE.get(methodName);
         if (result == null) {
             result = true;
-            if (DynamicDataSourceHolder.isChoiceWrite() || !StringUtils.startsWith(methodName, "query")) {
+            String query = "query";
+            if (DynamicDataSourceHolder.isChoiceWrite() || !StringUtils.startsWith(methodName, query)) {
                 result = false;
             }
-            cache.put(methodName, result);
+            CACHE.put(methodName, result);
         }
-        logger.debug("经过方法{}，结果：{}", method, result);
-        return result;
+        log.debug("经过方法{}，结果：{}", method, result);
+        return result.booleanValue();
     }
 }

@@ -1,10 +1,11 @@
 package org.dazao.persistence.base.jpa.handler;
 
-import java.util.List;
-
 import org.dazao.persistence.base.spec.Spec;
 
+import java.util.List;
+
 /** Is Null Handler */
+
 public class IsNullHandler implements Handler {
     private static final String IS_NULL = "IsNull";
 

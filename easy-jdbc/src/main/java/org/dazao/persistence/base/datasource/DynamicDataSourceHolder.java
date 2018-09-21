@@ -1,50 +1,54 @@
 package org.dazao.persistence.base.datasource;
 
-/** 动态数据源 */
+/**
+ * 动态数据源
+ *
+ * @author John Li
+ */
 public class DynamicDataSourceHolder {
 
-    public static final ThreadLocal<DataSourceType> holder = new ThreadLocal<>();
+    public static final ThreadLocal<DataSourceType> HOLDER = new ThreadLocal<>();
 
     /**
      * 标记为写数据源
      */
     static void markWrite() {
-        holder.set(DataSourceType.write);
+        HOLDER.set(DataSourceType.WRITE);
     }
 
     /**
      * 标记为读数据源
      */
     static void markRead() {
-        holder.set(DataSourceType.read);
+        HOLDER.set(DataSourceType.READ);
     }
 
     /**
      * 重置
      */
     static void reset() {
-        holder.set(null);
+        HOLDER.remove();
     }
 
     /**
      * 是否还未设置数据源
      */
     static boolean isChoiceNone() {
-        return null == holder.get();
+        return null == HOLDER.get();
     }
 
     /**
      * 当前是否选择了写数据源
      */
     static boolean isChoiceWrite() {
-        return DataSourceType.write == holder.get();
+        return DataSourceType.WRITE == HOLDER.get();
     }
 
     /**
      * 当前是否选择了读数据源
      */
     static boolean isChoiceRead() {
-        return DataSourceType.read == holder.get();
+        return DataSourceType.READ == HOLDER.get();
     }
 
 }

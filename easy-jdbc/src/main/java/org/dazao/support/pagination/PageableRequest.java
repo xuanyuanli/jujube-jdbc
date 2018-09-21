@@ -5,8 +5,7 @@ import java.io.Serializable;
 /**
  * 分页请求
  * 
- * @author 李衡 Email：li15038043160@163.com
- * @since 2013-10-23 上午11:46:38
+ * @author John Li Email：jujudeframework@163.com
  */
 public class PageableRequest implements Serializable {
     private static final long serialVersionUID = -590137694303783744L;
@@ -74,8 +73,7 @@ public class PageableRequest implements Serializable {
     /**
      * 构建分页请求
      * 
-     * @since 2013-10-23 下午3:16:14
-     * @author 李衡 Email：li15038043160@163.com
+     * @author John Li Email：jujudeframework@163.com
      * @param pageRequest
      * @return
      */

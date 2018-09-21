@@ -1,10 +1,11 @@
 package org.dazao.persistence.base.jpa.handler;
 
-import java.util.List;
-
 import org.dazao.persistence.base.spec.Spec;
 
+import java.util.List;
+
 /** Is Not Null Handler */
+
 public class IsNotEmptyHandler implements Handler {
     private static final String IS_NOT_EMPTY = "IsNotEmpty";
 

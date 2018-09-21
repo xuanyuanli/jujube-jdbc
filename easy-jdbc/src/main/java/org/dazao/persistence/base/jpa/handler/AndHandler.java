@@ -1,9 +1,12 @@
 package org.dazao.persistence.base.jpa.handler;
 
-import java.util.List;
-
 import org.dazao.persistence.base.spec.Spec;
 
+import java.util.List;
+
+/**
+ * @author John Li
+ */
 public class AndHandler implements Handler {
 
     private static final String AND = "And";
@@ -17,7 +20,7 @@ public class AndHandler implements Handler {
             for (String field : sarr) {
                 Spec tSpec = Spec.newS();
                 DefaultHandlerChain selfChain = new DefaultHandlerChain();
-                selfChain.addHandlers(HandlerContext.simpleHandler);
+                selfChain.addHandlers(HandlerContext.SIMPLE_HANDLER);
                 selfChain.handler(tSpec, field, args);
                 specArr[i++] = tSpec;
             }

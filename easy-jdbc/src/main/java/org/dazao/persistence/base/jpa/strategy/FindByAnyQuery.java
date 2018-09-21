@@ -1,15 +1,19 @@
 package org.dazao.persistence.base.jpa.strategy;
 
 import com.google.common.collect.Lists;
+import com.yfs.util.Pojos;
 import org.dazao.persistence.base.jpa.handler.DefaultHandlerChain;
 import org.dazao.persistence.base.jpa.handler.HandlerContext;
 import org.dazao.persistence.base.spec.Spec;
-import org.dazao.util.Pojos;
 
 import java.lang.reflect.Method;
 import java.util.List;
 
-public class FindByAnyQuery extends QueryStrategy {
+
+/**
+ * @author John Li
+ */
+public class FindByAnyQuery extends BaseQueryStrategy {
 
     private static final String FIND_ONE_BY = "findOneBy";
     private static final String FIND_BY = "findBy";
@@ -34,9 +38,9 @@ public class FindByAnyQuery extends QueryStrategy {
 
         Spec spec = Spec.newS();
         DefaultHandlerChain selfChain = new DefaultHandlerChain();
-        selfChain.addHandlers(HandlerContext.prepositionHandler);
-        selfChain.addHandlers(HandlerContext.complexHandler);
-        selfChain.addHandlers(HandlerContext.simpleHandler);
+        selfChain.addHandlers(HandlerContext.PREPOSITION_HANDLER);
+        selfChain.addHandlers(HandlerContext.COMPLEX_HANDLER);
+        selfChain.addHandlers(HandlerContext.SIMPLE_HANDLER);
         selfChain.handler(spec, tmname, Lists.newArrayList(args));
 
         if (isFindOne) {

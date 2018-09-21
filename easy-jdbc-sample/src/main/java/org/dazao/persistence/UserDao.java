@@ -1,7 +1,7 @@
 package org.dazao.persistence;
 
+import com.yfs.lang.Record;
 import org.dazao.entity.User;
-import org.dazao.lang.Record;
 import org.dazao.persistence.base.BaseDao;
 import org.dazao.persistence.base.jpa.JpaQuery;
 import org.dazao.persistence.base.spec.Spec;
@@ -11,6 +11,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * @author John Li
+ */
 @Repository
 public class UserDao extends BaseDao<User> {
 

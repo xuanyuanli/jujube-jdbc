@@ -1,10 +1,8 @@
 package org.dazao.persistence.base.batchupdate;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
+import com.yfs.util.Beans;
+import com.yfs.util.Dates;
+import com.yfs.util.Jsons;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -12,14 +10,20 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.dazao.constant.EasyJdbcConstants;
 import org.dazao.persistence.base.BaseDao;
-import org.dazao.util.Beans;
-import org.dazao.util.Dates;
-import org.dazao.util.Jsons;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
-/** BaseDao逻辑修炼了，所以这里需要重新编码 */
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * BaseDao逻辑修炼了，所以这里需要重新编码
+ *
+ * @author John Li
+ */
 @Aspect
 public class BatchUpdateAopSupport {
 

@@ -1,8 +1,9 @@
 package org.dazao.persistence.base.jpa.handler;
 
+import org.dazao.persistence.base.spec.Spec;
+
 import java.util.List;
 
-import org.dazao.persistence.base.spec.Spec;
 
 public class SortHandler implements Handler {
 

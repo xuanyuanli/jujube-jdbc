@@ -1,17 +1,19 @@
 package org.dazao.persistence.base.datasource;
 
-import java.lang.reflect.Method;
-
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.dazao.support.log.Logable;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Method;
+
 /**
  * 数据源切片
+ * @author John Li
  */
-public class DateSourceServiceAspect extends Logable {
+@Slf4j
+public class DateSourceServiceAspect  {
 
     /**
      * 决策是否只读
@@ -43,7 +45,7 @@ public class DateSourceServiceAspect extends Logable {
         if (transactionalAnno != null && !transactionalAnno.readOnly()) { // 如果是事务方法，则false
             result = false;
         }
-        logger.debug("经过方法{}，结果：{}", method, result);
+        log.debug("经过方法{}，结果：{}", method, result);
         return result;
     }
 }

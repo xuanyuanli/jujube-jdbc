@@ -4,8 +4,12 @@ import org.dazao.persistence.base.jpa.JpaQueryProxyDao;
 
 import java.lang.reflect.Method;
 
-/** 查询策略 */
-public abstract class QueryStrategy {
+/**
+ * 查询策略
+ *
+ * @author John Li
+ */
+public abstract class BaseQueryStrategy {
     static final String EMPTY = "";
     static final String FIND = "find";
 
@@ -15,13 +19,19 @@ public abstract class QueryStrategy {
         this.proxyDao = proxyDao;
     }
 
-    /** 是否承认 */
+    /**
+     * 是否承认
+     */
     abstract boolean accept(Method method);
 
-    /** 执行查询 */
+    /**
+     * 执行查询
+     */
     abstract Object query(Method method, Object[] args);
 
-    /** 需要用``来包含字段 */
+    /**
+     * 需要用``来包含字段
+     */
     protected String buildQueryField(String field) {
         return "`" + field + "`";
     }

@@ -1,14 +1,14 @@
 package org.dazao.persistence.app;
 
+import com.yfs.lang.Record;
+import com.yfs.util.Collections3;
+import com.yfs.util.Jsons;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.dazao.EasyJdbcApp;
 import org.dazao.entity.User;
-import org.dazao.lang.Record;
 import org.dazao.persistence.UserDao;
 import org.dazao.support.pagination.Pageable;
 import org.dazao.support.pagination.PageableRequest;
-import org.dazao.util.Collections3;
-import org.dazao.util.Jsons;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

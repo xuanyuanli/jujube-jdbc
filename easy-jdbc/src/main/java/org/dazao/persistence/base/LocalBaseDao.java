@@ -1,16 +1,21 @@
 package org.dazao.persistence.base;
 
-import java.util.List;
-
 import org.dazao.persistence.base.spec.Spec;
 import org.dazao.support.entity.RecordEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-/** 本地BaseDao */
+import java.util.List;
+
+/**
+ * 本地BaseDao
+ *
+ * @author John Li
+ */
 public class LocalBaseDao extends BaseDao<RecordEntity> {
 
     private String tableName;
 
+    @Override
     protected String getTableName() {
         return tableName;
     }

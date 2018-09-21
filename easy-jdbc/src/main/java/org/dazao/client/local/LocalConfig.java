@@ -1,19 +1,24 @@
 package org.dazao.client.local;
 
-import java.util.Properties;
-
-import org.apache.commons.lang3.StringUtils;
-import org.dazao.constant.Profiles;
-import org.dazao.util.Utils;
-
+import com.yfs.util.Utils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.dazao.constant.Profiles;
 
-/** 本地application.properties配置文件映射（只适用于Windows本地环境） */
+import java.util.Properties;
+
+/**
+ * 本地application.properties配置文件映射（只适用于Windows本地环境）
+ *
+ * @author John Li
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LocalConfig {
 
-    /** 全局配置文件 */
+    /**
+     * 全局配置文件
+     */
     private static final Properties P = wrapApplicationConfig(Utils.getCurrentClasspathProperties("application.properties"));
 
     // ----------------------- JDBC 配置 -----------------------
@@ -24,7 +29,8 @@ public class LocalConfig {
 
     private static Properties wrapApplicationConfig(Properties properties) {
         if (properties != null) {
-            if (Profiles.DEVELOPMENT.equals(Profiles.getSpringProfileAsSystemProperty())) { // 和spring-profiles处理一致
+            // 和spring-profiles处理一致
+            if (Profiles.DEVELOPMENT.equals(Profiles.getSpringProfileAsSystemProperty())) {
                 properties.putAll(Utils.getCurrentClasspathProperties("application." + Profiles.DEVELOPMENT + ".properties"));
             }
 
@@ -35,7 +41,9 @@ public class LocalConfig {
         return properties;
     }
 
-    /** 配置文件中的name值 */
+    /**
+     * 配置文件中的name值
+     */
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     private static class Name {
 

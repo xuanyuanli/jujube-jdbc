@@ -6,7 +6,8 @@ import org.dazao.support.entity.RecordEntity;
 import java.lang.reflect.Method;
 
 /** find*ById方法 */
-public class FindAnyByIdQuery extends QueryStrategy {
+
+public class FindAnyByIdQuery extends BaseQueryStrategy {
 
     private static final String FIND_BY_ID = "findById";
     private static final String BY_ID = "ById";

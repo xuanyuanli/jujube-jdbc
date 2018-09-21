@@ -1,10 +1,11 @@
 package org.dazao.persistence.base.jpa.handler;
 
-import java.util.List;
-
 import org.dazao.persistence.base.spec.Spec;
 
+import java.util.List;
+
 /** Eq Handler(因为是默认，所以在Chain中一定要是最后一个) */
+
 public class EqHandler implements Handler {
 
     @Override

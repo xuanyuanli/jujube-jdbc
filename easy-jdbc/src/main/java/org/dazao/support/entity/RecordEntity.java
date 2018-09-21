@@ -1,10 +1,14 @@
 package org.dazao.support.entity;
 
+import com.yfs.lang.Record;
+
 import java.util.Map;
 
-import org.dazao.lang.Record;
-
-/** 此类即是Record也是BaseEntity,只限用于JpaQuery中，其他地方禁止使用 */
+/**
+ * 此类即是Record也是BaseEntity,只限用于JpaQuery中，其他地方禁止使用
+ *
+ * @author John Li
+ */
 public class RecordEntity extends Record implements BaseEntity {
 
     public RecordEntity(Map<String, Object> map) {

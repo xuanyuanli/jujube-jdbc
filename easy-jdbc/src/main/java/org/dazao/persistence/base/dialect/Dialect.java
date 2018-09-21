@@ -1,10 +1,14 @@
 package org.dazao.persistence.base.dialect;
 
+import com.yfs.lang.Record;
+
 import java.util.List;
 
-import org.dazao.lang.Record;
-
-/** jdbc方言 */
+/**
+ * jdbc方言
+ *
+ * @author John Li
+ */
 public interface Dialect {
 
     public static final Dialect DEFAULT = new MysqlDialect();

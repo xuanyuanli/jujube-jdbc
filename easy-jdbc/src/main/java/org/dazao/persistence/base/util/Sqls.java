@@ -1,18 +1,17 @@
 package org.dazao.persistence.base.util;
 
 import com.google.common.collect.Lists;
+import com.yfs.util.Texts;
 import org.dazao.persistence.base.dialect.MysqlDialect;
-import org.dazao.util.Texts;
-import org.dazao.util.Texts.RegexQueryInfo;
 
 import java.util.List;
 
 /**
  * Sql解析工具
  *
- * @author 李衡 Email：li15038043160@163.com
- * @since 2015年1月27日 上午11:20:24
+ * @author John Li Email：jujudeframework@163.com
  */
+@SuppressWarnings("AlibabaUndefineMagicConstant")
 public class Sqls {
 
     private Sqls() {
@@ -32,7 +31,7 @@ public class Sqls {
         // 需要处理两种情况：1、from后又子查询；2、from后没有子查询
 
         String result = "";
-        List<RegexQueryInfo> list = Texts.regQuery("from(\\s*?)\\(+(\\s*?)select", sql.toLowerCase());
+        List<Texts.RegexQueryInfo> list = Texts.regQuery("from(\\s*?)\\(+(\\s*?)select", sql.toLowerCase());
         // 如果没有from后的子查询,则做如下处理
         if (list.isEmpty()) {
             // from前的2个或条件
@@ -45,7 +44,7 @@ public class Sqls {
         // 截去order by后面的内容
         list = Texts.regQuery("(\\s+order(\\s+?)by([^\\)]*?)$)", result.trim());
         if (!list.isEmpty()) {
-            RegexQueryInfo info = list.get(list.size() - 1);
+            Texts.RegexQueryInfo info = list.get(list.size() - 1);
             result = result.substring(0, info.getStart());
         }
         return result;
@@ -71,7 +70,8 @@ public class Sqls {
     public static String removeAlias(String sql) {
         sql = sql.replace("this_ ", "");
         sql = sql.replace("this_.", "");
-        if (!sql.contains("count(") && !sql.contains("max(") && !sql.contains("min(") && !sql.contains("avg(") && !sql.contains("sum(")) {
+        boolean bool = !sql.contains("count(") && !sql.contains("max(") && !sql.contains("min(") && !sql.contains("avg(") && !sql.contains("sum(");
+        if (bool) {
             sql = Texts.regReplace("(select)(.{4,}?)from", "select * from", sql);
         }
         sql = Texts.regReplace("as.+from", "from", sql);
@@ -87,7 +87,8 @@ public class Sqls {
         }
         StringBuilder result = new StringBuilder();
         List<String> arr = Lists.newArrayList(sql.split("\\?"));
-        if (sql.endsWith("?")) {
+        String suffix = "?";
+        if (sql.endsWith(suffix)) {
             arr.add("");
         }
         for (int i = 0; i < arr.size(); i++) {
