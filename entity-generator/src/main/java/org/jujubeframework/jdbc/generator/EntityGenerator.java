@@ -65,7 +65,8 @@ public class EntityGenerator {
 
 			String filePath = getPath(config, className);
 			boolean isExists = new File(filePath).exists();
-			if ((isExists && config.isForceCoverEntity()) || !isExists) {
+            boolean bool = (isExists && config.isForceCoverEntity()) || !isExists;
+            if (bool) {
 				Ftls.processFileTemplateToFile(getEntityTemplateName(config.isOriginal()), filePath, root);
 				logger.info("生成entity文件：" + filePath);
 			}
@@ -133,7 +134,8 @@ public class EntityGenerator {
         if (bool) {
 			projectRootPath += File.separator;
 		}
-		if (className.endsWith("Dao")) {
+        String dao = "Dao";
+        if (className.endsWith(dao)) {
 			fileName = join(projectRootPath, config.getDaoPackageName().replace(".", File.separator), File.separator,className, ".java");
 		} else {
 			fileName = join(projectRootPath, config.getEntityPackageName().replace(".", File.separator),File.separator, className, ".java");
@@ -158,7 +160,7 @@ public class EntityGenerator {
 		/** 注释 */
 		private boolean needComment = true;
 		/** 创建对应Dao */
-		private boolean isCreateDao = true;//
+		private boolean isCreateDao = true;
 		/** 如果已经存在，则强制覆盖 */
 		private boolean forceCoverEntity = false;
 		private boolean forceCoverDao = false;

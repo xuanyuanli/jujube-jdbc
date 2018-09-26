@@ -7,7 +7,7 @@ import java.nio.charset.Charset;
  *
  * @author John Li
  */
-public interface EasyJdbcConstants {
+public interface JujubeJdbcConstants {
 
     // ------------------------ 项目接口 相关 ------------------------
     /**

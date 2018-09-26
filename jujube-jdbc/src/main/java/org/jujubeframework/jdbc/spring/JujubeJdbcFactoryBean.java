@@ -10,9 +10,9 @@ import org.springframework.context.event.ContextRefreshedEvent;
 /**
  * @author John Li
  */
-public class EasyJdbcFactoryBean implements FactoryBean<EasyJdbcSession>, InitializingBean, ApplicationListener<ApplicationEvent> {
+public class JujubeJdbcFactoryBean implements FactoryBean<JujubeJdbcSession>, InitializingBean, ApplicationListener<ApplicationEvent> {
     @Override
-    public EasyJdbcSession getObject() throws Exception {
+    public JujubeJdbcSession getObject() throws Exception {
         return null;
     }
 

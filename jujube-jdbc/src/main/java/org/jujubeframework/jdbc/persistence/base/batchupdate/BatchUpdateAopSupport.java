@@ -5,7 +5,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.jujubeframework.jdbc.constant.EasyJdbcConstants;
+import org.jujubeframework.jdbc.constant.JujubeJdbcConstants;
 import org.jujubeframework.jdbc.persistence.base.BaseDao;
 import org.jujubeframework.util.Beans;
 import org.jujubeframework.util.Dates;
@@ -30,7 +30,7 @@ public class BatchUpdateAopSupport {
     @Autowired
     private StringRedisTemplate redisTemplate;
 
-    @AfterReturning(value = "@annotation(" + EasyJdbcConstants.BASE_PACKAGE_NAME + ".persistence.base.batchupdate.BatchUpdate)", returning = "ro")
+    @AfterReturning(value = "@annotation(" + JujubeJdbcConstants.BASE_PACKAGE_NAME + ".persistence.base.batchupdate.BatchUpdate)", returning = "ro")
     public void batchUpdate(JoinPoint joinPoint, Object ro) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         // 当前访问的方法

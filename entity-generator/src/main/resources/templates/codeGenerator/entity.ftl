@@ -19,7 +19,7 @@ import org.hibernate.annotations.SelectBeforeUpdate;
 <#list imports as line >
 import ${line};
 </#list>
-import org.dazao.easyjdbc.entity.BaseEntity;
+import org.jujubeframework.jdbc.support.entity.BaseEntity;
 
 @Entity
 @Table(name = "${tableName}", schema = "${schemaName}")

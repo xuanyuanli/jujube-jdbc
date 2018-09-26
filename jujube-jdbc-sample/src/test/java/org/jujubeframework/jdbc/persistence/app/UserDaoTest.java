@@ -1,7 +1,7 @@
 package org.jujubeframework.jdbc.persistence.app;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import org.jujubeframework.jdbc.EasyJdbcApp;
+import org.jujubeframework.jdbc.JujubeJdbcApp;
 import org.jujubeframework.jdbc.entity.User;
 import org.jujubeframework.jdbc.persistence.UserDao;
 import org.jujubeframework.jdbc.support.pagination.Pageable;
@@ -18,7 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
-@SpringBootTest(classes = EasyJdbcApp.class)
+@SpringBootTest(classes = JujubeJdbcApp.class)
 @RunWith(SpringRunner.class)
 @ActiveProfiles({ "test" })
 public class UserDaoTest {
@@ -77,7 +77,6 @@ public class UserDaoTest {
         User user = new User();
         user.setName("人");
         Pageable<Record> pageable = userDao.paginationByUser(request, user);
-        System.out.println(Jsons.toJson(pageable));
         assertThat(pageable.getTotalElements()).isEqualTo(2);
     }
 }

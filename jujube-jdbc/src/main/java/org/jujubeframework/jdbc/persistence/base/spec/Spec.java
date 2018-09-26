@@ -72,7 +72,7 @@ public class Spec implements Cloneable {
     boolean verifyLikeValue(Object value) {
         String symbol1 = "%";
         String symbol2 = "%%";
-        if (!symbol1.equals(value) && !symbol2.equals(value)) {
+        if (isNotBlank(value) && !symbol1.equals(value) && !symbol2.equals(value)) {
             return true;
         }
         return false;

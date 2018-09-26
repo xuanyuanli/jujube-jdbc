@@ -6,11 +6,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
+/**
+ * @author John Li
+ */
 @SpringBootApplication
 @EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
-public class EasyJdbcApp {
+public class JujubeJdbcApp {
     public static void main(String[] args) throws Exception {
-        SpringApplication.run(EasyJdbcApp.class, args);
+        SpringApplication.run(JujubeJdbcApp.class, args);
     }
     
     @Bean

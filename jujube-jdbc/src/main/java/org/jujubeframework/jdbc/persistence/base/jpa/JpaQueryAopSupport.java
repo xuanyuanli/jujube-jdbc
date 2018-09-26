@@ -5,7 +5,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.jujubeframework.jdbc.constant.EasyJdbcConstants;
+import org.jujubeframework.jdbc.constant.JujubeJdbcConstants;
 import org.jujubeframework.jdbc.persistence.base.BaseDao;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 @Aspect
 public class JpaQueryAopSupport {
 
-    @Around("@annotation(" + EasyJdbcConstants.BASE_PACKAGE_NAME + ".persistence.base.jpa.JpaQuery)")
+    @Around("@annotation(" + JujubeJdbcConstants.BASE_PACKAGE_NAME + ".persistence.base.jpa.JpaQuery)")
     public Object japQueryAround(final ProceedingJoinPoint joinPoint) {
         // 参数值
         Object[] args = joinPoint.getArgs();

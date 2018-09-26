@@ -27,7 +27,7 @@ public class Profiles {
      */
     public static boolean isTestProfile() {
         try {
-            Beans.forName(EasyJdbcConstants.H2_DRIVER_CLASS_NAME);
+            Beans.forName(JujubeJdbcConstants.H2_DRIVER_CLASS_NAME);
             return true;
         } catch (Exception e) {
             return false;
