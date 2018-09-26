@@ -16,7 +16,7 @@ public class GteHandler implements Handler {
     public void handler(Spec spec, String methodName, List<Object> args, HandlerChain chain) {
         if (methodName.endsWith(GTE)) {
             String field = methodName.replace(GTE, EMPTY);
-            field = Handler.realField(field);
+            field = realField(field);
             spec.gte(field, args.get(0));
             args.remove(0);
         } else {

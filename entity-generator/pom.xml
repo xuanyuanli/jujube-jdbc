@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.dazao</groupId>
+	<groupId>org.jujubeframework</groupId>
 	<artifactId>entity-generator</artifactId>
 	<version>1.0.0</version>
 	<packaging>jar</packaging>
@@ -12,7 +12,7 @@
 
 	<properties>
 		<easyjdbc.version>1.0.0</easyjdbc.version>
-		<spring-boot.version>1.5.2.RELEASE</spring-boot.version>
+		<spring-boot.version>2.0.4.RELEASE</spring-boot.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.8</jdk.version>
@@ -30,11 +30,6 @@
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
-		<dependency>
-			<groupId>org.jujubeframework</groupId>
-			<artifactId>jujube-core</artifactId>
-			<version>1.0.1</version>
-		</dependency>
         <dependency>
             <groupId>org.dazao</groupId>
             <artifactId>easy-jdbc</artifactId>
@@ -43,16 +38,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -109,25 +94,6 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-			<!-- eclipse插件, 设定下载依赖包的source code -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.9</version>
-				<configuration>
-					<downloadSources>true</downloadSources>
-					<downloadJavadocs>false</downloadJavadocs>
-					<!-- 增加设置项目encoding的文件 -->
-					<additionalConfig>
-						<file>
-							<name>.settings/org.eclipse.core.resources.prefs</name>
-							<content>
-									<![CDATA[eclipse.preferences.version=1${line.separator}encoding/<project>=${project.build.sourceEncoding}${line.separator}]]>
-							</content>
-						</file>
-					</additionalConfig>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>

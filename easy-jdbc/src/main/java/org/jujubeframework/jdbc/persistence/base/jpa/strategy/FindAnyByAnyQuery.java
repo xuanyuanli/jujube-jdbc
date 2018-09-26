@@ -32,7 +32,7 @@ public class FindAnyByAnyQuery extends BaseQueryStrategy {
         String mname = method.getName();
         String[] arr = Texts.getGroups(FIND_BY2, mname);
         String queryField = arr[1];
-        queryField = Handler.realField(queryField);
+        queryField = BaseQueryStrategy.realField(queryField);
         String tmname = mname.replaceAll(FIND_BY2_PREFIX, EMPTY);
 
         Spec spec = Spec.newS();

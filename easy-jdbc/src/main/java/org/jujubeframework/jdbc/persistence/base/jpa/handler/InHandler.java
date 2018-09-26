@@ -16,7 +16,7 @@ public class InHandler implements Handler {
     public void handler(Spec spec, String methodName, List<Object> args, HandlerChain chain) {
         if (methodName.endsWith(IN)) {
             String field = methodName.replace(IN, EMPTY);
-            field = Handler.realField(field);
+            field = realField(field);
             spec.in(field, (Iterable<?>) args.get(0));
             args.remove(0);
         } else {

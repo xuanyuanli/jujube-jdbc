@@ -16,7 +16,7 @@ public class BetweenHandler implements Handler {
     public void handler(Spec spec, String methodName, List<Object> args, HandlerChain chain) {
         if (methodName.endsWith(BETWEEN)) {
             String field = methodName.replace(BETWEEN, EMPTY);
-            field = Handler.realField(field);
+            field = realField(field);
             spec.between(field, args.get(0), args.get(1));
             args.remove(0);
             args.remove(0);

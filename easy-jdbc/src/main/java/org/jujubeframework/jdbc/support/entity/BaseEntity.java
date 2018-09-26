@@ -46,7 +46,7 @@ public interface BaseEntity {
 
     /**
      * 将Bean赋值给对象类型的BO
-     * @param cl
+     * @param cl class
      * @param <T> 要转换的类型
      * @return bo
      */

@@ -1,6 +1,7 @@
 package org.jujubeframework.jdbc.persistence.base.jpa.strategy;
 
 import org.jujubeframework.jdbc.persistence.base.jpa.JpaQueryProxyDao;
+import org.jujubeframework.util.CamelCase;
 
 import java.lang.reflect.Method;
 
@@ -39,5 +40,16 @@ public abstract class BaseQueryStrategy {
      */
     protected String buildQueryField(String field) {
         return "`" + field + "`";
+    }
+
+    /**
+     * 大写转为下划杠写法
+     * @param queryField 查询的字段
+     * @return 转换后的值
+     */
+    public static String realField(String queryField) {
+        queryField = Character.toLowerCase(queryField.charAt(0)) + queryField.substring(1);
+        queryField = CamelCase.toUnderlineName(queryField);
+        return queryField;
     }
 }

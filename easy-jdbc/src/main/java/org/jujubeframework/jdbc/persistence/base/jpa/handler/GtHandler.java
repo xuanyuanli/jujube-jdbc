@@ -16,7 +16,7 @@ public class GtHandler implements Handler {
     public void handler(Spec spec, String methodName, List<Object> args, HandlerChain chain) {
         if (methodName.endsWith(GT)) {
             String field = methodName.replace(GT, EMPTY);
-            field = Handler.realField(field);
+            field = realField(field);
             spec.gt(field, args.get(0));
             args.remove(0);
         } else {

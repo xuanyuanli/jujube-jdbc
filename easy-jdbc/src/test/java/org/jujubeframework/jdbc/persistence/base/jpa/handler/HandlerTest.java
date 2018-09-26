@@ -2,6 +2,7 @@ package org.jujubeframework.jdbc.persistence.base.jpa.handler;
 
 import com.google.common.collect.Lists;
 import static org.assertj.core.api.Assertions.assertThat;
+import org.jujubeframework.jdbc.persistence.base.jpa.strategy.BaseQueryStrategy;
 import org.jujubeframework.jdbc.persistence.base.spec.Spec;
 import org.jujubeframework.util.Texts;
 import org.junit.Test;
@@ -58,7 +59,7 @@ public class HandlerTest {
         String mname = "findIdByRecommendStatusIndexSortByOrderNumLimit14";
         String[] arr = Texts.getGroups("find(.+?)By(.+)", mname);
         String queryField = arr[1];
-        queryField = Handler.realField(queryField);
+        queryField = BaseQueryStrategy.realField(queryField);
         String tmname = mname.replaceAll("find(.+?)By", "");
         assertThat(tmname).isEqualTo("RecommendStatusIndexSortByOrderNumLimit14");
         assertThat(queryField).isEqualTo("id");

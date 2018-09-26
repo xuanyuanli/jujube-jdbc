@@ -15,10 +15,7 @@ import org.jujubeframework.util.CamelCase;
 import org.jujubeframework.util.Texts;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 构建查询规格（Specification）
@@ -211,7 +208,7 @@ public class Spec implements Cloneable {
      * between
      */
     public Spec between(String fieldName, Object valuePrev, Object valueNext) {
-        if (valuePrev != null && valueNext != null && StringUtils.isNotBlank(ObjectUtils.toString(valuePrev)) && StringUtils.isNotBlank(ObjectUtils.toString(valueNext))) {
+        if (valuePrev != null && valueNext != null && StringUtils.isNotBlank(Objects.toString(valuePrev)) && StringUtils.isNotBlank(Objects.toString(valueNext))) {
             specMap.put(join(BETWEEN, fieldName), new Object[]{valuePrev, valueNext});
         }
         return this;

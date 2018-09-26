@@ -26,7 +26,7 @@ public class FindAnyByIdQuery extends BaseQueryStrategy {
     public Object query(Method method, Object[] args) {
         String methodName = method.getName();
         String queryField = methodName.replaceAll(BY_ID + "$", EMPTY).replaceAll("^" + FIND, EMPTY);
-        queryField = Handler.realField(queryField);
+        queryField = BaseQueryStrategy.realField(queryField);
         Long id = (Long) args[0];
         if (id != null && id > 0) {
             RecordEntity record = proxyDao.findById(buildQueryField(queryField), id);

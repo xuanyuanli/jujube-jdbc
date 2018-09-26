@@ -1,5 +1,6 @@
 package org.jujubeframework.jdbc.persistence.base.jpa.handler;
 
+import org.jujubeframework.jdbc.persistence.base.jpa.strategy.BaseQueryStrategy;
 import org.jujubeframework.jdbc.persistence.base.spec.Spec;
 import org.jujubeframework.util.CamelCase;
 
@@ -19,9 +20,7 @@ public interface Handler {
      * @return 转换后的值
      */
     default String realField(String queryField) {
-        queryField = Character.toLowerCase(queryField.charAt(0)) + queryField.substring(1);
-        queryField = CamelCase.toUnderlineName(queryField);
-        return queryField;
+        return BaseQueryStrategy.realField(queryField);
     }
 
     /**
