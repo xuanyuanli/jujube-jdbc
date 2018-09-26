@@ -19,11 +19,11 @@ public class ${className}  extends BaseEntity{
 </#list>
 <#list columns as col>
 
-	<#if needComment && (col.comment!'')?trim != ''>
+    <#if needComment && (col.comment!'')?trim != ''>
 	/**
      * ${col.comment}
      */
-	</#if>
+    </#if>
 	public ${col.type} get${col.field?cap_first}() {
         return this.${col.field};
     }

@@ -43,18 +43,18 @@ public class ${className} extends BaseEntity {
 </#list>
 <#list columns as col>
 
-	<#if needComment && (col.comment!'')?trim != ''>
+    <#if needComment && (col.comment!'')?trim != ''>
 	/**
      * ${col.comment}
      */
-	</#if>
-	<#if col.isPrimaryKey>
+    </#if>
+    <#if col.isPrimaryKey>
 	@Id
     @GeneratedValue
     @Column(name = "${col.colName}", unique = true, nullable = false)
     <#else>
     @Column(name = "${col.colName}")
-	</#if>
+    </#if>
 	public ${col.type} get${col.field?cap_first}() {
         return this.${col.field};
     }

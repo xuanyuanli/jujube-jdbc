@@ -3,7 +3,7 @@ package ${basePackage};
 <#list imports as line >
 import ${line};
 </#list>
-import org.dazao.support.entity.BaseEntity;
+import BaseEntity;
 
 <#if needComment && (classComment!'')?trim != ''>
 /**
