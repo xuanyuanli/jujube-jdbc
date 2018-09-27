@@ -35,18 +35,18 @@ public class H2JdbcTemplateAopSupport {
         return result;
     }
 
+    @Around("execution(* org.springframework.jdbc.core.JdbcTemplate.queryForMap(..))")
+    public Object queryForMapAfter(final ProceedingJoinPoint joinPoint) throws Throwable {
+        @SuppressWarnings("unchecked") Map<String, Object> result = (Map<String, Object>) joinPoint.proceed();
+        return convertNewRecord(result);
+    }
+
     private List<Map<String, Object>> convertListNewRecord(List<Map<String, Object>> list) {
         List<Map<String, Object>> result = new ArrayList<>();
         for (Map<String, Object> map : list) {
             result.add(convertNewRecord(map));
         }
         return result;
-    }
-
-    @Around("execution(* org.springframework.jdbc.core.JdbcTemplate.queryForMap(..))")
-    public Object queryForMapAfter(final ProceedingJoinPoint joinPoint) throws Throwable {
-        @SuppressWarnings("unchecked") Map<String, Object> result = (Map<String, Object>) joinPoint.proceed();
-        return convertNewRecord(result);
     }
 
     private static Map<String, Object> convertNewRecord(Map<String, Object> result) {

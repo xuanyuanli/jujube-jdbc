@@ -6,7 +6,7 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.jujubeframework.jdbc.constant.JujubeJdbcConstants;
-import org.jujubeframework.jdbc.persistence.base.BaseDao;
+import org.jujubeframework.jdbc.persistence.base.BaseDaoSupport;
 import org.jujubeframework.util.Beans;
 import org.jujubeframework.util.Dates;
 import org.jujubeframework.util.Jsons;
@@ -20,7 +20,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * BaseDao逻辑修炼了，所以这里需要重新编码
+ * 参考{@link BatchUpdate}注解<br>
+ * 要使用此注解，需要手动注入这个类，而且需要Spring Redis的环境
  *
  * @author John Li
  */
@@ -52,13 +53,13 @@ public class BatchUpdateAopSupport {
         }
         // 批量更新
         if (redisTemplate.opsForList().size(key) >= size || Dates.now() - timeline > expire) {
-            BaseDao<?> dao = (BaseDao<?>) joinPoint.getTarget();
+            BaseDaoSupport<?> dao = (BaseDaoSupport<?>) joinPoint.getTarget();
             List<String> listValues = redisTemplate.opsForList().range(key, 0, size);
             List<Object> list = new ArrayList<>();
             for (String value : listValues) {
                 list.add(Jsons.parseJson(value, dao.getRealGenericType()));
             }
-            Beans.invoke(Beans.getDeclaredMethod(BaseDao.class, "batchUpdate", List.class), dao, list);
+            Beans.invoke(Beans.getDeclaredMethod(BaseDaoSupport.class, "batchUpdate", List.class), dao, list);
 
             // 把左侧对应数量的元素删除
             redisTemplate.opsForList().trim(key, size, -1);

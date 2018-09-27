@@ -1,7 +1,7 @@
 package org.jujubeframework.jdbc.persistence;
 
 import org.jujubeframework.jdbc.entity.User;
-import org.jujubeframework.jdbc.persistence.base.BaseDao;
+import org.jujubeframework.jdbc.persistence.base.BaseDaoSupport;
 import org.jujubeframework.jdbc.persistence.base.jpa.JpaQuery;
 import org.jujubeframework.jdbc.persistence.base.spec.Spec;
 import org.jujubeframework.jdbc.support.pagination.Pageable;
@@ -15,7 +15,7 @@ import java.util.List;
  * @author John Li
  */
 @Repository
-public class UserDao extends BaseDao<User> {
+public class UserDao extends BaseDaoSupport<User> {
 
     @Override
     protected String getTableName() {

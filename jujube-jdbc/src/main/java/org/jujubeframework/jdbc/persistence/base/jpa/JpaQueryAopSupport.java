@@ -6,17 +6,16 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.jujubeframework.jdbc.constant.JujubeJdbcConstants;
-import org.jujubeframework.jdbc.persistence.base.BaseDao;
-import org.springframework.stereotype.Component;
+import org.jujubeframework.jdbc.persistence.base.BaseDaoSupport;
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 
 
 /**
+ * {@link JpaQuery}的切面拦截支持
  * @author John Li
  */
-@Component
 @Aspect
 public class JpaQueryAopSupport {
 
@@ -29,7 +28,7 @@ public class JpaQueryAopSupport {
         Method method = signature.getMethod();
         Object target = joinPoint.getTarget();
 
-        JpaQueryProxyDao proxyDao = new JpaQueryProxyDao((BaseDao<?>) target, method, args);
+        JpaQueryProxyDao proxyDao = new JpaQueryProxyDao((BaseDaoSupport<?>) target, method, args);
         Object result = proxyDao.jpaQuery();
 
         return convertToReturnType(result, method.getReturnType());

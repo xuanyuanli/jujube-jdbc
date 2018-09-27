@@ -1,5 +1,6 @@
 package org.jujubeframework.jdbc.spring;
 
+import org.jujubeframework.jdbc.session.JujubeJdbcSession;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationEvent;

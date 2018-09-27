@@ -6,7 +6,8 @@ import java.lang.annotation.*;
  * 使用此注解完成批量更新。没有到size之前，所有的更新数据都在缓存中；当到达size后，进行批量更新
  *
  * <pre>
- * 1、此注解只适用于Dao层;2、用此注解的方法返回类型必须与Dao的泛型一致
+ * 1、此注解只适用于Dao层; 2、用此注解的方法返回类型必须与Dao的泛型一致
+ * </pre>
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

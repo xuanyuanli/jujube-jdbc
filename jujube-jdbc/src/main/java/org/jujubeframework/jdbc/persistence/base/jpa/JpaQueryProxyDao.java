@@ -1,6 +1,6 @@
 package org.jujubeframework.jdbc.persistence.base.jpa;
 
-import org.jujubeframework.jdbc.persistence.base.BaseDao;
+import org.jujubeframework.jdbc.persistence.base.BaseDaoSupport;
 import org.jujubeframework.jdbc.persistence.base.spec.Spec;
 import org.jujubeframework.jdbc.support.entity.RecordEntity;
 import org.jujubeframework.util.Beans;
@@ -14,13 +14,13 @@ import java.util.List;
  *
  * @author John Li
  */
-public class JpaQueryProxyDao extends BaseDao<RecordEntity> {
+public class JpaQueryProxyDao extends BaseDaoSupport<RecordEntity> {
 
-    private BaseDao<?> target;
+    private BaseDaoSupport<?> target;
     private Method curMethod;
     private Object[] methodArgs;
 
-    public JpaQueryProxyDao(BaseDao<?> target, Method curMethod, Object[] methodArgs) {
+    public JpaQueryProxyDao(BaseDaoSupport<?> target, Method curMethod, Object[] methodArgs) {
         super();
         this.target = target;
         this.curMethod = curMethod;

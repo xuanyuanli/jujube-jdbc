@@ -39,10 +39,11 @@ import java.util.Map;
  *
  * @author John Li
  */
-
 @Slf4j
-public abstract class BaseDao<T extends BaseEntity> {
+public class BaseDaoSupport<T extends BaseEntity> {
     private Class<T> realGenericType = Beans.getClassGenericType(getClass());
+
+    private String tableName;
 
     private JdbcTemplate jdbcTemplate;
 
@@ -480,10 +481,15 @@ public abstract class BaseDao<T extends BaseEntity> {
     /**
      * 获得数据库表名
      *
-     * @return 表面
+     * @return 表名
      */
-    protected abstract String getTableName();
+    protected String getTableName(){
+        return  tableName;
+    }
 
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
 
     protected String likeWrap(String field) {
         return Sqls.likeWrap(field);

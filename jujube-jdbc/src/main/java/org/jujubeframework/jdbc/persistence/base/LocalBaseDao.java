@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author John Li
  */
-public class LocalBaseDao extends BaseDao<RecordEntity> {
+public class LocalBaseDao extends BaseDaoSupport<RecordEntity> {
 
     private String tableName;
 

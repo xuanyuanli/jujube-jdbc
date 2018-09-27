@@ -1,4 +1,4 @@
-package org.jujubeframework.jdbc.spring;
+package org.jujubeframework.jdbc.session;
 
 
 /**
