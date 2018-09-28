@@ -1,6 +1,7 @@
 package org.jujubeframework.jdbc.base.jpa.strategy;
 
 import org.jujubeframework.jdbc.base.BaseDaoSupport;
+import org.jujubeframework.jdbc.base.jpa.JpaBaseDaoSupport;
 import org.jujubeframework.jdbc.support.entity.RecordEntity;
 import org.jujubeframework.util.CamelCase;
 
@@ -16,9 +17,9 @@ public abstract class BaseQueryStrategy {
     static final String EMPTY = "";
     static final String FIND = "find";
 
-    protected BaseDaoSupport<RecordEntity, Serializable> proxyDao;
+    protected JpaBaseDaoSupport proxyDao;
 
-    void setProxyDao(BaseDaoSupport<RecordEntity,Serializable> proxyDao) {
+    void setProxyDao(JpaBaseDaoSupport proxyDao) {
         this.proxyDao = proxyDao;
     }
 

@@ -44,9 +44,9 @@ public class FindByAnyQuery extends BaseQueryStrategy {
         selfChain.handler(spec, tmname, Lists.newArrayList(args));
 
         if (isFindOne) {
-            return Pojos.mapping(proxyDao.findOne(spec), proxyDao.getRealGenericType());
+            return Pojos.mapping(proxyDao.findOne(spec), proxyDao.getOriginalRealGenericType());
         } else {
-            return Pojos.mappingArray(proxyDao.find(spec), proxyDao.getRealGenericType());
+            return Pojos.mappingArray(proxyDao.find(spec), proxyDao.getOriginalRealGenericType());
         }
     }
 

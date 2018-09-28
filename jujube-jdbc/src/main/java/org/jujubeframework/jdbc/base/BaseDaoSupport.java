@@ -41,10 +41,11 @@ import java.util.Map;
  */
 @Slf4j
 public class BaseDaoSupport<T extends BaseEntity,PK extends Serializable> implements BaseDao<T, PK> {
+    /** 真实的类型 */
     private final Class<T> realGenericType;
-
+    /** 真实主键的类型 */
     private final Class<PK> realPrimayKeyType;
-
+    /** 表名 */
     private final String tableName;
 
     private  JdbcTemplate jdbcTemplate;

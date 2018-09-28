@@ -1,6 +1,7 @@
 package org.jujubeframework.jdbc.base.jpa.strategy;
 
 import org.jujubeframework.jdbc.base.BaseDaoSupport;
+import org.jujubeframework.jdbc.base.jpa.JpaBaseDaoSupport;
 import org.jujubeframework.jdbc.support.entity.RecordEntity;
 
 import java.io.Serializable;
@@ -16,7 +17,7 @@ import java.util.List;
 public class Querier {
     private List<BaseQueryStrategy> strategies = new ArrayList<>();
 
-    public Object query(BaseDaoSupport<RecordEntity, Serializable> proxyDao, Method method, Object[] args) {
+    public Object query(JpaBaseDaoSupport proxyDao, Method method, Object[] args) {
         for (BaseQueryStrategy strategy : strategies) {
             if (strategy.accept(method)) {
                 strategy.setProxyDao(proxyDao);

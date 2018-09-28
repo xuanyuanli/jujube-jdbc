@@ -1,9 +1,9 @@
 package org.jujubeframework.jdbc.base.jpa.strategy;
 
 import com.google.common.collect.Lists;
-import org.jujubeframework.jdbc.base.spec.Spec;
 import org.jujubeframework.jdbc.base.jpa.handler.DefaultHandlerChain;
 import org.jujubeframework.jdbc.base.jpa.handler.HandlerContext;
+import org.jujubeframework.jdbc.base.spec.Spec;
 
 import java.lang.reflect.Method;
 
@@ -29,7 +29,12 @@ public class GetCountByAnyQuery extends BaseQueryStrategy {
         selfChain.addHandlers(HandlerContext.COMPLEX_HANDLER);
         selfChain.addHandlers(HandlerContext.SIMPLE_HANDLER);
         selfChain.handler(spec, tmname, Lists.newArrayList(args));
-        return proxyDao.getCount(spec);
+        long count = proxyDao.getCount(spec);
+        if (method.getReturnType().equals(int.class) || method.getReturnType().equals(Integer.class)) {
+            return (int) count;
+        } else {
+            return count;
+        }
     }
 
 }
