@@ -64,19 +64,19 @@ public class UserDaoTest {
 		assertThat(count).isEqualTo(2);
 	}
 
-	@Test
-	public void testPaginationByNameLength() {
-		PageableRequest request = PageableRequest.buildPageRequest();
-		Pageable<Record> pageable = userDao.paginationByNameLength(request, 3);
-		assertThat(pageable.getTotalElements()).isEqualTo(3);
-	}
-
-    @Test
-    public void testPaginationByUser() {
-        PageableRequest request = PageableRequest.buildPageRequest();
-        User user = new User();
-        user.setName("人");
-        Pageable<Record> pageable = userDao.paginationByUser(request, user);
-        assertThat(pageable.getTotalElements()).isEqualTo(2);
-    }
+//	@Test
+//	public void testPaginationByNameLength() {
+//		PageableRequest request = PageableRequest.buildPageRequest();
+//		Pageable<Record> pageable = userDao.paginationByNameLength(request, 3);
+//		assertThat(pageable.getTotalElements()).isEqualTo(3);
+//	}
+//
+//    @Test
+//    public void testPaginationByUser() {
+//        PageableRequest request = PageableRequest.buildPageRequest();
+//        User user = new User();
+//        user.setName("人");
+//        Pageable<Record> pageable = userDao.paginationByUser(request, user);
+//        assertThat(pageable.getTotalElements()).isEqualTo(2);
+//    }
 }

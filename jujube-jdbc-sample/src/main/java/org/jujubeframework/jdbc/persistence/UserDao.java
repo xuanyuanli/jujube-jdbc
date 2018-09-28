@@ -1,9 +1,9 @@
 package org.jujubeframework.jdbc.persistence;
 
+import org.jujubeframework.jdbc.base.BaseDao;
 import org.jujubeframework.jdbc.entity.User;
-import org.jujubeframework.jdbc.persistence.base.BaseDaoSupport;
-import org.jujubeframework.jdbc.persistence.base.jpa.JpaQuery;
-import org.jujubeframework.jdbc.persistence.base.spec.Spec;
+import org.jujubeframework.jdbc.base.BaseDaoSupport;
+import org.jujubeframework.jdbc.base.spec.Spec;
 import org.jujubeframework.jdbc.support.pagination.Pageable;
 import org.jujubeframework.jdbc.support.pagination.PageableRequest;
 import org.jujubeframework.lang.Record;
@@ -14,55 +14,36 @@ import java.util.List;
 /**
  * @author John Li
  */
-@Repository
-public class UserDao extends BaseDaoSupport<User> {
+public interface UserDao extends BaseDao<User,Long> {
 
     @Override
-    protected String getTableName() {
+    default String getTableName() {
         return "user";
     }
 
-    @JpaQuery
-    public String findNameById(long id) {
-        return null;
-    }
+    public String findNameById(long id);
 
-    @JpaQuery
-    public List<String> findNameByAge(int age) {
-        return null;
-    }
+    public List<String> findNameByAge(int age);
 
-    @JpaQuery
-    public User findByName(String name) {
-        return null;
-    }
+    public User findByName(String name);
 
-    @JpaQuery
-    public List<User> findByNameLike(String name) {
-        return null;
-    }
+    public List<User> findByNameLike(String name);
 
-    @JpaQuery
-    public List<User> findByIdGtSortByAgeDesc(int i) {
-        return null;
-    }
+    public List<User> findByIdGtSortByAgeDesc(int i);
 
-    @JpaQuery
-    public int getCountByNameLike(String name) {
-        return 0;
-    }
+    public int getCountByNameLike(String name);
 
-    public Pageable<Record> paginationByNameLength(PageableRequest request, int len) {
-        String sql = "select u.*,d.name department_name from user u left join department d on d.id = u.department_id where length(u.name) >= ?";
-        return paginationBySql(sql, request, len);
-    }
-
-    public Pageable<Record> paginationByUser(PageableRequest request, User user) {
-        String sql = "select u.*,d.name department_name from user u left join department d on d.id = u.department_id where ";
-        Spec spec = new Spec();
-        spec.like("u.name", likeWrap(user.getName()));
-        spec.gt("u.age",user.getAge());
-        sql += spec.getFilterSql();
-        return paginationBySql(sql, request, spec.getFilterParams());
-    }
+//    public Pageable<Record> paginationByNameLength(PageableRequest request, int len) {
+//        String sql = "select u.*,d.name department_name from user u left join department d on d.id = u.department_id where length(u.name) >= ?";
+//        return paginationBySql(sql, request, len);
+//    }
+//
+//    public Pageable<Record> paginationByUser(PageableRequest request, User user) {
+//        String sql = "select u.*,d.name department_name from user u left join department d on d.id = u.department_id where ";
+//        Spec spec = new Spec();
+//        spec.like("u.name", likeWrap(user.getName()));
+//        spec.gt("u.age",user.getAge());
+//        sql += spec.getFilterSql();
+//        return paginationBySql(sql, request, spec.getFilterParams());
+//    }
 }
