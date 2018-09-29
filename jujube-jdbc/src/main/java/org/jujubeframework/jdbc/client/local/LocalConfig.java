@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.jujubeframework.jdbc.constant.Profiles;
-import org.jujubeframework.util.Utils;
+import org.jujubeframework.util.Resources;
 
 import java.util.Properties;
 
@@ -19,7 +19,7 @@ public class LocalConfig {
     /**
      * 全局配置文件
      */
-    private static final Properties P = wrapApplicationConfig(Utils.getCurrentClasspathProperties("application.properties"));
+    private static final Properties P = wrapApplicationConfig(Resources.getCurrentClasspathProperties("application.properties"));
 
     /**
      * ----------------------- JDBC 配置 -----------------------
@@ -33,7 +33,7 @@ public class LocalConfig {
         if (properties != null) {
             // 和spring-profiles处理一致
             if (Profiles.DEVELOPMENT.equals(Profiles.getSpringProfileAsSystemProperty())) {
-                properties.putAll(Utils.getCurrentClasspathProperties("application." + Profiles.DEVELOPMENT + ".properties"));
+                properties.putAll(Resources.getCurrentClasspathProperties("application." + Profiles.DEVELOPMENT + ".properties"));
             }
 
             if (StringUtils.isBlank(properties.getProperty(Name.JDBC_DRIVER_CLASS_NAME))) {

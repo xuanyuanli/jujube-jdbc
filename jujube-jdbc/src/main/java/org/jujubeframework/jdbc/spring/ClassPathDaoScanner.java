@@ -26,7 +26,7 @@ import java.util.Set;
  */
 public class ClassPathDaoScanner extends ClassPathBeanDefinitionScanner {
     public ClassPathDaoScanner(BeanDefinitionRegistry registry) {
-        super(registry);
+        super(registry,false);
     }
 
     public void registerFilters() {

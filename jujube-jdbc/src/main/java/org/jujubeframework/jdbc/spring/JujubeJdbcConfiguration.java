@@ -31,10 +31,31 @@ public class JujubeJdbcConfiguration implements BeanDefinitionRegistryPostProces
 
    static final String CONFIG_LOCATION_DELIMITERS = ",; \t\n";
 
+   /**Dao接口所在的package*/
     private String basePackage;
 
-    /**默认为{@value #basePackage}.sql*/
+    /**Dao Sql所在的package。如果不设置，默认为{@value #basePackage}.sql*/
     private String sqlBasePackage;
+
+    /**是否监听Dao Sql变化而动态刷新sql缓存*/
+    private boolean watchSqlFile;
+
+    @Override
+    public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
+        //注册dao与dao sql的对应信息
+
+        //代理BaseDao的所有子接口
+        ClassPathDaoScanner scanner = new ClassPathDaoScanner(registry);
+        scanner.registerFilters();
+        scanner.scan(StringUtils.tokenizeToStringArray(this.basePackage, ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS));
+
+        BeanDefinitionBuilder jobDetailBuilder = BeanDefinitionBuilder.genericBeanDefinition(SpringContextHolder.class);
+        registry.registerBeanDefinition("springContextHolder",jobDetailBuilder.getBeanDefinition());
+    }
+
+    @Override
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+    }
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -55,20 +76,7 @@ public class JujubeJdbcConfiguration implements BeanDefinitionRegistryPostProces
         this.sqlBasePackage = sqlBasePackage;
     }
 
-    @Override
-    public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-        //注册dao与dao sql的对应信息
-
-        //代理BaseDao的所有子接口
-        ClassPathDaoScanner scanner = new ClassPathDaoScanner(registry);
-        scanner.registerFilters();
-        scanner.scan(StringUtils.tokenizeToStringArray(this.basePackage, ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS));
-
-        BeanDefinitionBuilder jobDetailBuilder = BeanDefinitionBuilder.genericBeanDefinition(SpringContextHolder.class);
-        registry.registerBeanDefinition("springContextHolder",jobDetailBuilder.getBeanDefinition());
-    }
-
-    @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+    public void setWatchSqlFile(boolean watchSqlFile) {
+        this.watchSqlFile = watchSqlFile;
     }
 }
