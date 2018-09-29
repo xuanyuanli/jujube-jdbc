@@ -1,13 +1,14 @@
 package org.jujubeframework.jdbc.persistence.app;
 
-import org.jujubeframework.jdbc.JujubeJdbcApp;
-import org.jujubeframework.jdbc.persistence.UserDao;
-import org.jujubeframework.util.Beans;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.List;
 
 public class Test {
     public static void main(String[] args) {
-        Class<?> daoInterface = UserDao.class;
-        Class<?> realGenericType = Beans.getClassGenericType(daoInterface, 0);
-        Class<?> realPrimayKeyType = Beans.getClassGenericType(daoInterface, 1);
     }
+
 }

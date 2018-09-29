@@ -1,16 +1,22 @@
 package org.jujubeframework.jdbc.binding;
 
+import org.apache.commons.beanutils.MethodUtils;
 import org.jujubeframework.jdbc.base.BaseDaoSupport;
 import org.jujubeframework.jdbc.base.jpa.JpaBaseDaoSupport;
 import org.jujubeframework.jdbc.base.jpa.JpaQueryProxyDaoHolder;
+import org.jujubeframework.jdbc.base.spec.Spec;
 import org.jujubeframework.jdbc.spring.SpringContextHolder;
 import org.jujubeframework.jdbc.support.entity.RecordEntity;
+import org.jujubeframework.jdbc.support.pagination.PageableRequest;
 import org.jujubeframework.util.Beans;
+import org.jujubeframework.util.Collections3;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -18,8 +24,7 @@ import java.util.concurrent.ConcurrentMap;
  * @author John Li
  */
 public class DaoProxy<T> implements InvocationHandler {
-    private static final String FIND = "find";
-    private static final String GET_COUNT = "getCount";
+
 
     private static final ConcurrentMap<String, JpaBaseDaoSupport> JPA_BASEDAO_CACHE = new ConcurrentHashMap<>(16);
 
@@ -38,13 +43,18 @@ public class DaoProxy<T> implements InvocationHandler {
         if (declaredMethod != null) {
             setBaseDaoSupportJdbcTemplate(baseDaoSupport);
             return Beans.invoke(declaredMethod, baseDaoSupport, args);
-        } else if (method.getName().startsWith(FIND) || method.getName().startsWith(GET_COUNT)) {
+        } else if (method.getName().startsWith(DaoSqlRegistry.FIND) || method.getName().startsWith(DaoSqlRegistry.GET_COUNT)) {
             //如果以find开头，则属于jpa查询，调用JpaQueryProxyDao
             JpaBaseDaoSupport recordEntityBaseDaoSupport = getJpaBaseDaoFromCache(daoInterface.getName());
             return JpaQueryProxyDaoHolder.getQuerier().query(recordEntityBaseDaoSupport, method, args);
         } else {
             //以上两种情况都不符合，则属于sql查询，关联sql文件进行查询
-            return null;
+            setBaseDaoSupportJdbcTemplate(baseDaoSupport);
+            SqlBuilder sqlBuilder = DaoSqlRegistry.getSqlBuilder(declaredMethod);
+            PageableRequest pageableRequest = Beans.getObjcetFromMethodArgs(args, PageableRequest.class);
+            Map queryMap = Beans.getObjcetFromMethodArgs(args, Map.class);
+            SqlBuilder.SqlResult sqlResult = sqlBuilder.builder(queryMap);
+            return baseDaoSupport.paginationBySql(sqlResult.getSql(),pageableRequest,sqlResult.getFilterParams());
         }
     }
 
