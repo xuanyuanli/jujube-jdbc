@@ -1,26 +1,22 @@
 package org.jujubeframework.jdbc.binding;
 
-import org.apache.commons.beanutils.MethodUtils;
 import org.jujubeframework.jdbc.base.BaseDaoSupport;
 import org.jujubeframework.jdbc.base.jpa.JpaBaseDaoSupport;
 import org.jujubeframework.jdbc.base.jpa.JpaQueryProxyDaoHolder;
-import org.jujubeframework.jdbc.base.spec.Spec;
 import org.jujubeframework.jdbc.spring.SpringContextHolder;
-import org.jujubeframework.jdbc.support.entity.RecordEntity;
-import org.jujubeframework.jdbc.support.pagination.PageableRequest;
+import org.jujubeframework.jdbc.support.pagination.PageRequest;
 import org.jujubeframework.util.Beans;
-import org.jujubeframework.util.Collections3;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
+ * Dao接口代理类
+ *
  * @author John Li
  */
 public class DaoProxy<T> implements InvocationHandler {
@@ -50,19 +46,25 @@ public class DaoProxy<T> implements InvocationHandler {
         } else {
             //以上两种情况都不符合，则属于sql查询，关联sql文件进行查询
             setBaseDaoSupportJdbcTemplate(baseDaoSupport);
-            SqlBuilder sqlBuilder = DaoSqlRegistry.getSqlBuilder(declaredMethod);
-            PageableRequest pageableRequest = Beans.getObjcetFromMethodArgs(args, PageableRequest.class);
+            SqlBuilder sqlBuilder = DaoSqlRegistry.getSqlBuilder(method);
+            PageRequest pageRequest = Beans.getObjcetFromMethodArgs(args, PageRequest.class);
             Map queryMap = Beans.getObjcetFromMethodArgs(args, Map.class);
             SqlBuilder.SqlResult sqlResult = sqlBuilder.builder(queryMap);
-            return baseDaoSupport.paginationBySql(sqlResult.getSql(),pageableRequest,sqlResult.getFilterParams());
+            return baseDaoSupport.paginationBySql(sqlResult.getSql(), pageRequest,sqlResult.getFilterParams());
         }
     }
 
+    /**
+     * 缓存中获取Dao class对应的DaoSupport
+     * @param name
+     * @return
+     */
     private JpaBaseDaoSupport getJpaBaseDaoFromCache(String name) {
         if (JPA_BASEDAO_CACHE.containsKey(name)) {
             return JPA_BASEDAO_CACHE.get(name);
         } else {
             JpaBaseDaoSupport jpaBaseDaoSupport = new JpaBaseDaoSupport(this.baseDaoSupport.getRealGenericType(), this.baseDaoSupport.getRealPrimayKeyType(), this.baseDaoSupport.getTableName());
+            jpaBaseDaoSupport.setPrimaryKeyName(baseDaoSupport.getPrimayKeyName());
             setBaseDaoSupportJdbcTemplate(jpaBaseDaoSupport);
             JPA_BASEDAO_CACHE.put(name, jpaBaseDaoSupport);
             return jpaBaseDaoSupport;

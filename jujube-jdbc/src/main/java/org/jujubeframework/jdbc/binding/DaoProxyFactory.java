@@ -5,6 +5,8 @@ import org.jujubeframework.jdbc.base.BaseDaoSupport;
 import java.lang.reflect.Proxy;
 
 /**
+ * Dao代理类工厂
+ *
  * @author John Li
  */
 public class DaoProxyFactory<T> {

@@ -6,8 +6,8 @@ import org.jujubeframework.jdbc.base.dialect.Dialect;
 import org.jujubeframework.jdbc.base.spec.Spec;
 import org.jujubeframework.jdbc.base.util.Sqls;
 import org.jujubeframework.jdbc.support.entity.BaseEntity;
-import org.jujubeframework.jdbc.support.pagination.Pageable;
-import org.jujubeframework.jdbc.support.pagination.PageableRequest;
+import org.jujubeframework.jdbc.support.pagination.Page;
+import org.jujubeframework.jdbc.support.pagination.PageRequest;
 import org.jujubeframework.jdbc.util.DataTypeConvertor;
 import org.jujubeframework.lang.Record;
 import org.jujubeframework.util.Beans;
@@ -47,6 +47,7 @@ public class BaseDaoSupport<T extends BaseEntity,PK extends Serializable> implem
     private final Class<PK> realPrimayKeyType;
     /** 表名 */
     private final String tableName;
+    private String primaryKeyName = "id";
 
     private  JdbcTemplate jdbcTemplate;
 
@@ -209,6 +210,10 @@ public class BaseDaoSupport<T extends BaseEntity,PK extends Serializable> implem
      * 构建查询规格获得数据，可自定义select与from之间要查询的字段.永远不会返回null
      */
     public List<T> find(String fields, Spec spec) {
+        //如果查询条件为空，则不进行查询，防止搜索全表
+        if (spec.isEmpty()){
+            return  new ArrayList<>();
+        }
         String sql = DIALECT.forDbSimpleQuery(fields, getTableName(), spec.getFilterSql());
         if (StringUtils.isNotBlank(spec.getGroupBy())) {
             sql += (" group by " + spec.getGroupBy());
@@ -222,25 +227,6 @@ public class BaseDaoSupport<T extends BaseEntity,PK extends Serializable> implem
             sql = DIALECT.forDbPaginationQuery(sql, begin, spec.getLimit());
         }
         return find(sql, spec.getFilterParams());
-    }
-
-    /**
-     * 构建查询规格获得数据，可自定义select与from之间要查询的字段.永远不会返回null
-     */
-    public List<Record> findRecord(String fields, Spec spec) {
-        String sql = DIALECT.forDbSimpleQuery(fields, getTableName(), spec.getFilterSql());
-        if (StringUtils.isNotBlank(spec.getGroupBy())) {
-            sql += (" group by " + spec.getGroupBy());
-        }
-        if (StringUtils.isNotBlank(spec.getHaving())) {
-            sql += (" having " + spec.getHaving());
-        }
-        sql += spec.sort().buildSqlSort();
-        int begin = spec.getLimitBegin() > 0 ? spec.getLimitBegin() : 0;
-        if (spec.getLimit() > 0) {
-            sql = DIALECT.forDbPaginationQuery(sql, begin, spec.getLimit());
-        }
-        return findRecord(sql, spec.getFilterParams());
     }
 
     /**
@@ -289,78 +275,35 @@ public class BaseDaoSupport<T extends BaseEntity,PK extends Serializable> implem
         return queryForObject(sql, Long.class, spec.getFilterParams());
     }
 
-    public <E> E queryForObject(String sql, Class<E> requiredType, Object... params) {
-        try {
-            return getJdbcTemplate().queryForObject(sql, requiredType, params);
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
-    }
-
-    /**
-     * 主要用于针对一张表的分页
-     */
-    @SuppressWarnings("AlibabaUndefineMagicConstant")
-    public Pageable<T> pagination(String fields, Spec spec, PageableRequest request) {
-        // 防止sql报错
-        String symbol = "*";
-        if (fields.contains(symbol)) {
-            fields = fields.replace(symbol, getTableName() + ".*");
-        }
-        request = PageableRequest.buildPageRequest(request);
-        Pageable<T> result = request.newPageable();
-        result.setTotalElements(request.getTotalElements());
-        if (request.getIndex() == 1 || request.getTotalElements() < 1) {
-            Spec countSpec = spec.clone();
-            countSpec.sort().cleanValues();
-            Long count = getCount(countSpec);
-            count = count == null ? 0 : count;
-            result.setTotalElements(count);
-        }
-        spec.limitBegin(result.getStart()).limit(result.getSize());
-        result.setData(new ArrayList<>());
-        if (result.getTotalElements() > 0) {
-            result.setData(find(fields, spec));
-        }
-        return result;
-    }
-
-    /**
-     * 主要用于针对一张表的分页
-     */
-    public Pageable<T> pagination(Spec spec, PageableRequest request) {
-        return pagination("*", spec, request);
-    }
-
     /**
      * 根据sql进行分页处理
      */
-    public Pageable<Record> paginationBySql(String sql, PageableRequest request, Object... filterParams) {
-        request = PageableRequest.buildPageRequest(request);
-        Pageable<Record> pageable = request.newPageable();
-        pageable.setTotalElements(request.getTotalElements());
+    public Page<Record> paginationBySql(String sql, PageRequest request, Object... filterParams) {
+        request = PageRequest.buildPageRequest(request);
+        Page<Record> page = request.newPageable();
+        page.setTotalElements(request.getTotalElements());
 
         if (request.getIndex() == 1 || request.getTotalElements() < 1) {
             String countSql = Sqls.getCountSql(sql);
             Long count = getJdbcTemplate().queryForObject(countSql, Long.class, filterParams);
             count = count == null ? 0 : count;
-            pageable.setTotalElements(count);
+            page.setTotalElements(count);
         }
 
-        String cSql = DIALECT.forDbPaginationQuery(sql, pageable.getStart(), pageable.getSize());
-        pageable.setData(new ArrayList<>());
-        if (pageable.getTotalElements() > 0) {
-            pageable.setData(DataTypeConvertor.convertListMapToListRecord(getJdbcTemplate().queryForList(cSql, filterParams)));
+        String cSql = DIALECT.forDbPaginationQuery(sql, page.getStart(), page.getSize());
+        page.setData(new ArrayList<>());
+        if (page.getTotalElements() > 0) {
+            page.setData(DataTypeConvertor.convertListMapToListRecord(getJdbcTemplate().queryForList(cSql, filterParams)));
         }
-        return pageable;
+        return page;
     }
 
     /**
      * 根据sql进行分页处理，用于两个集合union分页
      */
-    public Pageable<Record> paginationBySqlOfUnion(PageableRequest request, String sqlA, String sqlB, Object[] filterParamsA, Object[] filterParamsB) {
-        request = PageableRequest.buildPageRequest(request);
-        Pageable<Record> pageable = request.newPageable();
+    public Page<Record> paginationBySqlOfUnion(PageRequest request, String sqlA, String sqlB, Object[] filterParamsA, Object[] filterParamsB) {
+        request = PageRequest.buildPageRequest(request);
+        Page<Record> page = request.newPageable();
         long ta = 0;
         long tb = 0;
 
@@ -374,33 +317,33 @@ public class BaseDaoSupport<T extends BaseEntity,PK extends Serializable> implem
         count = count == null ? 0 : count;
         tb = count;
 
-        pageable.setTotalElements(ta + tb);
-        pageable.setData(new ArrayList<>());
+        page.setTotalElements(ta + tb);
+        page.setData(new ArrayList<>());
 
-        if (pageable.getTotalElements() > 0) {
-            long curSizeEnd = pageable.getSize() * pageable.getIndex();
+        if (page.getTotalElements() > 0) {
+            long curSizeEnd = page.getSize() * page.getIndex();
             // 如果第一个集合够填满当前分页,只取第一个集合内数据
             if (ta >= curSizeEnd) {
-                String cSql = DIALECT.forDbPaginationQuery(sqlA, pageable.getStart(), pageable.getSize());
-                pageable.setData(DataTypeConvertor.convertListMapToListRecord(getJdbcTemplate().queryForList(cSql, filterParamsA)));
+                String cSql = DIALECT.forDbPaginationQuery(sqlA, page.getStart(), page.getSize());
+                page.setData(DataTypeConvertor.convertListMapToListRecord(getJdbcTemplate().queryForList(cSql, filterParamsA)));
                 // 如果第一个集合不足以填满,取第一个集合数据+第二个集合数据
-            } else if (ta > pageable.getStart()) {
+            } else if (ta > page.getStart()) {
                 List<Map<String, Object>> data = new ArrayList<>();
-                String cSql = DIALECT.forDbPaginationQuery(sqlA, pageable.getStart(), (int) (ta - pageable.getStart()));
+                String cSql = DIALECT.forDbPaginationQuery(sqlA, page.getStart(), (int) (ta - page.getStart()));
                 data.addAll(getJdbcTemplate().queryForList(cSql, filterParamsA));
 
                 cSql = DIALECT.forDbPaginationQuery(sqlB, 0, (int) (curSizeEnd - ta));
                 data.addAll(getJdbcTemplate().queryForList(cSql, filterParamsB));
 
-                pageable.setData(DataTypeConvertor.convertListMapToListRecord(data));
+                page.setData(DataTypeConvertor.convertListMapToListRecord(data));
             } else { // 如果第一个集合以用完，则只取第二个集合
-                int start = (int) (pageable.getStart() - ta);
-                String cSql = DIALECT.forDbPaginationQuery(sqlB, start, pageable.getSize());
-                pageable.setData(DataTypeConvertor.convertListMapToListRecord(getJdbcTemplate().queryForList(cSql, filterParamsB)));
+                int start = (int) (page.getStart() - ta);
+                String cSql = DIALECT.forDbPaginationQuery(sqlB, start, page.getSize());
+                page.setData(DataTypeConvertor.convertListMapToListRecord(getJdbcTemplate().queryForList(cSql, filterParamsB)));
             }
         }
 
-        return pageable;
+        return page;
     }
 
     /**
@@ -409,6 +352,14 @@ public class BaseDaoSupport<T extends BaseEntity,PK extends Serializable> implem
     private Map<String, Object> queryForMap(String sql, Object... args) {
         try {
             return getJdbcTemplate().queryForMap(sql, args);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    private <E> E queryForObject(String sql, Class<E> requiredType, Object... params) {
+        try {
+            return getJdbcTemplate().queryForObject(sql, requiredType, params);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -448,24 +399,13 @@ public class BaseDaoSupport<T extends BaseEntity,PK extends Serializable> implem
         return new Spec();
     }
 
+    @Override
     public String getPrimayKeyName() {
-        return "id";
+        return primaryKeyName;
     }
 
-    public String likeWrap(String field) {
-        return Sqls.likeWrap(field);
-    }
-
-    public String leftLikeWrap(String field) {
-        return Sqls.leftLikeWrap(field);
-    }
-
-    public String rightLikeWrap(String field) {
-        return Sqls.likeWrap(field);
-    }
-
-    public boolean isNotBlank(String value) {
-        return StringUtils.isNotBlank(value);
+    public void setPrimaryKeyName(String primaryKeyName) {
+        this.primaryKeyName = primaryKeyName;
     }
 
     public Class<T> getRealGenericType() {

@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author John Li Email：jujubeframework@163.com
  */
-public class Pageable<T> implements Iterable<T>, Serializable {
+public class Page<T> implements Iterable<T>, Serializable {
 
     private static final long serialVersionUID = -566814709144497590L;
 
@@ -41,26 +41,26 @@ public class Pageable<T> implements Iterable<T>, Serializable {
      */
     public static final int DEFAULT_SIZE = 10;
 
-    public Pageable(int index, int size, int start) {
+    public Page(int index, int size, int start) {
         super();
         this.size = size;
         this.index = index;
         this.start = start;
     }
 
-    public Pageable(int index, int size) {
+    public Page(int index, int size) {
         super();
         this.size = size;
         this.index = index;
     }
 
-    public Pageable(int index) {
+    public Page(int index) {
         super();
         this.index = index;
         this.size = DEFAULT_SIZE;
     }
 
-    public Pageable() {
+    public Page() {
         super();
         this.index = 1;
         this.size = DEFAULT_SIZE;
@@ -177,8 +177,8 @@ public class Pageable<T> implements Iterable<T>, Serializable {
      * 把泛型为Record的Pageable转换为对应类型的Pageable
      */
     @SuppressWarnings("hiding")
-    public <T extends Serializable> Pageable<T> toGenericType(Class<T> cl) {
-        @SuppressWarnings("unchecked") Pageable<Record> page = (Pageable<Record>) this;
+    public <T extends Serializable> Page<T> toGenericType(Class<T> cl) {
+        @SuppressWarnings("unchecked") Page<Record> page = (Page<Record>) this;
         return DataTypeConvertor.convertPageableGenericType(page, cl);
     }
 }

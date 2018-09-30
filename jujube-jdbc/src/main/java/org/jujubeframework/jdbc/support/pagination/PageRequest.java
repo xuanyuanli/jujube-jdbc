@@ -7,7 +7,7 @@ import java.io.Serializable;
  *
  * @author John Li Email：jujubeframework@163.com
  */
-public class PageableRequest implements Serializable {
+public class PageRequest implements Serializable {
     private static final long serialVersionUID = -590137694303783744L;
     private int index;
     private int size;
@@ -19,16 +19,16 @@ public class PageableRequest implements Serializable {
      */
     private long totalElements;
 
-    public PageableRequest(int index, int size) {
+    public PageRequest(int index, int size) {
         super();
         setIndex(index);
         setSize(size);
     }
 
-    public PageableRequest() {
+    public PageRequest() {
         super();
         this.index = 1;
-        this.size = Pageable.DEFAULT_SIZE;
+        this.size = Page.DEFAULT_SIZE;
     }
 
     public int getIndex() {
@@ -43,7 +43,7 @@ public class PageableRequest implements Serializable {
     }
 
     public int getSize() {
-        return size < 1 ? Pageable.DEFAULT_SIZE : size;
+        return size < 1 ? Page.DEFAULT_SIZE : size;
     }
 
     public void setSize(int size) {
@@ -66,8 +66,8 @@ public class PageableRequest implements Serializable {
         return start;
     }
 
-    public <T> Pageable<T> newPageable() {
-        return new Pageable<T>(index, size, start);
+    public <T> Page<T> newPageable() {
+        return new Page<T>(index, size, start);
     }
 
     /**
@@ -77,20 +77,20 @@ public class PageableRequest implements Serializable {
      * @return
      * @author John Li Email：jujubeframework@163.com
      */
-    public static PageableRequest buildPageRequest(PageableRequest pageRequest) {
+    public static PageRequest buildPageRequest(PageRequest pageRequest) {
         if (pageRequest == null) {
-            pageRequest = new PageableRequest();
+            pageRequest = new PageRequest();
         }
         if (pageRequest.getIndex() < 1) {
             pageRequest.setIndex(1);
         }
         if (pageRequest.getSize() < 1) {
-            pageRequest.setSize(Pageable.DEFAULT_SIZE);
+            pageRequest.setSize(Page.DEFAULT_SIZE);
         }
         return pageRequest;
     }
 
-    public static PageableRequest buildPageRequest() {
+    public static PageRequest buildPageRequest() {
         return buildPageRequest(null);
     }
 }

@@ -1,30 +1,20 @@
 package org.jujubeframework.jdbc.spring;
 
-import org.jujubeframework.jdbc.base.BaseDao;
-import org.jujubeframework.jdbc.base.BaseDaoSupport;
-import org.jujubeframework.util.Beans;
+import org.jujubeframework.jdbc.binding.DaoSqlRegistry;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.*;
-import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.event.ApplicationContextEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.core.type.ClassMetadata;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.StringUtils;
-
-import java.util.Arrays;
 
 
 /**
+ * JujubeJdbc配置类，也是一个Bean注册器后置处理器。会把{@link #basePackage}下所有的Dao注册到Spring容器中，并建立Dao与Sql文件间的对应信息
+ *
  * @author John Li
  */
 public class JujubeJdbcConfiguration implements BeanDefinitionRegistryPostProcessor, InitializingBean, ApplicationListener<ApplicationEvent> {
@@ -34,7 +24,7 @@ public class JujubeJdbcConfiguration implements BeanDefinitionRegistryPostProces
    /**Dao接口所在的package*/
     private String basePackage;
 
-    /**Dao Sql所在的package。如果不设置，默认为{@value #basePackage}.sql*/
+    /**Dao Sql所在的路径（相当于classpath来说）。如果不设置，默认为{@link #basePackage}.sql*/
     private String sqlBasePackage;
 
     /**是否监听Dao Sql变化而动态刷新sql缓存*/
@@ -43,6 +33,10 @@ public class JujubeJdbcConfiguration implements BeanDefinitionRegistryPostProces
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
         //注册dao与dao sql的对应信息
+        DaoSqlRegistry.setBasePackage(basePackage);
+        DaoSqlRegistry.setSqlBasePackage(getSqlBasePackage());
+        DaoSqlRegistry.setWatchSqlFile(watchSqlFile);
+        DaoSqlRegistry.init();
 
         //代理BaseDao的所有子接口
         ClassPathDaoScanner scanner = new ClassPathDaoScanner(registry);
@@ -74,6 +68,13 @@ public class JujubeJdbcConfiguration implements BeanDefinitionRegistryPostProces
 
     public void setSqlBasePackage(String sqlBasePackage) {
         this.sqlBasePackage = sqlBasePackage;
+    }
+
+    public String getSqlBasePackage() {
+        if (sqlBasePackage ==null){
+            sqlBasePackage = basePackage+".sql";
+        }
+        return sqlBasePackage;
     }
 
     public void setWatchSqlFile(boolean watchSqlFile) {

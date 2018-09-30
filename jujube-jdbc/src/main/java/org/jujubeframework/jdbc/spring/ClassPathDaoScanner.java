@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.Set;
 
 /**
+ * @see ClassPathBeanDefinitionScanner
+ *
  * @author John Li
  */
 public class ClassPathDaoScanner extends ClassPathBeanDefinitionScanner {

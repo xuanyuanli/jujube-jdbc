@@ -8,7 +8,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  * @author John Li
@@ -32,6 +31,7 @@ public class JujubeJdbcApp {
 	public JujubeJdbcConfiguration jujubeJdbcFactoryBean(){
         JujubeJdbcConfiguration jujubeJdbcFactoryBean = new JujubeJdbcConfiguration();
         jujubeJdbcFactoryBean.setBasePackage(JujubeJdbcApp.class.getPackage().getName());
+        jujubeJdbcFactoryBean.setSqlBasePackage("dao-sql");
         return jujubeJdbcFactoryBean;
     }
 }

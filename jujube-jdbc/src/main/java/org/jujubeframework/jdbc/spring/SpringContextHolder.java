@@ -5,6 +5,8 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
+ * ApplicationContext Holder
+ *
  * @author John Li
  */
 public class SpringContextHolder implements ApplicationContextAware {

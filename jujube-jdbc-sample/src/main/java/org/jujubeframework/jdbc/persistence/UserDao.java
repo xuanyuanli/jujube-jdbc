@@ -2,8 +2,8 @@ package org.jujubeframework.jdbc.persistence;
 
 import org.jujubeframework.jdbc.base.BaseDao;
 import org.jujubeframework.jdbc.entity.User;
-import org.jujubeframework.jdbc.support.pagination.Pageable;
-import org.jujubeframework.jdbc.support.pagination.PageableRequest;
+import org.jujubeframework.jdbc.support.pagination.Page;
+import org.jujubeframework.jdbc.support.pagination.PageRequest;
 import org.jujubeframework.lang.Record;
 
 import java.util.List;
@@ -31,8 +31,8 @@ public interface UserDao extends BaseDao<User, Long> {
 
     public int getCountByNameLike(String name);
 
-    public Pageable<Record> pageForUserList(Map<String, Object> queryMap, PageableRequest request);
+    public Page<Record> pageForUserList(Map<String, Object> queryMap, PageRequest request);
 
-    public Pageable<Record> pageForUserList2(Map<String, Object> queryMap, PageableRequest request);
+    public Page<Record> pageForUserListOfOrder(Map<String, Object> queryMap, PageRequest request);
 
 }

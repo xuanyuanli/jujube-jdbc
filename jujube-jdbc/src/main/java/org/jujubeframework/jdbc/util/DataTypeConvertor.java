@@ -2,7 +2,7 @@ package org.jujubeframework.jdbc.util;
 
 import org.jujubeframework.jdbc.support.entity.BaseEntity;
 import org.jujubeframework.jdbc.support.entity.RecordEntity;
-import org.jujubeframework.jdbc.support.pagination.Pageable;
+import org.jujubeframework.jdbc.support.pagination.Page;
 import org.jujubeframework.lang.Record;
 import org.jujubeframework.util.Pojos;
 
@@ -84,12 +84,12 @@ public class DataTypeConvertor {
     /**
      * 转换Pageable的泛型为指定类型
      */
-    public static <T extends Serializable> Pageable<T> convertPageableGenericType(Pageable<Record> pageable, Class<T> clazz) {
-        Pageable<T> result = new Pageable<T>();
-        result.setTotalElements(pageable.getTotalElements());
-        result.setSize(pageable.getSize());
-        result.setIndex(pageable.getIndex());
-        result.setData(convertListRecordToListBean(clazz, pageable.getData()));
+    public static <T extends Serializable> Page<T> convertPageableGenericType(Page<Record> page, Class<T> clazz) {
+        Page<T> result = new Page<T>();
+        result.setTotalElements(page.getTotalElements());
+        result.setSize(page.getSize());
+        result.setIndex(page.getIndex());
+        result.setData(convertListRecordToListBean(clazz, page.getData()));
         return result;
     }
 

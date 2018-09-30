@@ -3,10 +3,10 @@ select * from `user` u left join  `department` d on u.department_id=d.id
 where 1=1
 @if name.notBlank
   and u.name like '%${name}%'
-@if age>0
+@if age > 0
   and u.age > ${age}
 @if ids.notNull
-  and id in (ids.iter(','))
+  and u.id in (ids.iter(','))
 @if nameDesc.notBlank
   order by name desc
 

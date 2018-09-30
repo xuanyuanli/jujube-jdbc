@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 /**
+ * Dao与Sql之间对应关系的注册器
+ *
  * @author John Li
  */
 public class DaoSqlRegistry {
@@ -49,7 +51,7 @@ public class DaoSqlRegistry {
         classStream.forEach(cl -> {
             for (Method declaredMethod : cl.getDeclaredMethods()) {
                 if (isSqlMethod(declaredMethod)) {
-                    String key = cl.getSimpleName() + "" + declaredMethod.getName();
+                    String key = cl.getSimpleName() + "." + declaredMethod.getName();
                     List<String> sql = methodSql.get(key);
                     if (sql==null){
                         throw new RuntimeException(cl.getName()+"."+declaredMethod.getName()+"()方法没有找到对应的Sql语句");
@@ -65,14 +67,14 @@ public class DaoSqlRegistry {
      */
     private static boolean isSqlMethod(Method method) {
         Method declaredMethod = Beans.getSelfDeclaredMethod(BaseDaoSupport.class, method.getName(), method.getParameterTypes());
-        if (declaredMethod == null && !method.getName().startsWith(FIND) && method.getName().startsWith(GET_COUNT)) {
+        if (declaredMethod == null && !method.getName().startsWith(FIND) && !method.getName().startsWith(GET_COUNT)) {
             return true;
         }
         return false;
     }
 
     /**
-     * 获得方法名与sql的map
+     * 获得方法名与sql的对应map
      */
     private static Map<String, List<String>> getMethodSql() {
         Resource[] sqlResources = Resources.getClassPathAllResources(ClassUtils.convertClassNameToResourcePath(sqlBasePackage) + "/**/*.sql");
@@ -80,7 +82,7 @@ public class DaoSqlRegistry {
         for (Resource sqlResource : sqlResources) {
             try {
                 String filename = sqlResource.getFilename();
-                filename = filename.substring(0, filename.length() - 5);
+                filename = filename.substring(0, filename.length() - 4);
                 List<String> lines = IOUtils.readLines(sqlResource.getInputStream(), Charsets.UTF_8.name());
                 Map<String, List<String>> group = Texts.group(lines, t -> t.startsWith("##") ? t.substring(2).trim() : "");
                 for (String key : group.keySet()) {
@@ -105,6 +107,11 @@ public class DaoSqlRegistry {
         DaoSqlRegistry.watchSqlFile = watchSqlFile;
     }
 
+    /**
+     * 获得sql构建器
+     * @param method
+     * @return
+     */
     public static SqlBuilder getSqlBuilder(Method method) {
         return METHOD_SQL_DATA.get(method);
     }
