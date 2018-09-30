@@ -1,18 +1,15 @@
 package ${basePackage};
 
-import org.springframework.stereotype.Repository;
-
-import org.jujubeframework.jdbc.persistence.base.BaseDao;
+import org.jujubeframework.jdbc.base.BaseDao;
 import ${entityPackage}.${className};
 
 /**
  * @author generator
  */
-@Repository
-public class ${className}Dao extends BaseDao<${className}> {
+public interface ${className}Dao extends BaseDao<${className},Long> {
 
     @Override
-    protected String getTableName() {
+    default String getTableName() {
         return "${tableName}";
     }
 }

@@ -40,29 +40,29 @@ public class UserDaoTest {
 
 	@Test
 	public void findByName() {
-		User user = userDao.findByName("宇宙");
+		User user = userDao.findByName("宇宙女人");
 		assertThat(user.getId()).isEqualTo(4);
 	}
 
 	@Test
 	public void findByNameLike() {
 		List<User> users = userDao.findByNameLike("%人%");
-		assertThat(users).hasSize(2);
+		assertThat(users).hasSize(3);
 		List<String> names = Collections3.extractToListString(users, "name");
-		assertThat(names).contains("女人", "人人网");
+		assertThat(names).contains("女人宇宙","宇宙女人", "人人网");
 	}
 
 	@Test
 	public void findByIdGtSortByAgeDesc() {
 		List<User> users = userDao.findByIdGtSortByAgeDesc(2);
-		assertThat(users).hasSize(8);
-		assertThat(users.get(0).getName()).isEqualTo("宇宙");
+		assertThat(users).hasSize(9);
+		assertThat(users.get(0).getName()).isEqualTo("长白山");
 	}
 
 	@Test
 	public void getCountByNameLike() {
 		int count = userDao.getCountByNameLike("%人%");
-		assertThat(count).isEqualTo(2);
+		assertThat(count).isEqualTo(3);
 	}
 
     @Test
@@ -73,13 +73,17 @@ public class UserDaoTest {
         map.put("ids", Lists.newArrayList(1,2,3,4,5,6));
         PageRequest request = new PageRequest(1,10);
         Page<Record> page = userDao.pageForUserList(map, request);
-        for (Record record : page) {
-            System.out.println(record);
-        }
+        assertThat(page.getTotalElements()).isEqualTo(2);
+        assertThat(page.getData().get(0).getId()).isEqualTo(3L);
+        assertThat(page.getData().get(1).getId()).isEqualTo(4L);
     }
 
     @Test
     public void pageForUserListOfOrder() {
+        PageRequest request = new PageRequest(1,10);
+        Page<Record> page = userDao.pageForUserListOfOrder(new HashMap<>(), request);
+        assertThat(page.getTotalElements()).isEqualTo(11L);
+        assertThat(page.getData().get(0).getId()).isEqualTo(11L);
     }
 
 }

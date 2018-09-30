@@ -1,5 +1,5 @@
-# easy-jdbc
-一款简洁的ORM框架，更接近原生SQL思维，融合了Mybatis、JPA的思维模型，简化了持久层的开发。
+# jujube-jdbc
+一款简洁的ORM框架，融合了Mybatis和JPA的优势，简化了持久层的开发。
 
 # 一、初衷
 当我们出现邪恶的想法：自己造轮子，那么一定是现有软件的使用上遇到了不舒服的地方，不能满足你的胃口了。  
@@ -17,16 +17,15 @@
 ## 6、speedment
 随着微服务的CQRS和函数式编程的兴起，speedment的春风也吹起来了，可以看成是Hibernate进阶版本，缺点是还是需要手动写查询逻辑。
 ## 6、思路和借鉴
-上述所有的框架中，最让我舒服的就是Spring JPA了，只写方法名就完成了程序的逻辑编写，这样的特性简直是太抓心。    
+上述所有的框架中，最让我舒服的就是Spring JPA了，只写方法名就完成了程序的逻辑编写，这样的特性实在太抓心。    
 不过JPA的联合查询实在让人不能忍啊，而且用`select *`这种方式效率确实不高。  
-坐在苹果树下思考了一下，为什么不能把Spring JPA和Mybatis结合起来呢？这样不就能鱼和熊掌兼得么？  
-说干就干，管他邪恶与否呢？没有亚当夏娃被邪恶引诱，也不会有无穷匮已的百姓和灿烂的文明啊！
+
+为了解决这个痛点，我决定基于Mybatis和Spring Data Jpa的思路，自己进行二次开发！
 
 # 二、示例
-中间耕耘的过程已快进，先来看一下成果。    
-示例项目在easy-jdbc-sample中，使用了Spring Boot+H2来启动，先看看测试代码：
+先来看一下成果，示例项目在easy-jdbc-sample中，使用了Spring Boot+H2来启动，先看看测试代码：
 ```
-@SpringBootTest(classes = EasyJdbcApp.class)
+@SpringBootTest(classes = JujubeJdbcApp.class)
 @RunWith(SpringRunner.class)
 @ActiveProfiles({ "test" })
 public class UserDaoTest {
@@ -34,103 +33,99 @@ public class UserDaoTest {
 	private UserDao userDao;
 
 	@Test
-	public void testFindNameById() {
+	public void findNameById() {
 		String name = userDao.findNameById(1);
 		assertThat(name).isEqualTo("百度");
 	}
 
 	@Test
-	public void testFindNameByAge() {
+	public void findNameByAge() {
 		List<String> names = userDao.findNameByAge(5);
 		assertThat(names).hasSize(2).contains("新浪", "人人网");
 	}
 
 	@Test
-	public void testFindByName() {
-		User user = userDao.findByName("宇宙");
+	public void findByName() {
+		User user = userDao.findByName("宇宙女人");
 		assertThat(user.getId()).isEqualTo(4);
 	}
 
 	@Test
-	public void testFindByNameLike() {
+	public void findByNameLike() {
 		List<User> users = userDao.findByNameLike("%人%");
-		assertThat(users).hasSize(2);
+		assertThat(users).hasSize(3);
 		List<String> names = Collections3.extractToListString(users, "name");
-		assertThat(names).contains("女人", "人人网");
+		assertThat(names).contains("女人宇宙","宇宙女人", "人人网");
 	}
 
 	@Test
-	public void testFindByIdGtSortByAgeDesc() {
+	public void findByIdGtSortByAgeDesc() {
 		List<User> users = userDao.findByIdGtSortByAgeDesc(2);
-		assertThat(users).hasSize(8);
-		assertThat(users.get(0).getName()).isEqualTo("女人");
+		assertThat(users).hasSize(9);
+		assertThat(users.get(0).getName()).isEqualTo("长白山");
 	}
 
 	@Test
-	public void testGetCountByNameLike() {
+	public void getCountByNameLike() {
 		int count = userDao.getCountByNameLike("%人%");
-		assertThat(count).isEqualTo(2);
+		assertThat(count).isEqualTo(3);
 	}
 
-	@Test
-	public void testPaginationByNameLength() {
-		PageableRequest request = PageableRequest.buildPageRequest(null);
-		Pageable<Record> pageable = userDao.paginationByNameLength(request, 3);
-		assertThat(pageable.getTotalElements()).isEqualTo(3);
-	}
+    @Test
+    public void pageForUserList() {
+        Map<String,Object> map = new HashMap<>();
+        map.put("name","人");
+        map.put("age",1);
+        map.put("ids", Lists.newArrayList(1,2,3,4,5,6));
+        PageRequest request = new PageRequest(1,10);
+        Page<Record> page = userDao.pageForUserList(map, request);
+        assertThat(page.getTotalElements()).isEqualTo(2);
+        assertThat(page.getData().get(0).getId()).isEqualTo(3L);
+        assertThat(page.getData().get(1).getId()).isEqualTo(4L);
+    }
+
+    @Test
+    public void pageForUserListOfOrder() {
+        PageRequest request = new PageRequest(1,10);
+        Page<Record> page = userDao.pageForUserListOfOrder(new HashMap<>(), request);
+        assertThat(page.getTotalElements()).isEqualTo(11L);
+        assertThat(page.getData().get(0).getId()).isEqualTo(11L);
+    }
+
 }
 ```
-再看我们的UserDao，还是比较简洁：
+再看我们的UserDao，非常简洁：
 ```
-@Repository
-public class UserDao extends BaseDao<User> {
+public interface UserDao extends BaseDao<User, Long> {
 
     @Override
-    protected String getTableName() {
+    default String getTableName() {
         return "user";
     }
-    
-    @JpaQuery
-    public String findNameById(long id) {
-        return null;
-    }
-    
-    @JpaQuery
-    public List<String> findNameByAge(int age) {
-        return null;
-    }
 
-    @JpaQuery
-    public User findByName(String name) {
-        return null;
-    }
-    
-    @JpaQuery
-    public List<User> findByNameLike(String name) {
-        return null;
-    }
+    public String findNameById(long id);
 
-    @JpaQuery
-    public List<User> findByIdGtSortByAgeDesc(int i) {
-        return null;
-    }
-    
-    @JpaQuery
-    public int getCountByNameLike(String name) {
-        return 0;
-    }
+    public List<String> findNameByAge(int age);
 
-    public Pageable<Record> paginationByNameLength(PageableRequest request, int len) {
-        String sql = "select u.*,d.name department_name from user u left join department d on d.id = u.department_id where length(u.name) >= ?";
-        return paginationBySql(sql, request, len);
-    }
+    public User findByName(String name);
+
+    public List<User> findByNameLike(String name);
+
+    public List<User> findByIdGtSortByAgeDesc(int i);
+
+    public int getCountByNameLike(String name);
+
+    public Page<Record> pageForUserList(Map<String, Object> queryMap, PageRequest request);
+
+    public Page<Record> pageForUserListOfOrder(Map<String, Object> queryMap, PageRequest request);
+
 }
 ```
-同学们已经注意到@JpaQuery注解的方法都是没有主体的，这点就是继承了Spring JPA的神奇之处了，至于分页的要用到的联合查询则需要手动写SQL了。  
+Dao中的find和getCount系列方法继承了Spring JPA的神奇之处：根据方法名动态的生成查询语句。至于分页的话，则需要手动写Sql了，后面会讲到如何配置。
 
 ---
 
-我写的方法都没有注释，其实是约定大于配置，如果了解了方法名构建的规则，一看方法名就知道这个原子操作是个什么意思了。  
+UserDao的方法没什么注释，其实是约定大于配置，当你了解了方法名构建的规则，就会知道这些原子操作是什么含义了。
 # 三、Spring Jpa理念与扩展
 先来看一下Spring JPA的理念：在查询时，通常需要同时根据多个属性进行查询，且查询的条件也各式各样（大于某个值、在某个范围等等），Spring Data JPA 为此提供了一些表达条件查询的关键字，大致如下：
 
@@ -164,24 +159,56 @@ public class UserDao extends BaseDao<User> {
 
 除了上述规则，框架还可以实现排序，用到SortBy关键字，如：
 ```
-    @JpaQuery
-    public List<User> findByIdGtSortByAgeDesc(int i) {
-        return null;
-    }
+    public List<User> findByIdGtSortByAgeDesc(int id);
 ```
 这里是根据年龄进行了倒序查询，Desc后缀表示倒序，Asc表示正序（也是默认值）。  
 
 上节的代码中还出现了getCountBy系列方法，规则和Spring JPA一致，是用来查询总数的。  
 
-## 1、特殊情况
-还有一个问题，假如我定义了这么一个方法`List<User> findByNameLike(String name)`，但有时候我只希望findByNameLike返回一条数据，原则上我们修改返回值为User即可，框架会智能分析出你是需要什么类型的数据。如果不幸的是一个Dao中想要同时定义`List<User> findByNameLike(String name)`和`User findByNameLike(String name)`那肯定是不符合规则的，我们可以这么写`User findOneByNameLike(String name)`也是可以被正确解析的
+## 1、只能判断返回类型
+对于`List<User> findByNameLike(String name)`来说，将会自动去查询集合；对于`User findByNameLike(String name)`来说，将会自动取得top元素。
 
 # 四、分页
-BaseDao里面有几个分页的方法，最常用的是paginationBySql。  
-这里涉及到两个类：
+上面说到分页需要些Sql，这个Sql定义在哪儿呢？  
 
-- PageableRequest 分页请求，主要内容有：当前是第几页，每页显示多少条等
-- Pageable 分页信息，主要内容有：分页数据集合，总的元素数等
+定义的UserDao.sql如下：
+
+```
+##pageForUserList
+select u.* from `user` u left join  `department` d on u.department_id=d.id
+where 1=1
+@if name.notBlank
+  and u.name like '%${name}%'
+@if age > 0
+  and u.age > ${age}
+@if ids.notNull
+  and u.id in (ids.iter(','))
+@if nameDesc.notBlank
+  order by u.id asc
+
+
+##pageForUserListOfOrder
+select u.* from `user` u left join  `department` d on u.department_id=d.id
+order by u.id desc
+```
+
+他的规则非常简单，以`##`开头后跟Dao中的方法名，对应的就是Dao中同名的方法查询Sql。
+
+## 1、判断式
+
+看到`@if name.notBlank`这样的写法，其实是非常符合Java的语法习惯的。`@if`就是`if`判断，`name.notBlank`就是变量`name`不为null且不为空。
+
+框架内置的有4个boolean判断函数，分别为：`notBlank`,`blank`,`notNull`,`null`
+
+## 2、取值
+
+从分页方法入参的`map`，要从中取值，使用`$`符号，如`${age}`。
+
+## 3、iter函数
+
+上面有看到`and u.id in (ids.iter(','))`的语句，其中`ids.iter(',')`其实用到了内置函数`iter`。
+
+`iter`就是循环，`ids.iter(',')`的意思是：以逗号为分隔符，循环输出ids中的元素。比如`ids=[1,2,3]`，那么`in (ids.iter(','))`的结果就是`in (1,2,3)`
 
 # 五、代码生成工具
 在entity-generator项目中打开EntityGeneratorDemo：
@@ -217,13 +244,42 @@ spring.datasource.driver-class-name=com.mysql.jdbc.Driver
             <version>1.0.0</version>
         </dependency>
 ```
-- 因为这个框架是基于Spring JDBC的，所以你需要先配置一下DataSource和JdbcTemplate。之后在项目的Spring组件的扫描路径添加上`org.dazao.persistence`。如果用的是applicationContext.xml的形式，如：
+- 因为这个框架是基于Spring JDBC的，所以你需要先配置一下DataSource和JdbcTemplate。之后加上如下配置：
 ```
-<context:component-scan base-package="com.yourproject;org.dazao.persistence"></context:component-scan>
+    @Bean
+	public JujubeJdbcConfiguration jujubeJdbcFactoryBean(){
+        JujubeJdbcConfiguration jujubeJdbcFactoryBean = new JujubeJdbcConfiguration();
+        jujubeJdbcFactoryBean.setBasePackage(JujubeJdbcApp.class.getPackage().getName());
+        jujubeJdbcFactoryBean.setSqlBasePackage("dao-sql");
+        return jujubeJdbcFactoryBean;
+    }
 ```
-如果是用的是Spring Boot，如：
+如果用的是xml配置，则如：
 ```
-@ComponentScan({ "com.yourproject", "org.dazao.persistence" })
+<bean name="jujubeJdbcFactoryBean" class="org.jujubeframework.jdbc.spring.JujubeJdbcConfiguration">
+	<property name="basePackage" ref="org.jujubeframework.jdbc.persistence"/>
+	<property name="sqlBasePackage" ref="dao-sql"/>
+</bean>
 ```
+basePackage是要扫描的Dao所在的包，sqlBasePackage是sql所在的包。
+
+关于sqlBasePackage的路径一般都放在resources下，赋值的时候按照package的形式进行赋值。
+
+如果你想把sql放到main的classpath下，就必须在Maven的pom.xml中配置：
+
+```
+    <build>
+        <resources>
+            <resource>
+                <filtering>false</filtering>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*Dao.sql</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+```
+
 - 打开entity-generator项目的EntityGeneratorDemo来生成需要的entity和dao
 
