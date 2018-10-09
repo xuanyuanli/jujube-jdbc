@@ -231,7 +231,7 @@ spring.datasource.driver-class-name=com.mysql.jdbc.Driver
 ```
 - Config配置中需要输入数据库表名、要生成到的项目代码根目录、entity所在包、dao所在包等信息
 
-运行这个类即可在响应的路径中生成Entity和Dao类了。
+运行这个类即可在相应的路径中生成Entity和Dao类了。
 
 # 六、使用
 大致的步骤为：
@@ -239,9 +239,9 @@ spring.datasource.driver-class-name=com.mysql.jdbc.Driver
 - 在需要的项目中引入依赖：
 ```
         <dependency>
-            <groupId>org.dazao</groupId>
-            <artifactId>easy-jdbc</artifactId>
-            <version>1.0.0</version>
+    		<groupId>org.jujubeframework</groupId>
+    		<artifactId>jujube-jdbc</artifactId>
+    		<version>1.0.1</version>
         </dependency>
 ```
 - 因为这个框架是基于Spring JDBC的，所以你需要先配置一下DataSource和JdbcTemplate。之后加上如下配置：
@@ -249,7 +249,7 @@ spring.datasource.driver-class-name=com.mysql.jdbc.Driver
     @Bean
 	public JujubeJdbcConfiguration jujubeJdbcFactoryBean(){
         JujubeJdbcConfiguration jujubeJdbcFactoryBean = new JujubeJdbcConfiguration();
-        jujubeJdbcFactoryBean.setBasePackage(JujubeJdbcApp.class.getPackage().getName());
+        jujubeJdbcFactoryBean.setBasePackage("org.jujubeframework.jdbc.persistence");
         jujubeJdbcFactoryBean.setSqlBasePackage("dao-sql");
         return jujubeJdbcFactoryBean;
     }
