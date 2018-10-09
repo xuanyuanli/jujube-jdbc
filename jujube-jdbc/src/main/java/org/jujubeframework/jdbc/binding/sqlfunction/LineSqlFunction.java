@@ -1,7 +1,5 @@
 package org.jujubeframework.jdbc.binding.sqlfunction;
 
-import org.jujubeframework.util.Texts;
-
 /**
  * 函内函数处理
  *

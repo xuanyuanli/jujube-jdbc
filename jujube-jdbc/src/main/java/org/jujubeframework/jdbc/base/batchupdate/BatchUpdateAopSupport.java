@@ -54,7 +54,7 @@ public class BatchUpdateAopSupport {
         }
         // 批量更新
         if (redisTemplate.opsForList().size(key) >= size || Dates.now() - timeline > expire) {
-            BaseDao<?,?> dao = (BaseDaoSupport<?,?>) joinPoint.getTarget();
+            BaseDao<?, ?> dao = (BaseDaoSupport<?, ?>) joinPoint.getTarget();
             List<String> listValues = redisTemplate.opsForList().range(key, 0, size);
             List<Object> list = new ArrayList<>();
             for (String value : listValues) {

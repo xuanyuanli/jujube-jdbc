@@ -38,6 +38,7 @@ public interface BaseEntity {
 
     /**
      * 将Bean转换为Record，会把Bean中驼峰命名的字段转为下划线命名
+     *
      * @return Record
      */
     default Record toRecord() {
@@ -46,7 +47,8 @@ public interface BaseEntity {
 
     /**
      * 将Bean赋值给对象类型的BO
-     * @param cl class
+     *
+     * @param cl  class
      * @param <T> 要转换的类型
      * @return bo
      */

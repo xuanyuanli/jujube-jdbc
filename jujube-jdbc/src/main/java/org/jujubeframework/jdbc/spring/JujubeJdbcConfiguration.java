@@ -51,8 +51,8 @@ public class JujubeJdbcConfiguration implements BeanDefinitionRegistryPostProces
         scanner.registerFilters();
         scanner.scan(StringUtils.tokenizeToStringArray(this.basePackage, ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS));
 
-        BeanDefinitionBuilder jobDetailBuilder = BeanDefinitionBuilder.genericBeanDefinition(SpringContextHolder.class);
-        registry.registerBeanDefinition("springContextHolder", jobDetailBuilder.getBeanDefinition());
+        BeanDefinitionBuilder holderBuilder = BeanDefinitionBuilder.genericBeanDefinition(SpringContextHolder.class);
+        registry.registerBeanDefinition("springContextHolder", holderBuilder.getBeanDefinition());
     }
 
     @Override

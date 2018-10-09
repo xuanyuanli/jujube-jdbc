@@ -40,18 +40,24 @@ import java.util.Map;
  * @author John Li
  */
 @Slf4j
-public class BaseDaoSupport<T extends BaseEntity,PK extends Serializable> implements BaseDao<T, PK> {
-    /** 真实的类型 */
+public class BaseDaoSupport<T extends BaseEntity, PK extends Serializable> implements BaseDao<T, PK> {
+    /**
+     * 真实的类型
+     */
     private final Class<T> realGenericType;
-    /** 真实主键的类型 */
+    /**
+     * 真实主键的类型
+     */
     private final Class<PK> realPrimayKeyType;
-    /** 表名 */
+    /**
+     * 表名
+     */
     private final String tableName;
     private String primaryKeyName = "id";
 
-    private  JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
-    public BaseDaoSupport(Class<T> realGenericType,Class<PK> realPrimayKeyType, String tableName) {
+    public BaseDaoSupport(Class<T> realGenericType, Class<PK> realPrimayKeyType, String tableName) {
         this.realGenericType = realGenericType;
         this.realPrimayKeyType = realPrimayKeyType;
         this.tableName = tableName;
@@ -211,8 +217,8 @@ public class BaseDaoSupport<T extends BaseEntity,PK extends Serializable> implem
      */
     public List<T> find(String fields, Spec spec) {
         //如果查询条件为空，则不进行查询，防止搜索全表
-        if (spec.isEmpty()){
-            return  new ArrayList<>();
+        if (spec.isEmpty()) {
+            return new ArrayList<>();
         }
         String sql = DIALECT.forDbSimpleQuery(fields, getTableName(), spec.getFilterSql());
         if (StringUtils.isNotBlank(spec.getGroupBy())) {

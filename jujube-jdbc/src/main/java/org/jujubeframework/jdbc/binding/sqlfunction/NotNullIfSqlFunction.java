@@ -7,6 +7,6 @@ public class NotNullIfSqlFunction implements BooleanSqlFunction {
     @Override
     public String convertToFreemarkerTemplate(String expression) {
         String functionCaller = getFunctionCaller(expression);
-        return functionCaller+"??";
+        return functionCaller + "??";
     }
 }

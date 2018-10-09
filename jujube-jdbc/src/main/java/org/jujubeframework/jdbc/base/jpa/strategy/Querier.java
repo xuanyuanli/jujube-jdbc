@@ -1,10 +1,7 @@
 package org.jujubeframework.jdbc.base.jpa.strategy;
 
-import org.jujubeframework.jdbc.base.BaseDaoSupport;
 import org.jujubeframework.jdbc.base.jpa.JpaBaseDaoSupport;
-import org.jujubeframework.jdbc.support.entity.RecordEntity;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;

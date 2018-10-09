@@ -50,12 +50,13 @@ public class DaoProxy<T> implements InvocationHandler {
             PageRequest pageRequest = Beans.getObjcetFromMethodArgs(args, PageRequest.class);
             Map queryMap = Beans.getObjcetFromMethodArgs(args, Map.class);
             SqlBuilder.SqlResult sqlResult = sqlBuilder.builder(queryMap);
-            return baseDaoSupport.paginationBySql(sqlResult.getSql(), pageRequest,sqlResult.getFilterParams());
+            return baseDaoSupport.paginationBySql(sqlResult.getSql(), pageRequest, sqlResult.getFilterParams());
         }
     }
 
     /**
      * 缓存中获取Dao class对应的DaoSupport
+     *
      * @param name
      * @return
      */
@@ -73,6 +74,7 @@ public class DaoProxy<T> implements InvocationHandler {
 
     /**
      * Spring所有Bean默认都是单例，所以不存在性能问题，不用做缓存
+     *
      * @param baseDaoSupport
      */
     private void setBaseDaoSupportJdbcTemplate(BaseDaoSupport<?, ?> baseDaoSupport) {

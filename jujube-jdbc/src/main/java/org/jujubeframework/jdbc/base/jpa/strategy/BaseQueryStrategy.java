@@ -1,11 +1,8 @@
 package org.jujubeframework.jdbc.base.jpa.strategy;
 
-import org.jujubeframework.jdbc.base.BaseDaoSupport;
 import org.jujubeframework.jdbc.base.jpa.JpaBaseDaoSupport;
-import org.jujubeframework.jdbc.support.entity.RecordEntity;
 import org.jujubeframework.util.CamelCase;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
 
 /**
@@ -25,6 +22,7 @@ public abstract class BaseQueryStrategy {
 
     /**
      * 是否承认
+     *
      * @param method 方法
      * @return boolean
      */
@@ -32,8 +30,9 @@ public abstract class BaseQueryStrategy {
 
     /**
      * 执行查询
-     * @param  method 方法
-     * @param args 方法的入参
+     *
+     * @param method 方法
+     * @param args   方法的入参
      * @return 查询结果
      */
     abstract Object query(Method method, Object[] args);
@@ -47,6 +46,7 @@ public abstract class BaseQueryStrategy {
 
     /**
      * 大写转为下划杠写法
+     *
      * @param queryField 查询的字段
      * @return 转换后的值
      */

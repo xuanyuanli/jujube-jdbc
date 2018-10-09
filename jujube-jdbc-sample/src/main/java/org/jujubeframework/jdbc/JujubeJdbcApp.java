@@ -19,9 +19,6 @@ public class JujubeJdbcApp {
         SpringApplication.run(JujubeJdbcApp.class, args);
     }
 
-    @Autowired
-    UserDao userDao;
-
     @Bean
     public H2JdbcTemplateAopSupport h2JdbcTemplateAopSupport() {
         return new H2JdbcTemplateAopSupport();

@@ -20,7 +20,7 @@ public class DaoProxyFactory<T> {
         return (T) Proxy.newProxyInstance(daoInterface.getClassLoader(), new Class[]{daoInterface}, mapperProxy);
     }
 
-    public T newInstance(BaseDaoSupport<?,?> baseDaoSupport) {
+    public T newInstance(BaseDaoSupport<?, ?> baseDaoSupport) {
         final DaoProxy<T> mapperProxy = new DaoProxy<T>(daoInterface, baseDaoSupport);
         return newInstance(mapperProxy);
     }

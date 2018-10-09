@@ -1,9 +1,9 @@
 package org.jujubeframework.jdbc.base.jpa.strategy;
 
 import com.google.common.collect.Lists;
-import org.jujubeframework.jdbc.base.spec.Spec;
 import org.jujubeframework.jdbc.base.jpa.handler.DefaultHandlerChain;
 import org.jujubeframework.jdbc.base.jpa.handler.HandlerContext;
+import org.jujubeframework.jdbc.base.spec.Spec;
 import org.jujubeframework.util.Pojos;
 
 import java.lang.reflect.Method;

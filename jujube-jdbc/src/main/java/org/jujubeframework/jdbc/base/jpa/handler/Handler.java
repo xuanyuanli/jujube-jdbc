@@ -1,7 +1,7 @@
 package org.jujubeframework.jdbc.base.jpa.handler;
 
-import org.jujubeframework.jdbc.base.spec.Spec;
 import org.jujubeframework.jdbc.base.jpa.strategy.BaseQueryStrategy;
+import org.jujubeframework.jdbc.base.spec.Spec;
 
 import java.util.List;
 
@@ -15,6 +15,7 @@ public interface Handler {
 
     /**
      * 大写转为下划杠写法
+     *
      * @param queryField 查询的字段
      * @return 转换后的值
      */

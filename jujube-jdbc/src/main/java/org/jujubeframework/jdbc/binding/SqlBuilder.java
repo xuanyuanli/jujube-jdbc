@@ -16,9 +16,13 @@ import java.util.Map;
  * @author John Li
  */
 public class SqlBuilder {
-    /** 找到"#{...}"这样的值*/
+    /**
+     * 找到"#{...}"这样的值
+     */
     private static final String DIRECT_VAR_REGEX = "(['%])#\\{(\\w+?)\\}(['%])";
-    /** 找到"#{...}"这样的值*/
+    /**
+     * 找到"#{...}"这样的值
+     */
     private static final String NOT_DIRECT_VAR_REGEX = "#\\{(\\w+?)\\}";
     private static final String QUESTION_MARK = "?";
     private final List<String> originSql;

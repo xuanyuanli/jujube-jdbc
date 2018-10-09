@@ -2,7 +2,6 @@ package org.jujubeframework.jdbc.spring;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  * ApplicationContext Holder
@@ -24,14 +23,7 @@ public class SpringContextHolder implements ApplicationContextAware {
      * 取得存储在静态变量中的ApplicationContext.
      */
     public static ApplicationContext getApplicationContext() {
-        checkApplicationContext();
         return applicationContext;
-    }
-
-    private static void checkApplicationContext() {
-        if (applicationContext == null) {
-            throw new IllegalStateException("applicaitonContext未注入,请在applicationContext.xml中定义SpringContextHolder");
-        }
     }
 
 }

@@ -2,41 +2,32 @@ package org.jujubeframework.jdbc.spring;
 
 import org.jujubeframework.jdbc.base.BaseDao;
 import org.jujubeframework.jdbc.base.BaseDaoSupport;
-import org.jujubeframework.jdbc.binding.DaoProxyFactory;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
-import org.springframework.beans.factory.config.RuntimeBeanReference;
-import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.ClassMetadata;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 import java.util.Set;
 
 /**
- * @see ClassPathBeanDefinitionScanner
- *
  * @author John Li
+ * @see ClassPathBeanDefinitionScanner
  */
 public class ClassPathDaoScanner extends ClassPathBeanDefinitionScanner {
     public ClassPathDaoScanner(BeanDefinitionRegistry registry) {
-        super(registry,false);
+        super(registry, false);
     }
 
     public void registerFilters() {
-        addExcludeFilter((metadataReader,metadataReaderFactory)->{
+        addExcludeFilter((metadataReader, metadataReaderFactory) -> {
             ClassMetadata classMetadata = metadataReader.getClassMetadata();
             return classMetadata.getClassName().equals(BaseDaoSupport.class.getName());
         });
-        addIncludeFilter((metadataReader,metadataReaderFactory)->{
+        addIncludeFilter((metadataReader, metadataReaderFactory) -> {
             ClassMetadata classMetadata = metadataReader.getClassMetadata();
             //必须是接口，且继承自BaseDao
             return classMetadata.isInterface() && Arrays.asList(classMetadata.getInterfaceNames()).stream().anyMatch(t -> BaseDao.class.getName().equals(t));
@@ -79,9 +70,7 @@ public class ClassPathDaoScanner extends ClassPathBeanDefinitionScanner {
         if (super.checkCandidate(beanName, beanDefinition)) {
             return true;
         } else {
-            logger.warn("Skipping DaoFactoryBean with name '" + beanName
-                    + "' and '" + beanDefinition.getBeanClassName() + "' daoInterface"
-                    + ". Bean already defined with the same name!");
+            logger.warn("Skipping DaoFactoryBean with name '" + beanName + "' and '" + beanDefinition.getBeanClassName() + "' daoInterface" + ". Bean already defined with the same name!");
             return false;
         }
     }
