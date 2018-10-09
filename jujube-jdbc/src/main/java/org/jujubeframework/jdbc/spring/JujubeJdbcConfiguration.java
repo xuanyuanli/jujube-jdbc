@@ -7,7 +7,9 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
-import org.springframework.context.*;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.util.StringUtils;
 
@@ -19,15 +21,21 @@ import org.springframework.util.StringUtils;
  */
 public class JujubeJdbcConfiguration implements BeanDefinitionRegistryPostProcessor, InitializingBean, ApplicationListener<ApplicationEvent> {
 
-   static final String CONFIG_LOCATION_DELIMITERS = ",; \t\n";
+    static final String CONFIG_LOCATION_DELIMITERS = ",; \t\n";
 
-   /**Dao接口所在的package*/
+    /**
+     * Dao接口所在的package
+     */
     private String basePackage;
 
-    /**Dao Sql所在的路径（相当于classpath来说）。如果不设置，默认为{@link #basePackage}.sql*/
+    /**
+     * Dao Sql所在的路径（相当于classpath来说）。如果不设置，默认为{@link #basePackage}.sql
+     */
     private String sqlBasePackage;
 
-    /**是否监听Dao Sql变化而动态刷新sql缓存*/
+    /**
+     * 是否监听Dao Sql变化而动态刷新sql缓存
+     */
     private boolean watchSqlFile;
 
     @Override
@@ -44,7 +52,7 @@ public class JujubeJdbcConfiguration implements BeanDefinitionRegistryPostProces
         scanner.scan(StringUtils.tokenizeToStringArray(this.basePackage, ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS));
 
         BeanDefinitionBuilder jobDetailBuilder = BeanDefinitionBuilder.genericBeanDefinition(SpringContextHolder.class);
-        registry.registerBeanDefinition("springContextHolder",jobDetailBuilder.getBeanDefinition());
+        registry.registerBeanDefinition("springContextHolder", jobDetailBuilder.getBeanDefinition());
     }
 
     @Override
@@ -71,8 +79,8 @@ public class JujubeJdbcConfiguration implements BeanDefinitionRegistryPostProces
     }
 
     public String getSqlBasePackage() {
-        if (sqlBasePackage ==null){
-            sqlBasePackage = basePackage+".sql";
+        if (sqlBasePackage == null) {
+            sqlBasePackage = basePackage + ".sql";
         }
         return sqlBasePackage;
     }

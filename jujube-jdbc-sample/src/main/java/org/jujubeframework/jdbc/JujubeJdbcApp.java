@@ -24,13 +24,13 @@ public class JujubeJdbcApp {
 
     @Bean
     public H2JdbcTemplateAopSupport h2JdbcTemplateAopSupport() {
-		return new H2JdbcTemplateAopSupport();
-	}
+        return new H2JdbcTemplateAopSupport();
+    }
 
     @Bean
-	public JujubeJdbcConfiguration jujubeJdbcFactoryBean(){
+    public JujubeJdbcConfiguration jujubeJdbcFactoryBean() {
         JujubeJdbcConfiguration jujubeJdbcFactoryBean = new JujubeJdbcConfiguration();
-        jujubeJdbcFactoryBean.setBasePackage(JujubeJdbcApp.class.getPackage().getName());
+        jujubeJdbcFactoryBean.setBasePackage("org.jujubeframework.jdbc");
         jujubeJdbcFactoryBean.setSqlBasePackage("dao-sql");
         return jujubeJdbcFactoryBean;
     }

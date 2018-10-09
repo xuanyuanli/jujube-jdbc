@@ -1,7 +1,6 @@
 package org.jujubeframework.jdbc.binding;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.jujubeframework.constant.Charsets;
 import org.jujubeframework.jdbc.base.BaseDao;
 import org.jujubeframework.jdbc.base.BaseDaoSupport;
@@ -53,8 +52,8 @@ public class DaoSqlRegistry {
                 if (isSqlMethod(declaredMethod)) {
                     String key = cl.getSimpleName() + "." + declaredMethod.getName();
                     List<String> sql = methodSql.get(key);
-                    if (sql==null){
-                        throw new RuntimeException(cl.getName()+"."+declaredMethod.getName()+"()方法没有找到对应的Sql语句");
+                    if (sql == null) {
+                        throw new RuntimeException(cl.getName() + "." + declaredMethod.getName() + "()方法没有找到对应的Sql语句");
                     }
                     METHOD_SQL_DATA.put(declaredMethod, new SqlBuilder(sql));
                 }
@@ -109,6 +108,7 @@ public class DaoSqlRegistry {
 
     /**
      * 获得sql构建器
+     *
      * @param method
      * @return
      */

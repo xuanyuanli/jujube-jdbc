@@ -16,7 +16,7 @@ public class UserController {
     UserDao userDao;
 
     @RequestMapping("/list")
-    public String test(){
+    public String test() {
         return Jsons.toPrettyJson(userDao.findAll());
     }
 }
