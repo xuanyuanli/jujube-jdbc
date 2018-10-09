@@ -22,7 +22,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.jujubeframework</groupId>
+            <groupId>io.github.jujubeframework</groupId>
             <artifactId>jujube-core</artifactId>
             <version>1.0.1</version>
         </dependency>
