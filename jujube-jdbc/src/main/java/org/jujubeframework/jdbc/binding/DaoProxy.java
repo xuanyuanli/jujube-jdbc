@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentMap;
 public class DaoProxy<T> implements InvocationHandler {
 
 
-    private static final ConcurrentMap<String, JpaBaseDaoSupport> JPA_BASEDAO_CACHE = new ConcurrentHashMap<>(16);
+    private static final ConcurrentMap<String, JpaBaseDaoSupport> JPA_BASEDAO_CACHE = new ConcurrentHashMap<>();
 
     private final Class<T> daoInterface;
     private final BaseDaoSupport<?, ?> baseDaoSupport;
