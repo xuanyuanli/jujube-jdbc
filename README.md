@@ -20,7 +20,7 @@
 上述所有的框架中，最让我舒服的就是Spring JPA了，只写方法名就完成了程序的逻辑编写，这样的特性实在太抓心。    
 不过JPA的联合查询实在让人不能忍啊，而且用`select *`这种方式效率确实不高。  
 
-为了解决这个痛点，我决定基于Mybatis和Spring Data Jpa的思路，自己进行二次开发！
+为了解决这个痛点，我决定基于Mybatis和Spring Data Jpa的思路，用Spring-JDBC为基础自己进行二次开发！
 
 # 二、示例
 先来看一下成果，示例项目在easy-jdbc-sample中，使用了Spring Boot+H2来启动，先看看测试代码：
@@ -234,8 +234,33 @@ spring.datasource.driver-class-name=com.mysql.jdbc.Driver
 运行这个类即可在相应的路径中生成Entity和Dao类了。
 
 # 六、使用
-大致的步骤为：
-- git clone下代码，安装easy-jdbc项目到本地仓库或发布到远程仓库（后续我会把项目发布到maven中央仓库，这一步就可以省略了）
+如果你用的是spring-boot的话，maven中加上依赖：
+
+```
+        <dependency>
+            <groupId>io.github.jujube-framework</groupId>
+            <artifactId>spring-boot-starter-jujube-jdbc</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+```
+
+在spring的配置文件中有两个配置项：
+
+```
+jujube.jdbc.base-package=org.jujubeframework.jdbc.persistence
+jujube.jdbc.sql-base-package=dao-sql
+```
+
+basePackage是要扫描的Dao所在的包，sqlBasePackage是sql所在的包。注意sql的名称与Dao的名称要一致。
+
+
+
+---
+
+
+
+如果是非spring-boot环境，步骤为：
+
 - 在需要的项目中引入依赖：
 ```
         <dependency>
@@ -261,7 +286,7 @@ spring.datasource.driver-class-name=com.mysql.jdbc.Driver
 	<property name="sqlBasePackage" ref="dao-sql"/>
 </bean>
 ```
-basePackage是要扫描的Dao所在的包，sqlBasePackage是sql所在的包。
+basePackage是要扫描的Dao所在的包，sqlBasePackage是sql所在的包。注意sql的名称与Dao的名称要一致。
 
 关于sqlBasePackage的路径一般都放在resources下，赋值的时候按照package的形式进行赋值。
 

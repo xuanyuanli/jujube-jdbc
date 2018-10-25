@@ -11,6 +11,7 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.PriorityOrdered;
 import org.springframework.util.StringUtils;
 
 
@@ -19,7 +20,7 @@ import org.springframework.util.StringUtils;
  *
  * @author John Li
  */
-public class JujubeJdbcConfiguration implements BeanDefinitionRegistryPostProcessor, InitializingBean, ApplicationListener<ApplicationEvent> {
+public class JujubeJdbcConfiguration implements BeanDefinitionRegistryPostProcessor {
 
     static final String CONFIG_LOCATION_DELIMITERS = ",; \t\n";
 
@@ -57,17 +58,6 @@ public class JujubeJdbcConfiguration implements BeanDefinitionRegistryPostProces
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-    }
-
-    @Override
-    public void onApplicationEvent(ApplicationEvent event) {
-        if (event instanceof ContextRefreshedEvent) {
-            //刷新注册器
-        }
     }
 
     public void setBasePackage(String basePackage) {
