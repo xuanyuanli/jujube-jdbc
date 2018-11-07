@@ -266,7 +266,7 @@ basePackage是要扫描的Dao所在的包，sqlBasePackage是sql所在的包。�
         <dependency>
     		<groupId>org.jujubeframework</groupId>
     		<artifactId>jujube-jdbc</artifactId>
-    		<version>1.0.1</version>
+    		<version>1.1</version>
         </dependency>
 ```
 - 因为这个框架是基于Spring JDBC的，所以你需要先配置一下DataSource和JdbcTemplate。之后加上如下配置：
