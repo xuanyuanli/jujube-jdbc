@@ -3,7 +3,7 @@
 
     <groupId>io.github.jujube-framework</groupId>
     <artifactId>jujube-jdbc</artifactId>
-    <version>1.0.1</version>
+    <version>1.1</version>
     <packaging>jar</packaging>
 
     <name>Jujube JDBC</name>
@@ -42,7 +42,7 @@
         <dependency>
             <groupId>io.github.jujube-framework</groupId>
             <artifactId>jujube-core</artifactId>
-            <version>1.0.1</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
