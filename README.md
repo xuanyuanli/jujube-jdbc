@@ -240,7 +240,7 @@ spring.datasource.driver-class-name=com.mysql.jdbc.Driver
         <dependency>
             <groupId>io.github.jujube-framework</groupId>
             <artifactId>spring-boot-starter-jujube-jdbc</artifactId>
-            <version>1.1</version>
+            <version>1.4</version>
         </dependency>
 ```
 
@@ -266,7 +266,7 @@ basePackage是要扫描的Dao所在的包，sqlBasePackage是sql所在的包。�
         <dependency>
     		<groupId>org.jujubeframework</groupId>
     		<artifactId>jujube-jdbc</artifactId>
-    		<version>1.1</version>
+    		<version>1.4</version>
         </dependency>
 ```
 - 因为这个框架是基于Spring JDBC的，所以你需要先配置一下DataSource和JdbcTemplate。之后加上如下配置：
@@ -288,9 +288,15 @@ basePackage是要扫描的Dao所在的包，sqlBasePackage是sql所在的包。�
 ```
 basePackage是要扫描的Dao所在的包，sqlBasePackage是sql所在的包。注意sql的名称与Dao的名称要一致。
 
+
+
+---
+
+
+
 关于sqlBasePackage的路径一般都放在resources下，赋值的时候按照package的形式进行赋值。
 
-如果你想把sql放到main的classpath下，就必须在Maven的pom.xml中配置：
+如果你想把sql放到src/main/java的classpath下，就必须在Maven的pom.xml中配置：
 
 ```
     <build>
@@ -300,6 +306,13 @@ basePackage是要扫描的Dao所在的包，sqlBasePackage是sql所在的包。�
                 <directory>src/main/java</directory>
                 <includes>
                     <include>**/*Dao.sql</include>
+                </includes>
+            </resource>
+            <resource>
+                <filtering>false</filtering>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.*</include>
                 </includes>
             </resource>
         </resources>

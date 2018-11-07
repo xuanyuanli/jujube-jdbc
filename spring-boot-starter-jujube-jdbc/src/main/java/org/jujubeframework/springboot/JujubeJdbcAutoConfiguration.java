@@ -34,7 +34,7 @@ public class JujubeJdbcAutoConfiguration {
     private String getBasePackage(Environment environment) {
         String property = environment.getProperty("jujube.jdbc.base-package");
         if (property==null){
-            property = environment.getProperty("basePackage");
+            property = environment.getProperty("jujube.jdbc.basePackage");
         }
         return property;
     }
@@ -42,7 +42,7 @@ public class JujubeJdbcAutoConfiguration {
     private String getSqlBasePackage(Environment environment) {
         String property = environment.getProperty("jujube.jdbc.sql-base-package");
         if (property==null){
-            property = environment.getProperty("sqlBasePackage");
+            property = environment.getProperty("jujube.jdbc.sqlBasePackage");
         }
         return property;
     }

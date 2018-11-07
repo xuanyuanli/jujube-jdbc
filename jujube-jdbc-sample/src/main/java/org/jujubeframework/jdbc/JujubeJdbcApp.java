@@ -12,7 +12,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 /**
  * @author John Li
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "org.jujubeframework.jdbc")
 @EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
 public class JujubeJdbcApp {
     public static void main(String[] args) throws Exception {
@@ -24,11 +24,4 @@ public class JujubeJdbcApp {
         return new H2JdbcTemplateAopSupport();
     }
 
-    @Bean
-    public JujubeJdbcConfiguration jujubeJdbcFactoryBean() {
-        JujubeJdbcConfiguration jujubeJdbcFactoryBean = new JujubeJdbcConfiguration();
-        jujubeJdbcFactoryBean.setBasePackage("org.jujubeframework.jdbc");
-        jujubeJdbcFactoryBean.setSqlBasePackage("dao-sql");
-        return jujubeJdbcFactoryBean;
-    }
 }
