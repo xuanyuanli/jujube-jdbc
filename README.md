@@ -240,7 +240,7 @@ spring.datasource.driver-class-name=com.mysql.jdbc.Driver
         <dependency>
             <groupId>io.github.jujube-framework</groupId>
             <artifactId>spring-boot-starter-jujube-jdbc</artifactId>
-            <version>1.0.1</version>
+            <version>1.1</version>
         </dependency>
 ```
 
