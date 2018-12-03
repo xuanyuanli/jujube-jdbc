@@ -321,3 +321,15 @@ basePackage是要扫描的Dao所在的包，sqlBasePackage是sql所在的包。�
 
 - 打开entity-generator项目的EntityGeneratorDemo来生成需要的entity和dao
 
+
+
+
+
+# 实现原理介绍
+
+入口在JujubeJdbcConfiguration，他实现了Spring注册器后置处理接口BeanDefinitionRegistryPostProcessor，主要是覆写了postProcessBeanDefinitionRegistry()方法。这个方法中有两步操作：1、用DaoSqlRegistry注册dao和dao sql的对应信息；2、通过ClassPathDaoScanner进行扫描，代理所有Dao接口。  
+
+ClassPathDaoScanner中有关代理的逻辑是关键，主要在doScan()方法中，将扫描到的类的Class类型都设置为DaoFactoryBean，DaoFactoryBean是一个FactoryBean，在其getObject()中获得真实用到的Bean。
+
+DaoProxyFactory是一个代理类的生产工厂，根据Dao的类型获得DaoProxy。DaoProxy中有查询的真正逻辑，先通过SqlBuilder通过Method对象获得sql模板，然后用BaseDaoSupport或JpaBaseDaoSupport进行真正的查询。
+
