@@ -53,8 +53,8 @@ public class UserDaoTest {
     }
 
     @Test
-    public void findByIdGtSortByAgeDesc() {
-        List<User> users = userDao.findByIdGtSortByAgeDesc(2);
+    public void findByIdGtOrderByAgeDesc() {
+        List<User> users = userDao.findByIdGtOrderByAgeDesc(2);
         assertThat(users).hasSize(9);
         assertThat(users.get(0).getName()).isEqualTo("长白山");
     }

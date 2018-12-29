@@ -59,8 +59,8 @@ public class UserDaoTest {
     }
 
     @Test
-    public void findByIdGtSortByAgeDesc() {
-        List<User> users = userDao.findByIdGtSortByAgeDesc(2);
+    public void findByIdGtOrderByAgeDesc() {
+        List<User> users = userDao.findByIdGtOrderByAgeDesc(2);
         assertThat(users).hasSize(9);
         assertThat(users.get(0).getName()).isEqualTo("长白山");
     }
@@ -111,7 +111,7 @@ public interface UserDao extends BaseDao<User, Long> {
 
     public List<User> findByNameLike(String name);
 
-    public List<User> findByIdGtSortByAgeDesc(int i);
+    public List<User> findByIdGtOrderByAgeDesc(int i);
 
     public int getCountByNameLike(String name);
 
@@ -157,9 +157,9 @@ UserDao的方法没什么注释，其实是约定大于配置，当你了解了�
 
 - NotIn --- 等价于 SQL 中的 "not in"，比如 findByUsernameNotIn(Collection<String> userList) ，方法的参数可以是 Collection 类型，也可以是数组或者不定长参数；
 
-除了上述规则，框架还可以实现排序，用到SortBy关键字，如：
+除了上述规则，框架还可以实现排序，用到OrderBy关键字，如：
 ```
-    public List<User> findByIdGtSortByAgeDesc(int id);
+    public List<User> findByIdGtOrderByAgeDesc(int id);
 ```
 这里是根据年龄进行了倒序查询，Desc后缀表示倒序，Asc表示正序（也是默认值）。  
 
@@ -240,7 +240,7 @@ spring.datasource.driver-class-name=com.mysql.jdbc.Driver
         <dependency>
             <groupId>io.github.jujube-framework</groupId>
             <artifactId>spring-boot-starter-jujube-jdbc</artifactId>
-            <version>1.4</version>
+            <version>1.5</version>
         </dependency>
 ```
 
@@ -266,7 +266,7 @@ basePackage是要扫描的Dao所在的包，sqlBasePackage是sql所在的包。�
         <dependency>
     		<groupId>org.jujubeframework</groupId>
     		<artifactId>jujube-jdbc</artifactId>
-    		<version>1.4</version>
+    		<version>1.5</version>
         </dependency>
 ```
 - 因为这个框架是基于Spring JDBC的，所以你需要先配置一下DataSource和JdbcTemplate。之后加上如下配置：

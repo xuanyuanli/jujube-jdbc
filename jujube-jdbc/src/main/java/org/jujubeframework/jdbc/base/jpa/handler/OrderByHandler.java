@@ -8,17 +8,17 @@ import java.util.List;
 /**
  * @author John Li
  */
-public class SortHandler implements Handler {
+public class OrderByHandler implements Handler {
 
     private static final String AND = "And";
-    private static final String SORT_BY = "SortBy";
+    private static final String ORDER_BY = "OrderBy";
     private static final String DESC = "Desc";
 
     @Override
     public void handler(Spec spec, String methodName, List<Object> args, HandlerChain chain) {
-        if (methodName.contains(SORT_BY)) {
-            int index = methodName.indexOf(SORT_BY);
-            String mname = methodName.substring(index + SORT_BY.length());
+        if (methodName.contains(ORDER_BY)) {
+            int index = methodName.indexOf(ORDER_BY);
+            String mname = methodName.substring(index + ORDER_BY.length());
             String[] sarr = mname.split(AND);
             for (String field : sarr) {
                 processField(spec, field);

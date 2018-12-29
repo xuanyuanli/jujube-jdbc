@@ -39,6 +39,6 @@ public class HandlerContext {
         COMPLEX_HANDLER.add(new AndHandler());
 
         PREPOSITION_HANDLER.add(new LimitHandler());
-        PREPOSITION_HANDLER.add(new SortHandler());
+        PREPOSITION_HANDLER.add(new OrderByHandler());
     }
 }

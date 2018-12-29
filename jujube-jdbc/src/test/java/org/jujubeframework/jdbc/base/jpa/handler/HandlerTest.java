@@ -30,7 +30,7 @@ public class HandlerTest {
         selfChain.addHandlers(HandlerContext.PREPOSITION_HANDLER);
         selfChain.addHandlers(HandlerContext.COMPLEX_HANDLER);
         selfChain.addHandlers(HandlerContext.SIMPLE_HANDLER);
-        String tmname = "AgeAndNameLikeAndTypeBetweenAndSourceInAndTitleIsNullAndSubTitleIsNotNullAndMobileNotSortByIdDescLimit10";
+        String tmname = "AgeAndNameLikeAndTypeBetweenAndSourceInAndTitleIsNullAndSubTitleIsNotNullAndMobileNotOrderByIdDescLimit10";
         List<Object> args = Lists.newArrayList("12", "微软", 3, 6, Lists.newArrayList(1, 2, 3), "15911105446");
         selfChain.handler(spec, tmname, args);
         assertThat(spec.getFilterSql()).isEqualTo("(`age`= ? and `name` like ? and `type` between ? and ? and `source` in(1,2,3) and `title` is null and `sub_title` is not null and `mobile` <> ?)");
@@ -56,12 +56,12 @@ public class HandlerTest {
 
     @Test
     public void testHandler3() {
-        String mname = "findIdByRecommendStatusIndexSortByOrderNumLimit14";
+        String mname = "findIdByRecommendStatusIndexOrderByOrderNumLimit14";
         String[] arr = Texts.getGroups("find(.+?)By(.+)", mname);
         String queryField = arr[1];
         queryField = BaseQueryStrategy.realField(queryField);
         String tmname = mname.replaceAll("find(.+?)By", "");
-        assertThat(tmname).isEqualTo("RecommendStatusIndexSortByOrderNumLimit14");
+        assertThat(tmname).isEqualTo("RecommendStatusIndexOrderByOrderNumLimit14");
         assertThat(queryField).isEqualTo("id");
     }
 

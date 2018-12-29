@@ -27,7 +27,7 @@ public interface UserDao extends BaseDao<User, Long> {
 
     public List<User> findByNameLike(String name);
 
-    public List<User> findByIdGtSortByAgeDesc(int i);
+    public List<User> findByIdGtOrderByAgeDesc(int i);
 
     public int getCountByNameLike(String name);
 
