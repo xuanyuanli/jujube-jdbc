@@ -177,14 +177,18 @@ UserDao的方法没什么注释，其实是约定大于配置，当你了解了�
 ##pageForUserList
 select u.* from `user` u left join  `department` d on u.department_id=d.id
 where 1=1
-@if name.notBlank
+<#if notBlank(name)>
   and u.name like '%${name}%'
-@if age > 0
+</#if>
+<#if age gt 0>
   and u.age > ${age}
-@if ids.notNull
-  and u.id in (ids.iter(','))
-@if nameDesc.notBlank
+</#if>
+<#if notNull(ids)>
+  and u.id in (${join(ids,',')})
+</#if>
+<#if notBlank(nameDesc)>
   order by u.id asc
+</#if>
 
 
 ##pageForUserListOfOrder
@@ -194,21 +198,17 @@ order by u.id desc
 
 他的规则非常简单，以`##`开头后跟Dao中的方法名，对应的就是Dao中同名的方法查询Sql。
 
-## 1、判断式
+## 1、Freemarker模板
 
-看到`@if name.notBlank`这样的写法，其实是非常符合Java的语法习惯的。`@if`就是`if`判断，`name.notBlank`就是变量`name`不为null且不为空。
+复杂SQL一般是有逻辑的，这里选用了Freemarker模板引擎来做条件判断和筛选。
 
-框架内置的有4个boolean判断函数，分别为：`notBlank`,`blank`,`notNull`,`null`
+如果你不熟悉Freemarker也没关系，掌握常用的if判断和取值即可。
 
-## 2、取值
+`if`判断类似`<#if age gt 0></#if>`这种形式。下面说一下新手使用Freemarker需要注意的问题：
 
-从分页方法入参的`map`，要从中取值，使用`$`符号，如`${age}`。
-
-## 3、iter函数
-
-上面有看到`and u.id in (ids.iter(','))`的语句，其中`ids.iter(',')`其实用到了内置函数`iter`。
-
-`iter`就是循环，`ids.iter(',')`的意思是：以逗号为分隔符，循环输出ids中的元素。比如`ids=[1,2,3]`，那么`in (ids.iter(','))`的结果就是`in (1,2,3)`
+- Freemarker的大于不能用`>`符号，而要用`gt`；小于用`lt`
+- Freemarker的取值使用`$`符号，如` ${name}`
+- 我这里扩展了Freemarker的一些函数，如notBlank、notNull、join等，他们分别表示：不能为空白字符、不能为null、把集合用特定符号连接起来
 
 # 五、代码生成工具
 在entity-generator项目中打开EntityGeneratorDemo：
@@ -240,7 +240,7 @@ spring.datasource.driver-class-name=com.mysql.jdbc.Driver
         <dependency>
             <groupId>io.github.jujube-framework</groupId>
             <artifactId>spring-boot-starter-jujube-jdbc</artifactId>
-            <version>1.5</version>
+            <version>1.6</version>
         </dependency>
 ```
 
@@ -266,7 +266,7 @@ basePackage是要扫描的Dao所在的包，sqlBasePackage是sql所在的包。�
         <dependency>
     		<groupId>org.jujubeframework</groupId>
     		<artifactId>jujube-jdbc</artifactId>
-    		<version>1.5</version>
+    		<version>1.6</version>
         </dependency>
 ```
 - 因为这个框架是基于Spring JDBC的，所以你需要先配置一下DataSource和JdbcTemplate。之后加上如下配置：
