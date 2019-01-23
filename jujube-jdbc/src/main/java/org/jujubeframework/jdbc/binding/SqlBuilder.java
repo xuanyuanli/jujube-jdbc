@@ -2,7 +2,9 @@ package org.jujubeframework.jdbc.binding;
 
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
-import org.jujubeframework.jdbc.binding.sqlfunction.SqlFunctionContext;
+import org.jujubeframework.jdbc.binding.fmtmethod.JoinMethod;
+import org.jujubeframework.jdbc.binding.fmtmethod.NotBlankMethod;
+import org.jujubeframework.jdbc.binding.fmtmethod.NotNullMethod;
 import org.jujubeframework.util.Ftls;
 import org.jujubeframework.util.Texts;
 
@@ -16,57 +18,22 @@ import java.util.Map;
  * @author John Li
  */
 public class SqlBuilder {
+
     /**
-     * 找到】"#{...}"】这样的值
+     * 找到【${...}】这样的值
      */
-    private static final String DIRECT_VAR_REGEX = "(['%])#\\{(\\w+?)\\}(['%])";
-    /**
-     * 找到【#{...}】这样的值
-     */
-    private static final String NOT_DIRECT_VAR_REGEX = "#\\{(\\w+?)\\}";
+    private static final String NOT_DIRECT_VAR_REGEX = "\\$\\{(.+?)\\}";
+    private static final String BRACE_VAR_REGEX = "\\{(.+?)\\}";
     private static final String QUESTION_MARK = "?";
+
     private final List<String> originSql;
-    private String freemarkerSql;
+    private String sql;
 
     public SqlBuilder(List<String> originSql) {
         this.originSql = originSql;
-        toFreemarkerSql();
+        this.sql = StringUtils.join(originSql, " ");
     }
 
-    /**
-     * 原始sql转换为freemarker模板sql
-     */
-    private void toFreemarkerSql() {
-        List<String> sqlLines = new ArrayList<>(originSql.size());
-        boolean meetIf = false;
-        for (String line : originSql) {
-            //先替换"${"为"#{"，便于后面自定义模板的处理
-            line = line.replace("${", "#{");
-            if (line.startsWith("@if")) {
-                line = line.substring(3).trim();
-                line = SqlFunctionContext.booleanSqlFunctionExecute(line);
-                line = SqlFunctionContext.ifKeyworkBeforeProcess(line);
-                sqlLines.add(line);
-                meetIf = true;
-            } else {
-                if (SqlFunctionContext.containsLineSqlFunction(line)) {
-                    line = SqlFunctionContext.lineSqlFunctionExecute(line);
-                }
-                sqlLines.add(line);
-                if (meetIf) {
-                    sqlLines.add(SqlFunctionContext.ifKeyworkPostProcess());
-                    meetIf = false;
-                }
-            }
-        }
-        freemarkerSql = StringUtils.join(sqlLines, "\n");
-        //先处理直接查询（包含like），逻辑是：如果是直接查询，则替换为freemarker模块
-        List<Texts.RegexQueryInfo> regexQueryInfos = Texts.regQuery(DIRECT_VAR_REGEX, freemarkerSql);
-        for (Texts.RegexQueryInfo regexQueryInfo : regexQueryInfos) {
-            List<String> groups = regexQueryInfo.getGroups();
-            freemarkerSql = freemarkerSql.replace(regexQueryInfo.getGroup(), groups.get(0) + "${" + groups.get(1) + "}" + groups.get(2));
-        }
-    }
 
     /**
      * 构建最终的查询sql
@@ -77,16 +44,68 @@ public class SqlBuilder {
     public SqlResult builder(Map queryMap) {
         SqlResult result = new SqlResult();
         List<Object> filterParam = new ArrayList<>();
-        //处理非直接查询，统一替换为?符号
-        List<Texts.RegexQueryInfo> regexQueryInfos = Texts.regQuery(NOT_DIRECT_VAR_REGEX, freemarkerSql);
-        for (Texts.RegexQueryInfo regexQueryInfo : regexQueryInfos) {
-            freemarkerSql = freemarkerSql.replace(regexQueryInfo.getGroup(), QUESTION_MARK);
-            String var = regexQueryInfo.getGroups().get(0);
-            filterParam.add(queryMap.get(var));
+        fullFreemarkerRoot(queryMap);
+        StringBuilder tsql = new StringBuilder();
+        String $ = "$";
+        if (sql.contains($)){
+            //替换${...}为@{${...}}
+            String[] arr = sql.split("\\$");
+            for (int i = 0; i < arr.length; i++) {
+                String line = arr[i];
+                if (i>0){
+                    line = $ + line;
+                }
+                List<Texts.RegexQueryInfo> regexQueryInfos = Texts.regQuery(NOT_DIRECT_VAR_REGEX, line);
+                for (Texts.RegexQueryInfo regexQueryInfo : regexQueryInfos) {
+                    String group0 = regexQueryInfo.getGroups().get(0);
+                    String text = "@{${" + group0 + "}}";
+                    //对于join的特殊处理
+                    if (group0.trim().startsWith("join(")){
+                        text = "@{${" + group0 + "}}*";
+                    }
+                    line = StringUtils.join(line.substring(0, regexQueryInfo.getStart()), text, line.substring(regexQueryInfo.getEnd()));
+                }
+                tsql.append(line);
+            }
+            sql = Ftls.processStringTemplateToString(tsql.toString(), queryMap).replace("\n", " ");
+            //根据@{...}获取值,值替换为sql中的问号，并填充filterParam
+            arr = sql.split("@");
+            tsql = new StringBuilder();
+            for (int i = 0; i < arr.length; i++) {
+                String line = arr[i];
+                List<Texts.RegexQueryInfo> regexQueryInfos = Texts.regQuery(BRACE_VAR_REGEX, line);
+                for (Texts.RegexQueryInfo regexQueryInfo : regexQueryInfos) {
+                    String group0 = regexQueryInfo.getGroups().get(0);
+                    if (regexQueryInfo.getEnd() < line.length()-1){
+                        char ch = line.charAt(regexQueryInfo.getEnd());
+                        //对于in的特殊处理
+                        if (ch == '*'){
+                            line = StringUtils.join(line.substring(0, regexQueryInfo.getStart()), group0, line.substring(regexQueryInfo.getEnd()+1));
+                            continue;
+                        }
+                        //对于like的特殊处理
+                        if (ch == '\'' || ch == '%' || ch == '"'){
+                            line = StringUtils.join(line.substring(0, regexQueryInfo.getStart()), group0, line.substring(regexQueryInfo.getEnd()));
+                            continue;
+                        }
+                    }
+                    filterParam.add(group0);
+                    line = StringUtils.join(line.substring(0, regexQueryInfo.getStart()), QUESTION_MARK, line.substring(regexQueryInfo.getEnd()));
+                }
+                tsql.append(line);
+            }
+        }else {
+            tsql.append(Ftls.processStringTemplateToString(sql.toString(), queryMap).replace("\n", " "));
         }
-        result.setSql(Ftls.processStringTemplateToString(freemarkerSql, queryMap).replace("\n", " "));
+        result.setSql(tsql.toString());
         result.setFilterParams(filterParam.toArray());
         return result;
+    }
+
+    private void fullFreemarkerRoot(Map queryMap) {
+        queryMap.put("join", new JoinMethod());
+        queryMap.put("notBlank", new NotBlankMethod());
+        queryMap.put("notNull", new NotNullMethod());
     }
 
     /**
