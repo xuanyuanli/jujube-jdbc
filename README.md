@@ -169,7 +169,7 @@ UserDao的方法没什么注释，其实是约定大于配置，当你了解了�
 对于`List<User> findByNameLike(String name)`来说，将会自动去查询集合；对于`User findByNameLike(String name)`来说，将会自动取得top元素。
 
 # 四、分页
-上面说到分页需要些Sql，这个Sql定义在哪儿呢？  
+上面说到分页需要写Sql，这个Sql定义在哪儿呢？  
 
 定义的UserDao.sql如下：
 
@@ -206,7 +206,7 @@ order by u.id desc
 
 `if`判断类似`<#if age gt 0></#if>`这种形式。下面说一下新手使用Freemarker需要注意的问题：
 
-- Freemarker的大于不能用`>`符号，而要用`gt`；小于用`lt`
+- Freemarker的判断式中大于不能用`>`符号，而要用`gt`；小于用`lt`
 - Freemarker的取值使用`$`符号，如` ${name}`
 - 我这里扩展了Freemarker的一些函数，如notBlank、notNull、join等，他们分别表示：不能为空白字符、不能为null、把集合用特定符号连接起来
 
