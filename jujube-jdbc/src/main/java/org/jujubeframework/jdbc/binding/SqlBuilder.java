@@ -85,7 +85,7 @@ public class SqlBuilder {
                         }
                         //对于like的特殊处理
                         if (ch == '\'' || ch == '%' || ch == '"'){
-                            line = StringUtils.join(line.substring(0, regexQueryInfo.getStart()), group0, line.substring(regexQueryInfo.getEnd()));
+                            line = StringUtils.join(line.substring(0, regexQueryInfo.getStart()), group0.replace("'","\\'"), line.substring(regexQueryInfo.getEnd()));
                             continue;
                         }
                     }

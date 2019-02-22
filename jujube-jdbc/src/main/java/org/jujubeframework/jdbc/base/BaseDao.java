@@ -7,6 +7,9 @@ import java.util.List;
 
 /**
  * @author John Li
+ *
+ * @param <T>   对应的实体类型
+ * @param <PK>  对应的主键类型
  */
 public interface BaseDao<T extends BaseEntity, PK extends Serializable> {
     /**
@@ -92,7 +95,7 @@ public interface BaseDao<T extends BaseEntity, PK extends Serializable> {
      *
      * @return 表名
      */
-    String getTableName();
+   String getTableName();
 
     /**
      * 获得主键名，默认为"id"。如果不是默认值，请在子接口中用default覆写
