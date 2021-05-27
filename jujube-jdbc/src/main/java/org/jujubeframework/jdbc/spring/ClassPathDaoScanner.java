@@ -30,7 +30,7 @@ public class ClassPathDaoScanner extends ClassPathBeanDefinitionScanner {
         addIncludeFilter((metadataReader, metadataReaderFactory) -> {
             ClassMetadata classMetadata = metadataReader.getClassMetadata();
             //必须是接口，且继承自BaseDao
-            return classMetadata.isInterface() && Arrays.asList(classMetadata.getInterfaceNames()).stream().anyMatch(t -> BaseDao.class.getName().equals(t));
+            return classMetadata.isInterface() && Arrays.stream(classMetadata.getInterfaceNames()).anyMatch(t -> BaseDao.class.getName().equals(t));
         });
     }
 
@@ -43,11 +43,11 @@ public class ClassPathDaoScanner extends ClassPathBeanDefinitionScanner {
             for (BeanDefinitionHolder holder : beanDefinitions) {
                 GenericBeanDefinition definition = (GenericBeanDefinition) holder.getBeanDefinition();
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Creating DaoFactoryBean with name '" + holder.getBeanName() + "' and '" + definition.getBeanClassName() + "' daoInterface");
+                    logger.info("Creating DaoFactoryBean with name '" + holder.getBeanName() + "' and '" + definition.getBeanClassName() + "' daoInterface");
                 }
                 // the dao interface is the original class of the bean
                 // but, the actual class of the bean is DaoFactoryBean
-                definition.getPropertyValues().add("daoInterface", definition.getBeanClassName());
+                definition.getPropertyValues().add("daoInterfaceClass", definition.getBeanClassName());
                 definition.setBeanClass(DaoFactoryBean.class);
             }
         }

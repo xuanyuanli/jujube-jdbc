@@ -18,11 +18,18 @@ public class HandlerContext {
      */
     public static final List<Handler> COMPLEX_HANDLER = new ArrayList<>();
     /**
-     * 前置处理，如limit、sort
+     * 前置处理，如limit、orderBy
      */
     public static final List<Handler> PREPOSITION_HANDLER = new ArrayList<>();
 
     static {
+        PREPOSITION_HANDLER.add(new LimitHandler());
+        PREPOSITION_HANDLER.add(new OrderByHandler());
+        PREPOSITION_HANDLER.add(new GroupByHandler());
+
+        COMPLEX_HANDLER.add(new AndHandler());
+
+        SIMPLE_HANDLER.add(new NotLikeHandler());
         SIMPLE_HANDLER.add(new LikeHandler());
         SIMPLE_HANDLER.add(new NotHandler());
         SIMPLE_HANDLER.add(new IsNullHandler());
@@ -33,12 +40,8 @@ public class HandlerContext {
         SIMPLE_HANDLER.add(new GtHandler());
         SIMPLE_HANDLER.add(new LteHandler());
         SIMPLE_HANDLER.add(new LtHandler());
+        SIMPLE_HANDLER.add(new NotInHandler());
         SIMPLE_HANDLER.add(new InHandler());
         SIMPLE_HANDLER.add(new EqHandler());
-
-        COMPLEX_HANDLER.add(new AndHandler());
-
-        PREPOSITION_HANDLER.add(new LimitHandler());
-        PREPOSITION_HANDLER.add(new OrderByHandler());
     }
 }

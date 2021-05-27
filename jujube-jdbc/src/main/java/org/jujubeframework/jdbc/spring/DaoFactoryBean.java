@@ -1,45 +1,33 @@
 package org.jujubeframework.jdbc.spring;
 
-import org.jujubeframework.jdbc.base.BaseDaoSupport;
-import org.jujubeframework.jdbc.binding.DaoProxyFactory;
-import org.jujubeframework.util.Beans;
-import org.springframework.beans.factory.FactoryBean;
+import java.lang.reflect.Proxy;
 
-import java.lang.reflect.Method;
+import org.jujubeframework.jdbc.base.BaseDao;
+import org.jujubeframework.jdbc.binding.DaoProxy;
+import org.springframework.beans.factory.FactoryBean;
 
 /**
  * @author John Li
  */
-public class DaoFactoryBean<T> implements FactoryBean<T> {
+public class DaoFactoryBean<T extends BaseDao> implements FactoryBean<T> {
 
-    private Class<T> daoInterface;
+    private Class<T> daoInterfaceClass;
 
     @Override
-    public T getObject() throws Exception {
-        DaoProxyFactory<T> daoProxyFactory = new DaoProxyFactory<>(daoInterface);
-        Class<?> realGenericType = Beans.getClassGenericType(daoInterface, 0);
-        Class<?> realPrimayKeyType = Beans.getClassGenericType(daoInterface, 1);
-        Method getTableNameMethod = Beans.getDeclaredMethod(daoInterface, "getTableName");
-        if (getTableNameMethod == null) {
-            throw new RuntimeException("Dao必须用default覆写getTableName方法");
-        }
-        String tableName = (String) Beans.invokeInterfaceDefault(getTableNameMethod);
-        BaseDaoSupport<?, ?> baseDaoSupport = new BaseDaoSupport(realGenericType, realPrimayKeyType, tableName);
-        Method getPrimayKeyNameMethod = Beans.getDeclaredMethod(daoInterface, "getPrimayKeyName");
-        if (getPrimayKeyNameMethod != null) {
-            String primaryKeyName = (String) Beans.invokeInterfaceDefault(getPrimayKeyNameMethod);
-            baseDaoSupport.setPrimaryKeyName(primaryKeyName);
-        }
-        return daoProxyFactory.newInstance(baseDaoSupport);
+    public T getObject() {
+        DaoProxy<T> mapperProxy = new DaoProxy<>(daoInterfaceClass);
+        T t = (T) Proxy.newProxyInstance(daoInterfaceClass.getClassLoader(), new Class[] {daoInterfaceClass}, mapperProxy);
+        ProxyBeanContext.setCurrentProxy(daoInterfaceClass, t);
+        return t;
     }
 
     @Override
     public Class<?> getObjectType() {
-        return daoInterface;
+        return daoInterfaceClass;
     }
 
-    public void setDaoInterface(Class<T> daoInterface) {
-        this.daoInterface = daoInterface;
+    public void setDaoInterfaceClass(Class<T> daoInterfaceClass) {
+        this.daoInterfaceClass = daoInterfaceClass;
     }
 
 }

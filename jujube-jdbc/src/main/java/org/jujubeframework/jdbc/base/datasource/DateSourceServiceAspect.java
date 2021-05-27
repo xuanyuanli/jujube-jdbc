@@ -21,10 +21,10 @@ public class DateSourceServiceAspect {
      *
      * @param pjp 织入点
      */
-    public void determineReadOrWriteDB(JoinPoint pjp) throws Throwable {
+    public void determineReadOrWriteDb(JoinPoint pjp) {
         Method method = ((MethodSignature) pjp.getSignature()).getMethod();
         // 重新获取方法，否则传递的是接口的方法信息
-        Boolean isReadCacheValue = isChoiceReadDB(method);
+        boolean isReadCacheValue = isChoiceReadDb(method);
         if (isReadCacheValue) {
             DynamicDataSourceHolder.markRead();
         } else {
@@ -38,14 +38,16 @@ public class DateSourceServiceAspect {
      * @param method 执行方法
      * @return 当前方法是否只读
      */
-    private boolean isChoiceReadDB(Method method) {
+    private boolean isChoiceReadDb(Method method) {
         boolean result = true;
         Transactional transactionalAnno = AnnotationUtils.findAnnotation(method, Transactional.class);
         // 如果是事务方法，则false
         if (transactionalAnno != null && !transactionalAnno.readOnly()) {
             result = false;
         }
-        log.debug("经过方法{}，结果：{}", method, result);
+        if (log.isDebugEnabled()) {
+            log.debug("经过方法{}，结果：{}", method, result);
+        }
         return result;
     }
 }

@@ -16,7 +16,9 @@
 解脱了Hibernate的繁重，ORM层变得很清新，缺点在于如果不愿舍弃JPA的巨大优势肿么办呢？
 ## 6、speedment
 随着微服务的CQRS和函数式编程的兴起，speedment的春风也吹起来了，可以看成是Hibernate进阶版本，缺点是还是需要手动写查询逻辑。
-## 6、思路和借鉴
+## 7、QueryDSL
+强类型查询，和speedment相似
+## 8、思路和借鉴
 上述所有的框架中，最让我舒服的就是Spring JPA了，只写方法名就完成了程序的逻辑编写，这样的特性实在太抓心。    
 不过JPA的联合查询实在让人不能忍啊，而且用`select *`这种方式效率确实不高。  
 
@@ -26,7 +28,6 @@
 先来看一下成果，示例项目在easy-jdbc-sample中，使用了Spring Boot+H2来启动，先看看测试代码：
 ```
 @SpringBootTest(classes = JujubeJdbcApp.class)
-@RunWith(SpringRunner.class)
 @ActiveProfiles({"test"})
 public class UserDaoTest {
     @Autowired
@@ -63,6 +64,18 @@ public class UserDaoTest {
         List<User> users = userDao.findByIdGtOrderByAgeDesc(2);
         assertThat(users).hasSize(9);
         assertThat(users.get(0).getName()).isEqualTo("长白山");
+    }
+    
+    @Test
+    public void findAllGroupById(){
+        List<User> list = userDao.findAllGroupById();
+        assertThat(list.size()).isEqualTo(11);
+    }
+
+    @Test
+    public void findAllGroupByIdLimit1(){
+        User user = userDao.findAllGroupByIdLimit1();
+        assertThat(user.getId()).isEqualTo(1);
     }
 
     @Test
@@ -115,6 +128,10 @@ public interface UserDao extends BaseDao<User, Long> {
 
     public int getCountByNameLike(String name);
 
+    public List<User> findAllGroupById();
+
+    public User findAllGroupByIdLimit1();
+    
     public Page<Record> pageForUserList(Map<String, Object> queryMap, PageRequest request);
 
     public Page<Record> pageForUserListOfOrder(Map<String, Object> queryMap, PageRequest request);
@@ -135,9 +152,13 @@ UserDao的方法没什么注释，其实是约定大于配置，当你了解了�
 
 - Between --- 等价于 SQL 中的 between 关键字，比如 findBySalaryBetween(int max, int min)；
 
-- LessThan --- 等价于 SQL 中的 "<"，比如 findBySalaryLessThan(int max)；
+- Lt --- 等价于 SQL 中的 "<"，比如 findBySalaryLt(int max)；
 
-- GreaterThan --- 等价于 SQL 中的">"，比如 findBySalaryGreaterThan(int min)；
+- Lte --- 等价于 SQL 中的 "<="，比如 findBySalaryLte(int max)；
+
+- Gt --- 等价于 SQL 中的">"，比如 findBySalaryGt(int min)；
+
+- Gte --- 等价于 SQL 中的">="，比如 findBySalaryGte(int min)；
 
 - IsNull --- 等价于 SQL 中的 "is null"，比如 findByUsernameIsNull()；
 
@@ -157,18 +178,34 @@ UserDao的方法没什么注释，其实是约定大于配置，当你了解了�
 
 - NotIn --- 等价于 SQL 中的 "not in"，比如 findByUsernameNotIn(Collection<String> userList) ，方法的参数可以是 Collection 类型，也可以是数组或者不定长参数；
 
+## 1、扩展1：支持order by、group by和limit
 除了上述规则，框架还可以实现排序，用到OrderBy关键字，如：
 ```
     public List<User> findByIdGtOrderByAgeDesc(int id);
 ```
-这里是根据年龄进行了倒序查询，Desc后缀表示倒序，Asc表示正序（也是默认值）。  
+这里是根据年龄进行了倒序查询，Desc后缀表示倒序，Asc表示正序（也是默认值），多个字段排序时使用“And"连接，例：findByProductIdOrderByTimeLienDescAndIdDesc()。  
 
-上节的代码中还出现了getCountBy系列方法，规则和Spring JPA一致，是用来查询总数的。  
+支持group by，用到GroupBy关键字，例如findAllGroupByAgeAndType()
+支持limit，如findAllLimit3()或者findAllLimit(3)。
 
-## 1、智能判断返回类型
-对于`List<User> findByNameLike(String name)`来说，将会自动去查询集合；对于`User findByNameLike(String name)`来说，将会自动取得top元素。
+---
 
-# 四、分页
+这三种关键字的支持，前后顺序为order by -> group by -> limit，不能颠倒顺序，否则报错。
+正确写法：findAllOrderByIdGroupByAgeLimit5()
+
+
+## 2、扩展2：支持getCount和getSumOf
+上节的代码中还出现了getCountBy系列方法，规则和Spring JPA一致，是用来查询总数的。
+
+还有getSumOf方法，例如getSumOfAgeByCreateTimeBetween(long begin, long end)   
+
+## 3、扩展3：支持findAll
+支持查询表中所有数据，但findAll只支持order by、group by和limit
+
+## 4、智能判断返回类型
+对于`List<User> findByNameLike(String name)`来说，将会自动去查询集合；对于`User findByNameLike(String name)`来说，将会自动取得第一个元素。
+
+# 四、分页与SQL查询
 上面说到分页需要写Sql，这个Sql定义在哪儿呢？  
 
 定义的UserDao.sql如下：
@@ -197,6 +234,11 @@ order by u.id desc
 ```
 
 他的规则非常简单，以`##`开头后跟Dao中的方法名，对应的就是Dao中同名的方法查询Sql。
+需要注意的是分页的方法参数形式必须包含这以下两个类：
+```
+Map<String, Object> queryMap, PageableRequest request
+```
+queryMap作为Freemarker的root入参，request是分页请求
 
 ## 1、Freemarker模板
 
@@ -209,6 +251,39 @@ order by u.id desc
 - Freemarker的判断式中大于不能用`>`符号，而要用`gt`；小于用`lt`
 - Freemarker的取值使用`$`符号，如` ${name}`
 - 我这里扩展了Freemarker的一些函数，如notBlank、notNull、join等，他们分别表示：不能为空白字符、不能为null、把集合用特定符号连接起来
+
+## 2、分页之外
+用sql查询，同时还支持以下形式：
+```
+    long queryAgeCount(long age, long departmentId);
+
+    int queryAgeCount2(long age);
+
+    String queryUserName(long id);
+
+    Record queryUserAge(long age);
+
+    List<Record> queryUserDepartment(long departmentId);
+```
+方法的形参会作为Freemarker的root入参，返回值支持String、Long、Integer、Double、Record、List<Record>这六种，会智能进行处理。  
+注意：对于List只支持泛型为Record的返回值
+
+## 3、特殊union的使用
+有时候需要sql1+sql2才能得出结果，例如先查询出直播的场次，再查询出其他场次。最麻烦的是他们的结合还需要分页的支持，框架中已经支持了这个功能，只要在sql中用`#jujube-union`分割两个sql即可实现以上逻辑
+
+## 4、特别注意in查询的使用
+in查询条件可以传进来一个集合，然后用join函数进行处理：
+```
+<#if notNull(ids)>
+  and u.id in (${join(ids,',')})
+</#if>
+```
+也可以传进来一个字符串：
+```
+<#if notNull(ids)>
+  and u.id in (${ids})
+</#if>
+```
 
 # 五、代码生成工具
 在entity-generator项目中打开EntityGeneratorDemo：
@@ -227,13 +302,32 @@ order by u.id desc
 spring.datasource.url=jdbc:mysql://192.168.99.100:3306/demo?characterEncoding=utf8&useSSL=false
 spring.datasource.username=root
 spring.datasource.password=Aa123456
-spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 ```
 - Config配置中需要输入数据库表名、要生成到的项目代码根目录、entity所在包、dao所在包等信息
 
 运行这个类即可在相应的路径中生成Entity和Dao类了。
 
 # 六、使用
+## 1、开发工具配置
+因为涉及到读取接口方法的形参，所以IDE编译代码的时候要加上`-parameters`参数。  
+IDEA在Build--Compiler--Java Compiler--Java Options--Additional command line parameters框中配置；  
+Eclipse在Preferences->java->Compiler下勾选Store information about method parameters选项即可
+
+另外项目编译方面需要注意，在Maven中配置如：
+```
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <version>3.6.1</version>
+    <configuration>
+        <compilerArgs>
+            <arg>-parameters</arg>
+        </compilerArgs>
+    </configuration>
+</plugin>
+```
+## 2、项目配置
 如果你用的是spring-boot的话，maven中加上依赖：
 
 ```
@@ -266,7 +360,7 @@ basePackage是要扫描的Dao所在的包，sqlBasePackage是sql所在的包。�
         <dependency>
     		<groupId>org.jujubeframework</groupId>
     		<artifactId>jujube-jdbc</artifactId>
-    		<version>1.6</version>
+    		<version>2.1</version>
         </dependency>
 ```
 - 因为这个框架是基于Spring JDBC的，所以你需要先配置一下DataSource和JdbcTemplate。之后加上如下配置：
@@ -333,3 +427,12 @@ ClassPathDaoScanner中有关代理的逻辑是关键，主要在doScan()方法�
 
 DaoProxyFactory是一个代理类的生产工厂，根据Dao的类型获得DaoProxy。DaoProxy中有查询的真正逻辑，先通过SqlBuilder通过Method对象获得sql模板，然后用BaseDaoSupport或JpaBaseDaoSupport进行真正的查询。
 
+# 性能优化
+主要是充分利用缓存和正则表达式相关的优化
+
+## 1、充分利用缓存
+凡是有比较重的运算且符合缓存条件的地方，都要用缓存，大到SQL的解析，小到正则分割字符串
+
+## 2、正则表达式优化
+Pattern.compile()是一个比较重的操作，建议把所有用到正则解析的地方都缓存起来，提供了PatternHolder类  
+一个比较难发现的地方在于String中的split和replace方法，内部也使用了正则表达式，但没有缓存Pattern。建议用StringUtils.splitByWholeSeparator()和StringUtils.replace()替代，以达到更好的性能

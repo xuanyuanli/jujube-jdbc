@@ -1,5 +1,6 @@
-package org.jujubeframework.jdbc.support.entity;
+package org.jujubeframework.jdbc.base.jpa.entity;
 
+import org.jujubeframework.jdbc.support.entity.BaseEntity;
 import org.jujubeframework.lang.Record;
 
 import java.util.Map;
@@ -10,6 +11,9 @@ import java.util.Map;
  * @author John Li
  */
 public class RecordEntity extends Record implements BaseEntity {
+
+    public RecordEntity() {
+    }
 
     public RecordEntity(Map<String, Object> map) {
         super(map);

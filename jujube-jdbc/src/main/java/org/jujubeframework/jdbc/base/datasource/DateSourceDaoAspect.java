@@ -23,10 +23,10 @@ public class DateSourceDaoAspect {
      *
      * @param pjp 织入点
      */
-    public Object determineReadOrWriteDB(ProceedingJoinPoint pjp) throws Throwable {
+    public Object determineReadOrWriteDb(ProceedingJoinPoint pjp) throws Throwable {
         Method method = ((MethodSignature) pjp.getSignature()).getMethod();
         // 重新获取方法，否则传递的是接口的方法信息
-        Boolean isReadCacheValue = isChoiceReadDB(method);
+        boolean isReadCacheValue = isChoiceReadDb(method);
         if (isReadCacheValue) {
             DynamicDataSourceHolder.markRead();
         } else {
@@ -41,7 +41,7 @@ public class DateSourceDaoAspect {
      * @param method 执行方法
      * @return 当前方法是否只读
      */
-    private boolean isChoiceReadDB(Method method) {
+    private boolean isChoiceReadDb(Method method) {
         String methodName = method.getName();
         Boolean result = CACHE.get(methodName);
         if (result == null) {
@@ -52,7 +52,9 @@ public class DateSourceDaoAspect {
             }
             CACHE.put(methodName, result);
         }
-        log.debug("经过方法{}，结果：{}", method, result);
-        return result.booleanValue();
+        if (log.isDebugEnabled()) {
+            log.debug("经过方法{}，结果：{}", method, result);
+        }
+        return result;
     }
 }

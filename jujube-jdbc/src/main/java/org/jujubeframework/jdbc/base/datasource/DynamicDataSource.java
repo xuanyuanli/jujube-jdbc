@@ -19,7 +19,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
     private List<DataSource> readDataSources;
     private int readDataSourceSize = 0;
 
-    private AtomicInteger readIndex = new AtomicInteger(0);
+    private final AtomicInteger readIndex = new AtomicInteger(0);
 
     /**
      * 数据源键名

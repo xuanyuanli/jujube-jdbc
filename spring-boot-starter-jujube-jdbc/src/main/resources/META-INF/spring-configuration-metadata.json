@@ -1,0 +1,33 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "org.jujubeframework.springboot.JujubeJdbcProperties",
+      "name": "jujube.jdbc",
+      "type": "org.jujubeframework.springboot.JujubeJdbcProperties"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "org.jujubeframework.springboot.JujubeJdbcProperties",
+      "name": "jujube.jdbc.auto-refresh-sql",
+      "type": "java.lang.String",
+      "defaultValue": false,
+      "description": "是否自动刷新Dao Sql的缓存。默认五秒扫描一次."
+    },
+    {
+      "sourceType": "org.jujubeframework.springboot.JujubeJdbcProperties",
+      "name": "jujube.jdbc.base-package",
+      "type": "java.lang.String",
+      "defaultValue": false,
+      "description": "Dao接口所在的package"
+    },
+    {
+      "sourceType": "org.jujubeframework.springboot.JujubeJdbcProperties",
+      "name": "jujube.jdbc.sql-base-package",
+      "type": "java.lang.String",
+      "defaultValue": false,
+      "description": "Dao Sql所在的路径（相当于classpath来说）。如果不设置，默认为{@link #basePackage}.sql"
+    }
+  ]
+}

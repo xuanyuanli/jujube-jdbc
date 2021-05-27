@@ -1,9 +1,10 @@
 package org.jujubeframework.jdbc.base.jpa.handler;
 
+import java.lang.reflect.Method;
+import java.util.List;
+
 import org.jujubeframework.jdbc.base.jpa.strategy.BaseQueryStrategy;
 import org.jujubeframework.jdbc.base.spec.Spec;
-
-import java.util.List;
 
 /**
  * 方法名到Spec的处理
@@ -11,25 +12,28 @@ import java.util.List;
  * @author John Li
  */
 public interface Handler {
-    static final String EMPTY = "";
-
-    /**
-     * 大写转为下划杠写法
-     *
-     * @param queryField 查询的字段
-     * @return 转换后的值
-     */
-    default String realField(String queryField) {
-        return BaseQueryStrategy.realField(queryField);
-    }
+    String EMPTY = "";
 
     /**
      * 处理
      *
+     * @param method
+     *            方法
      * @param spec
-     * @param methodName
+     *            规格
+     * @param truncationMethodName
+     *            被截断的方法名
      * @param args
+     *            方法实参列表
      * @param chain
+     *            Handler责任链
      */
-    void handler(Spec spec, String methodName, List<Object> args, HandlerChain chain);
+    void handler(Method method, Spec spec, String truncationMethodName, List<Object> args, HandlerChain chain);
+
+    /**
+     * @see BaseQueryStrategy#getDbColumnName(Method, String)
+     */
+    default String getDbColumn(Method method, String queryField) {
+        return BaseQueryStrategy.getDbColumnName(method, queryField);
+    }
 }

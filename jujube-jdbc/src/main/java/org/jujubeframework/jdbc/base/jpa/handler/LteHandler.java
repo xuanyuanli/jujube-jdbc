@@ -2,6 +2,7 @@ package org.jujubeframework.jdbc.base.jpa.handler;
 
 import org.jujubeframework.jdbc.base.spec.Spec;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -10,17 +11,17 @@ import java.util.List;
  * @author John Li
  */
 public class LteHandler implements Handler {
-    private static final String LTE = "Lte";
+    public static final String LTE = "Lte";
 
     @Override
-    public void handler(Spec spec, String methodName, List<Object> args, HandlerChain chain) {
-        if (methodName.endsWith(LTE)) {
-            String field = methodName.replace(LTE, EMPTY);
-            field = realField(field);
+    public void handler(Method method, Spec spec, String truncationMethodName, List<Object> args, HandlerChain chain) {
+        if (truncationMethodName.endsWith(LTE)) {
+            String field = truncationMethodName.substring(0, truncationMethodName.length() - LTE.length());
+            field = getDbColumn(method, field);
             spec.lte(field, args.get(0));
             args.remove(0);
         } else {
-            chain.handler(spec, methodName, args);
+            chain.handler(method,spec, truncationMethodName, args);
         }
     }
 

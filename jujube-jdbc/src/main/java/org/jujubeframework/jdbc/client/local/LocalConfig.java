@@ -3,7 +3,7 @@ package org.jujubeframework.jdbc.client.local;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.jujubeframework.jdbc.constant.Profiles;
+import org.jujubeframework.constant.Profiles;
 import org.jujubeframework.util.Resources;
 
 import java.util.Properties;
@@ -32,12 +32,12 @@ public class LocalConfig {
     private static Properties wrapApplicationConfig(Properties properties) {
         if (properties != null) {
             // 和spring-profiles处理一致
-            if (Profiles.DEVELOPMENT.equals(Profiles.getSpringProfileAsSystemProperty())) {
+            if (Profiles.DEVELOPMENT.equals(Profiles.getSpringProfileFromSystemProperty())) {
                 properties.putAll(Resources.getCurrentClasspathProperties("application." + Profiles.DEVELOPMENT + ".properties"));
             }
 
             if (StringUtils.isBlank(properties.getProperty(Name.JDBC_DRIVER_CLASS_NAME))) {
-                properties.setProperty(Name.JDBC_DRIVER_CLASS_NAME, "com.mysql.jdbc.Driver");
+                properties.setProperty(Name.JDBC_DRIVER_CLASS_NAME, "com.mysql.cj.jdbc.Driver");
             }
         }
         return properties;

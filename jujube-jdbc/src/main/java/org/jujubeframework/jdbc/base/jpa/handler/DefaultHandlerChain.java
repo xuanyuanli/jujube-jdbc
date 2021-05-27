@@ -2,6 +2,7 @@ package org.jujubeframework.jdbc.base.jpa.handler;
 
 import org.jujubeframework.jdbc.base.spec.Spec;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,13 +11,13 @@ import java.util.List;
  */
 public class DefaultHandlerChain implements HandlerChain {
 
-    private List<Handler> chain = new ArrayList<>();
+    private final List<Handler> chain = new ArrayList<>();
     private int pos = 0;
 
     @Override
-    public void handler(Spec spec, String methodName, List<Object> args) {
+    public void handler(Method method,Spec spec, String truncationMethodName, List<Object> args) {
         if (pos < chain.size()) {
-            chain.get(pos++).handler(spec, methodName, args, this);
+            chain.get(pos++).handler(method,spec, truncationMethodName, args, this);
         }
     }
 

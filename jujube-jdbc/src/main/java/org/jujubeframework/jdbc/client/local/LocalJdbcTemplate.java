@@ -1,5 +1,6 @@
 package org.jujubeframework.jdbc.client.local;
 
+import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jujubeframework.util.CamelCase;
@@ -7,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -54,7 +54,7 @@ public class LocalJdbcTemplate {
         dataSource.setDriverClassName(driverClassName);
     }
 
-    private static ThreadLocal<JdbcTemplate> jdbcTemplates = new ThreadLocal<JdbcTemplate>() {
+    private final static ThreadLocal<JdbcTemplate> JDBC_TEMPLATE_THREAD_LOCAL = new ThreadLocal<JdbcTemplate>() {
         @Override
         protected JdbcTemplate initialValue() {
             return new JdbcTemplate(dataSource);
@@ -62,7 +62,7 @@ public class LocalJdbcTemplate {
     };
 
     public static JdbcTemplate getJdbcTemplate() {
-        return jdbcTemplates.get();
+        return JDBC_TEMPLATE_THREAD_LOCAL.get();
     }
 
     /**
@@ -80,20 +80,17 @@ public class LocalJdbcTemplate {
      * 可以返回id的更新方法,如果更新失败，会返回-1
      */
     public static long save(JdbcTemplate jdbcTemplate, final String sql, final Object... args) {
-        long result = -1;
+        long result;
         try {
             KeyHolder keyHolder = new GeneratedKeyHolder();
-            jdbcTemplate.update(new PreparedStatementCreator() {
-                @Override
-                public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
-                    PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-                    if (args != null && args.length != 0) {
-                        for (int j = 0; j < args.length; j++) {
-                            ps.setObject(j + 1, args[j]);
-                        }
+            jdbcTemplate.update(conn -> {
+                PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                if (args != null && args.length != 0) {
+                    for (int j = 0; j < args.length; j++) {
+                        ps.setObject(j + 1, args[j]);
                     }
-                    return ps;
                 }
+                return ps;
             }, keyHolder);
             result = keyHolder.getKey().longValue();
         } catch (Exception e) {
@@ -104,8 +101,6 @@ public class LocalJdbcTemplate {
 
     /**
      * 获得数据库连接
-     *
-     * @param applicationProperties 环境配置文件
      */
     public static Connection getConnection() {
         return DataSourceUtils.getConnection(dataSource);
@@ -152,7 +147,7 @@ public class LocalJdbcTemplate {
         ResultSet colRet = metaData.getColumns(null, schema, tableName, "%");
 
         // 找到主键
-        String primaryKey = getPKname(conn, tableName, schema);
+        String primaryKey = getPkname(conn, tableName, schema);
 
         // 生成字段
         while (colRet.next()) {
@@ -162,10 +157,10 @@ public class LocalJdbcTemplate {
             String columnSize = colRet.getString("COLUMN_SIZE");
 
             int precision = NumberUtils.toInt(columnSize, 255);
-            String field = CamelCase.toSpecilCamelCase(colName);
+            String field = CamelCase.toSpecilCamelCase(colName.toLowerCase());
             String type = typeMappingOfMySql(dataType, precision, imports);
-            boolean isPK = colName.equals(primaryKey) ? true : false;
-            columns.add(new Column(field, colName, type, comment, precision, isPK));
+            boolean isPk = colName.equals(primaryKey);
+            columns.add(new Column(field, colName, type, comment, precision, isPk));
         }
         return columns;
     }
@@ -173,13 +168,13 @@ public class LocalJdbcTemplate {
     /**
      * 获得主键名称(数据库字段名)
      */
-    public static String getPKname(Connection conn, String tableName, String schema) throws SQLException {
+    public static String getPkname(Connection conn, String tableName, String schema) throws SQLException {
         String primaryKey = "";
         DatabaseMetaData metaData = conn.getMetaData();
-        ResultSet pkRSet = metaData.getPrimaryKeys(schema, schema, tableName);
-        if (pkRSet.first()) {
+        ResultSet pkSet = metaData.getPrimaryKeys(schema, schema, tableName);
+        if (pkSet.first()) {
             // COLUMN_NAME
-            primaryKey = pkRSet.getString(4);
+            primaryKey = pkSet.getString(4);
         }
         return primaryKey;
     }
@@ -264,70 +259,70 @@ public class LocalJdbcTemplate {
         return javaType;
     }
 
+    public static String convertDatabaseCharsetType(String in, String type) {
+        String dbUser;
+        if (in != null) {
+            if ("oracle".equals(type)) {
+                dbUser = in.toUpperCase();
+            } else if ("postgresql".equals(type)) {
+                dbUser = "public";
+            } else if ("mysql".equals(type)) {
+                dbUser = null;
+            } else if ("mssqlserver".equals(type)) {
+                dbUser = null;
+            } else if ("db2".equals(type)) {
+                dbUser = in.toUpperCase();
+            } else {
+                dbUser = in;
+            }
+        } else {
+            dbUser = "public";
+        }
+        return dbUser;
+    }
+
+    /**获得数据库的所有表*/
+    public static List<String> getTables(String catalog) {
+        Connection conn = getConnection();
+        List<String> list = new ArrayList<>();
+        try {
+            DatabaseMetaData dbMetData = conn.getMetaData();
+            ResultSet rs = dbMetData.getTables(catalog, convertDatabaseCharsetType("root", "mysql"), null, new String[]{"TABLE"});
+
+            while (rs.next()) {
+                boolean bool = rs.getString(4) != null && ("TABLE".equalsIgnoreCase(rs.getString(4)) || "VIEW".equalsIgnoreCase(rs.getString(4)));
+                if (bool) {
+                    String tableName = rs.getString(3).toLowerCase();
+                    list.add(tableName);
+                }
+            }
+        } catch (SQLException e) {
+            logger.error("getTables",e);
+        }
+        return  list;
+    }
+
+    @Data
     public static class Column {
         private String field;
         private String colName;
         private String type;
         private String comment;
         private Integer precision;
-        private Boolean isPrimaryKey;
+        private Boolean primaryKey;
 
-        public Column(String field, String originName, String type, String comment, Integer precision, Boolean isPrimaryKey) {
+        public Column() {
+        }
+
+        public Column(String field, String originName, String type, String comment, Integer precision, Boolean primaryKey) {
             super();
             this.field = field;
             this.colName = originName;
             this.type = type;
             this.comment = comment;
             this.precision = precision;
-            this.isPrimaryKey = isPrimaryKey;
+            this.primaryKey = primaryKey;
         }
 
-        public String getField() {
-            return field;
-        }
-
-        public void setField(String field) {
-            this.field = field;
-        }
-
-        public String getColName() {
-            return colName;
-        }
-
-        public void setColName(String colName) {
-            this.colName = colName;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        public String getComment() {
-            return comment;
-        }
-
-        public void setComment(String comment) {
-            this.comment = comment;
-        }
-
-        public Integer getPrecision() {
-            return precision;
-        }
-
-        public void setPrecision(Integer precision) {
-            this.precision = precision;
-        }
-
-        public Boolean getIsPrimaryKey() {
-            return isPrimaryKey;
-        }
-
-        public void setIsPrimaryKey(Boolean isPrimaryKey) {
-            this.isPrimaryKey = isPrimaryKey;
-        }
     }
 }

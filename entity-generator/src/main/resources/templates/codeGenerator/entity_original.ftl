@@ -1,4 +1,4 @@
-package ${basePackage};
+package ${entityPackage};
 
 <#list imports as line >
 import ${line};

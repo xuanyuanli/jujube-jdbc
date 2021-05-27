@@ -2,6 +2,7 @@ package org.jujubeframework.jdbc.base.jpa.handler;
 
 import org.jujubeframework.jdbc.base.spec.Spec;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -10,17 +11,17 @@ import java.util.List;
  * @author John Li
  */
 public class LikeHandler implements Handler {
-    private static final String LIKE = "Like";
+    public static final String LIKE = "Like";
 
     @Override
-    public void handler(Spec spec, String methodName, List<Object> args, HandlerChain chain) {
-        if (methodName.endsWith(LIKE)) {
-            String field = methodName.replace(LIKE, EMPTY);
-            field = realField(field);
+    public void handler(Method method, Spec spec, String truncationMethodName, List<Object> args, HandlerChain chain) {
+        if (truncationMethodName.endsWith(LIKE)) {
+            String field = truncationMethodName.substring(0, truncationMethodName.length() - LIKE.length());
+            field = getDbColumn(method, field);
             spec.like(field, args.get(0));
             args.remove(0);
         } else {
-            chain.handler(spec, methodName, args);
+            chain.handler(method, spec, truncationMethodName, args);
         }
     }
 

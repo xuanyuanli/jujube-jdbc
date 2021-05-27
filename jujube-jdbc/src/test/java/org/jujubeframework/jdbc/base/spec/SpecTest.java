@@ -1,29 +1,40 @@
 package org.jujubeframework.jdbc.base.spec;
 
 import com.google.common.collect.Lists;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.jujubeframework.exception.DaoQueryException;
 import org.jujubeframework.jdbc.base.util.Sqls;
-import org.jujubeframework.jdbc.support.pagination.SearchSpec;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SpecTest {
 
     @Test
     public void testEq() {
-        Spec spec = new Spec().eq("name", "abc").eq("eq", null).eq("eq", "");
+        Spec spec = new Spec().eq("name", "abc");
         assertThat(spec.getSpecMap()).hasSize(1);
         assertThat(spec.getFilterSql()).isEqualTo("`name`= ?");
         assertThat(spec.getFilterParams()).hasSize(1).contains("abc");
     }
 
     @Test
+    public void testEqEx() {
+        org.junit.jupiter.api.Assertions.assertThrows(DaoQueryException.class, () -> new Spec().eq("name", ""));
+    }
+
+    @Test
     public void testLike() {
-        Spec spec = new Spec().like("name", Sqls.leftLikeWrap("abc")).like("name", "").like("", null);
+        Spec spec = new Spec().like("name", Sqls.leftLikeWrap("abc"));
         assertThat(spec.getSpecMap()).hasSize(1);
         assertThat(spec.getFilterSql()).isEqualTo("`name` like ?");
         assertThat(spec.getFilterParams()).hasSize(1).contains("%abc");
+    }
+
+    @Test
+    public void testLikeEx() {
+        org.junit.jupiter.api.Assertions.assertThrows(DaoQueryException.class, () -> new Spec().like("name", ""));
     }
 
     @Test
@@ -150,7 +161,7 @@ public class SpecTest {
     @Test
     public void testSort() {
         Spec spec = new Spec().sort().desc("age").end();
-        assertThat(spec.sort().buildSqlSort()).isEqualTo(" order by `age` desc");
+        assertThat(spec.sort().buildSqlSort()).isEqualTo(" order by age desc");
         assertThat(spec.getFilterParams()).isEmpty();
     }
 
@@ -165,21 +176,8 @@ public class SpecTest {
 
     @Test
     public void testNewS() {
-        Spec spec = Spec.newS();
+        Spec spec = new Spec();
         assertThat(spec).isNotNull();
     }
 
-    @Test
-    public void valueOf() {
-        SearchSpec searchSpec = new SearchSpec();
-        searchSpec.getSimpleSpec().put("gte_timeline_datePattern", "yyyy-MM-dd HH:mm");
-        Spec spec = Spec.valueOf(searchSpec);
-        assertThat(spec.getFilterSql()).isEqualTo("1=1");
-
-        searchSpec = new SearchSpec();
-        searchSpec.getSimpleSpec().put("gte_timeline", "15");
-        spec = Spec.valueOf(searchSpec);
-        assertThat(spec.getFilterSql()).isEqualTo("`timeline` >= ?");
-        assertThat(spec.getFilterParams()).hasSize(1).contains("15");
-    }
 }

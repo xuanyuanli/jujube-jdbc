@@ -1,21 +1,6 @@
-/**
- * Copyright (c) 2011-2015, James Zhan 詹波 (jfinal@126.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.jujubeframework.jdbc.base.dialect;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jujubeframework.lang.Record;
 
 import java.util.List;
@@ -31,7 +16,8 @@ public class MysqlDialect implements Dialect {
     private static final String SQL_CONTAIN_SYMBOL = "`";
     public static final String DOT = ".";
 
-    private String getSecurityTableName(String tableName) {
+    @Override
+    public String getSecurityTableName(String tableName) {
         String result = tableName.trim();
         if (!result.contains(DOT)) {
             result = SQL_CONTAIN_SYMBOL + result + SQL_CONTAIN_SYMBOL;
@@ -56,7 +42,7 @@ public class MysqlDialect implements Dialect {
         if (symbol.equals(columns.trim())) {
             sql.append(columns);
         } else {
-            String[] columnsArray = columns.split(",");
+            String[] columnsArray = StringUtils.splitByWholeSeparator(columns, ",");
             for (int i = 0; i < columnsArray.length; i++) {
                 if (i > 0) {
                     sql.append(", ");
@@ -72,10 +58,8 @@ public class MysqlDialect implements Dialect {
 
     @Override
     public String forDbDeleteById(String tableName, String primaryKey) {
-        StringBuilder sql = new StringBuilder("delete from ");
-        sql.append(getSecurityTableName(tableName));
-        sql.append(" where `").append(primaryKey).append("` = ?");
-        return sql.toString();
+        return "delete from " + getSecurityTableName(tableName) +
+                " where `" + primaryKey + "` = ?";
     }
 
     @Override
@@ -126,15 +110,13 @@ public class MysqlDialect implements Dialect {
 
     @Override
     public String forDbDelete(String tableName, String filters) {
-        StringBuilder sql = new StringBuilder("delete from ");
-        sql.append(getSecurityTableName(tableName));
-        sql.append(" where ").append(filters);
-        return sql.toString();
+        return "delete from " + getSecurityTableName(tableName) +
+                " where " + filters;
     }
 
     @Override
     public String forDbPaginationQuery(String origSql, int start, int size) {
-        StringBuffer pageSql = new StringBuffer();
+        StringBuilder pageSql = new StringBuilder();
         String lowerSql = origSql.toLowerCase().trim();
         int index = lowerSql.lastIndexOf(")");
         if (index > 0) {

@@ -1,7 +1,7 @@
 package org.jujubeframework.jdbc.base.spec;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SortTest {
 
@@ -9,7 +9,7 @@ public class SortTest {
     public void testAsc() {
         Spec spec = new Spec();
         Sort sort = new Sort(spec).asc("name");
-        assertThat(sort.buildSqlSort()).isEqualTo(" order by `name`");
+        assertThat(sort.buildSqlSort()).isEqualTo(" order by name");
         assertThat(spec.getFilterParams()).isEmpty();
     }
 
@@ -17,7 +17,7 @@ public class SortTest {
     public void testDesc() {
         Spec spec = new Spec();
         Sort sort = new Sort(spec).desc("name");
-        assertThat(sort.buildSqlSort()).isEqualTo(" order by `name` desc");
+        assertThat(sort.buildSqlSort()).isEqualTo(" order by name desc");
     }
 
     @Test
@@ -25,7 +25,7 @@ public class SortTest {
         Spec spec = new Spec();
         Sort sort = new Sort(spec);
         sort.asc("name").desc("age").end();
-        assertThat(sort.buildSqlSort()).isEqualTo(" order by `name`,`age` desc");
+        assertThat(sort.buildSqlSort()).isEqualTo(" order by name,age desc");
     }
 
     @Test
@@ -41,7 +41,7 @@ public class SortTest {
         Spec spec = new Spec();
         Sort sort = new Sort(spec);
         sort.desc("name").isEmpty();
-        assertThat(sort.buildSqlSort()).isEqualTo(" order by `name` desc");
+        assertThat(sort.buildSqlSort()).isEqualTo(" order by name desc");
     }
 
     @Test

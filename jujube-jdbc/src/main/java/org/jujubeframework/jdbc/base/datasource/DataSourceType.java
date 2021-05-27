@@ -13,5 +13,5 @@ public enum DataSourceType {
     /**
      * 读库
      */
-    READ;
+    READ
 }

@@ -1,6 +1,7 @@
 package org.jujubeframework.jdbc.base.spec;
 
 import com.google.common.collect.Maps;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -26,10 +27,21 @@ public class SpecSupport {
     public SpecSupport() {
     }
 
+    private static class FieldNameAndOperator {
+        public String fieldName;
+        public Op operator;
+
+        public FieldNameAndOperator(String filedName, Op operator) {
+            this.fieldName = filedName;
+            this.operator = operator;
+        }
+    }
+
     /**
      * 把约定格式的key解析为QueryFilter
      *
-     * @param searchParams searchParams中key的格式为OPERATOR_FIELDNAME
+     * @param searchParams
+     *            searchParams中key的格式为OPERATOR_FIELDNAME
      */
     public static Map<String, SpecSupport> parse(Map<String, Object> searchParams) {
         if (searchParams == null) {
@@ -40,27 +52,25 @@ public class SpecSupport {
             String key = entry.getKey();
             Object value = entry.getValue();
 
-            // 从缓存中取出QueryFilter，如果存在，则改为当前的value
-            SpecSupport filter = KEY_CACHE.get(key);
-            if (filter != null) {
-                filter.value = value;
+            // 从缓存中取出FieldNameAndOperator，如果存在，则直接使用
+            FieldNameAndOperator fieldNameAndOperator = KEY_CACHE.get(key);
+            if (fieldNameAndOperator != null) {
+                filters.put(key, new SpecSupport(fieldNameAndOperator.fieldName, fieldNameAndOperator.operator, value));
+            } else {
+                // 拆分operator与filedAttribute
+                String[] names = StringUtils.splitByWholeSeparator(key, SEPARATOR);
+                if (names.length != 2) {
+                    throw new RuntimeException(key + "is not a valid filter name");
+                }
+                // names[0]是操作符；names[1]是字段名；value是字段值
+                Op operator = Op.valueOf(names[0].toUpperCase());
+                String filedName = names[1];
+
+                // 创建searchFilter
+                SpecSupport filter = new SpecSupport(filedName, operator, value);
+                KEY_CACHE.put(key, new FieldNameAndOperator(filedName, operator));
                 filters.put(key, filter);
-                continue;
             }
-
-            // 拆分operator与filedAttribute
-            String[] names = key.split(SEPARATOR);
-            if (names.length != 2) {
-                throw new RuntimeException(key + "is not a valid filter name");
-            }
-            // names[0]是操作符；names[1]是字段名；value是字段值
-            Op operator = Op.valueOf(names[0].toUpperCase());
-            String filedName = names[1];
-
-            // 创建searchFilter
-            filter = new SpecSupport(filedName, operator, value);
-            KEY_CACHE.put(key, filter);
-            filters.put(key, filter);
         }
         return filters;
     }
@@ -73,7 +83,7 @@ public class SpecSupport {
     /**
      * key缓存。可以省去一些解析为QueryFilter的时间
      */
-    private static final ConcurrentHashMap<String, SpecSupport> KEY_CACHE = new ConcurrentHashMap<String, SpecSupport>();
+    private static final ConcurrentHashMap<String, FieldNameAndOperator> KEY_CACHE = new ConcurrentHashMap<>();
 
     /**
      * 构建规格的操作符
@@ -146,8 +156,7 @@ public class SpecSupport {
         /**
          * and
          */
-        AND,
-        ;
+        AND,;
 
         /**
          * 获得正确的查询形式

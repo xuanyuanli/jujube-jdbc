@@ -1,18 +1,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
+    <parent>
+        <groupId>io.github.jujube-framework</groupId>
+        <artifactId>jujube-parent</artifactId>
+        <version>2.2</version>
+        <relativePath></relativePath>
+    </parent>
     <groupId>io.github.jujube-framework</groupId>
     <artifactId>jujube-jdbc-sample</artifactId>
-    <version>1.0.0</version>
+    <version>2.0</version>
     <packaging>jar</packaging>
 
     <name>jujube-jdbc-sample</name>
     <description>jujube-jdbc示例</description>
 
     <properties>
-        <spring-boot.version>2.0.4.RELEASE</spring-boot.version>
-
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -20,18 +23,12 @@
         <maven.testCompiler.source>${java.version}</maven.testCompiler.source>
     </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
     <dependencies>
+        <dependency>
+            <groupId>io.github.jujube-framework</groupId>
+            <artifactId>spring-boot-starter-jujube-jdbc</artifactId>
+            <version>2.0</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
@@ -43,11 +40,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.github.jujube-framework</groupId>
-            <artifactId>spring-boot-starter-jujube-jdbc</artifactId>
-            <version>1.6</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
@@ -64,6 +56,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+            <scope>compile</scope>
         </dependency>
 
         <!-- lombok -->
@@ -85,7 +78,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.0.1</version>
             </plugin>
         </plugins>
     </build>

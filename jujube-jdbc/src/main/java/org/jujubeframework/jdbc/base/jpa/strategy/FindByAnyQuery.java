@@ -1,14 +1,11 @@
 package org.jujubeframework.jdbc.base.jpa.strategy;
 
-import com.google.common.collect.Lists;
-import org.jujubeframework.jdbc.base.jpa.handler.DefaultHandlerChain;
-import org.jujubeframework.jdbc.base.jpa.handler.HandlerContext;
+import org.jujubeframework.jdbc.base.jpa.JpaBaseDaoSupport;
 import org.jujubeframework.jdbc.base.spec.Spec;
-import org.jujubeframework.util.Pojos;
+import org.jujubeframework.jdbc.base.util.JdbcPojos;
 
 import java.lang.reflect.Method;
 import java.util.List;
-
 
 /**
  * @author John Li
@@ -19,34 +16,21 @@ public class FindByAnyQuery extends BaseQueryStrategy {
     private static final String FIND_BY = "findBy";
 
     @Override
-    boolean accept(Method method) {
-        String methodName = method.getName();
+    public boolean accept(String methodName) {
         return methodName.startsWith(FIND_ONE_BY) || methodName.startsWith(FIND_BY);
     }
 
     @Override
-    Object query(Method method, Object[] args) {
+    Object query(JpaBaseDaoSupport proxyDao, Method method, Object[] args) {
         String mname = method.getName();
-        boolean isFindOne = false;
-        // 如果以findOneBy开头，或返回值是Record与BaseEntity
-        if (mname.startsWith(FIND_ONE_BY) || !List.class.equals(method.getReturnType())) {
-            isFindOne = true;
-        } else if (mname.startsWith(FIND_BY)) {
-            isFindOne = false;
-        }
-        String tmname = mname.replaceAll(FIND_BY, EMPTY).replaceAll(FIND_ONE_BY, EMPTY);
-
-        Spec spec = Spec.newS();
-        DefaultHandlerChain selfChain = new DefaultHandlerChain();
-        selfChain.addHandlers(HandlerContext.PREPOSITION_HANDLER);
-        selfChain.addHandlers(HandlerContext.COMPLEX_HANDLER);
-        selfChain.addHandlers(HandlerContext.SIMPLE_HANDLER);
-        selfChain.handler(spec, tmname, Lists.newArrayList(args));
-
+        boolean startsWithFindOne = mname.startsWith(FIND_ONE_BY);
+        boolean isFindOne = startsWithFindOne || !List.class.equals(method.getReturnType());
+        String tmname = startsWithFindOne ? mname.substring(FIND_ONE_BY.length()) : mname.substring(FIND_BY.length());
+        Spec spec = getSpecOfAllHandler(method,args,tmname);
         if (isFindOne) {
-            return Pojos.mapping(proxyDao.findOne(spec), proxyDao.getOriginalRealGenericType());
+            return JdbcPojos.mapping(proxyDao.findOne(spec), proxyDao.getOriginalRealGenericType());
         } else {
-            return Pojos.mappingArray(proxyDao.find(spec), proxyDao.getOriginalRealGenericType());
+            return JdbcPojos.mappingArray(proxyDao.find(spec), proxyDao.getOriginalRealGenericType());
         }
     }
 

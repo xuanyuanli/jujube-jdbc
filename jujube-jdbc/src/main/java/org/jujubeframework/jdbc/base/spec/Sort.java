@@ -1,7 +1,5 @@
 package org.jujubeframework.jdbc.base.spec;
 
-import org.jujubeframework.jdbc.base.util.Sqls;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +10,7 @@ import java.util.List;
  * @author John Li
  */
 public class Sort {
-    private List<String> sorts = new ArrayList<String>();
+    private List<String> sorts = new ArrayList<>();
     /**
      * 不计入排序的字段
      */
@@ -22,7 +20,7 @@ public class Sort {
      */
     private static final String DESC_SUFFIX = "_D";
 
-    private Spec spec;
+    private final Spec spec;
 
     public Sort(Spec spec) {
         super();
@@ -59,16 +57,16 @@ public class Sort {
      */
     public String buildSqlSort() {
         if (sorts.size() != 0) {
-            StringBuffer sql = new StringBuffer(" order by ");
+            StringBuilder sql = new StringBuilder(" order by ");
             // 排序的构建规则是：如果排序字段以“_D”结尾，则倒序；否则，就是正序
             for (String s : sorts) {
                 if (s.endsWith(DESC_SUFFIX)) {
-                    sql.append(Sqls.getSecurityFieldName(removeSuffix(s)) + " desc,");
+                    sql.append(removeSuffix(s)).append(" desc,");
                 } else {
-                    sql.append(Sqls.getSecurityFieldName(s) + ",");
+                    sql.append(s).append(",");
                 }
             }
-            return sql.toString().substring(0, sql.length() - 1);
+            return sql.substring(0, sql.length() - 1);
         }
         return "";
     }
@@ -87,7 +85,7 @@ public class Sort {
 
     public Sort clone(Spec spec) {
         Sort sort = new Sort(spec);
-        sort.sorts = new ArrayList<String>(this.sorts);
+        sort.sorts = new ArrayList<>(this.sorts);
         return sort;
     }
 
@@ -118,10 +116,8 @@ public class Sort {
         Sort other = (Sort) obj;
         if (sorts == null && other.sorts != null) {
             return false;
-        } else if (!sorts.equals(other.sorts)) {
-            return false;
         }
-        return true;
+        return sorts.equals(other.sorts);
     }
 
 }

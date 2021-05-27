@@ -2,6 +2,7 @@ package org.jujubeframework.jdbc.base.jpa.handler;
 
 import org.jujubeframework.jdbc.base.spec.Spec;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -13,9 +14,10 @@ import java.util.List;
 public class EqHandler implements Handler {
 
     @Override
-    public void handler(Spec spec, String methodName, List<Object> args, HandlerChain chain) {
-        String field = realField(methodName);
-        spec.eq(field, args.get(0));
+    public void handler(Method method, Spec spec, String truncationMethodName, List<Object> args, HandlerChain chain) {
+        String field = getDbColumn(method, truncationMethodName);
+        Object value = args.get(0);
+        spec.eq(field, value);
         args.remove(0);
     }
 
