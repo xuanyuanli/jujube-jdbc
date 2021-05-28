@@ -1,7 +1,7 @@
 # jujube-jdbc
 一款简洁的ORM框架，融合了Mybatis和JPA的优势，简化了持久层的开发。
 
-# News
+# ✨News
 - [2.1](https://github.com/jujube-framework/jujube-jdbc/releases/tag/v2.1) 包结构调整，性能大幅优化，增加@Column注解实现表字段对应
 
 # 一、初衷
