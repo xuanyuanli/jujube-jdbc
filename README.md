@@ -1,13 +1,16 @@
 # jujube-jdbc
 一款简洁的ORM框架，融合了Mybatis和JPA的优势，简化了持久层的开发。
 
+# News
+- [2.1](https://github.com/jujube-framework/jujube-jdbc/releases/tag/v2.1) 包结构调整，性能大幅优化，增加@Column注解实现表字段对应
+
 # 一、初衷
 当我们出现邪恶的想法：自己造轮子，那么一定是现有软件的使用上遇到了不舒服的地方，不能满足你的胃口了。  
 那么在Java持久层方面，主流的选择有那些？他们又有什么弊端呢？   
 ## 1、Spring JDBC
 可谓是非常简单的一层JDBC封装了，简洁又方便，缺点在于手动写sql，带来的效率低下和不便于管理。
 ## 2、JFianl Model
-和JFinal的整个理论非常契合，简洁到极致，问题是不太容易单独抽取出来使用，而且也需要大量手写SQL
+和JFinal的整个理论非常契合，简洁到极致，问题是不太容易单独抽取出来作为ORM使用，且也需要大量手写SQL
 ## 3、Hibernate
 一直很优秀，从出生就金光闪闪，独特的对象-关系数据库映射让人眼前一亮，比较明显的缺点是联合查询的弱势。
 ## 4、Spring JPA
@@ -203,7 +206,7 @@ UserDao的方法没什么注释，其实是约定大于配置，当你了解了�
 支持查询表中所有数据，但findAll只支持order by、group by和limit
 
 ## 4、智能判断返回类型
-对于`List<User> findByNameLike(String name)`来说，将会自动去查询集合；对于`User findByNameLike(String name)`来说，将会自动取得第一个元素。
+对于`List<User> findByNameLike(String name)`来说，将会自动去查询集合；对于`User findByNameLike(String name)`来说，将会查询第一条数据。
 
 # 四、分页与SQL查询
 上面说到分页需要写Sql，这个Sql定义在哪儿呢？  
@@ -234,7 +237,7 @@ order by u.id desc
 ```
 
 他的规则非常简单，以`##`开头后跟Dao中的方法名，对应的就是Dao中同名的方法查询Sql。
-需要注意的是分页的方法参数形式必须包含这以下两个类：
+需要注意的是分页方法的参数必须包含这以下两个类：
 ```
 Map<String, Object> queryMap, PageableRequest request
 ```
@@ -308,6 +311,13 @@ spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 
 运行这个类即可在相应的路径中生成Entity和Dao类了。
 
+注意在生成Entity的时候，字段名默认会转换为驼峰式命名。如果有特殊需要，可以通过`Column`注解定义Entity字段名与数据库字段的映射关系：
+``` 
+    @Column("f_info_id_")
+    private Integer infoId;
+```
+这个例子中，数据库表字段是`f_info_id_`，`Entity`中的字段是`infoId`
+
 # 六、使用
 ## 1、开发工具配置
 因为涉及到读取接口方法的形参，所以IDE编译代码的时候要加上`-parameters`参数。  
@@ -334,9 +344,10 @@ Eclipse在Preferences->java->Compiler下勾选Store information about method par
         <dependency>
             <groupId>io.github.jujube-framework</groupId>
             <artifactId>spring-boot-starter-jujube-jdbc</artifactId>
-            <version>1.6</version>
+            <version>${version}</version>
         </dependency>
 ```
+`version`在[search.maven.org](https://search.maven.org/search?q=g:io.github.jujube-framework) 搜索
 
 在spring的配置文件中有两个配置项：
 
@@ -345,7 +356,9 @@ jujube.jdbc.base-package=org.jujubeframework.jdbc.persistence
 jujube.jdbc.sql-base-package=dao-sql
 ```
 
-basePackage是要扫描的Dao所在的包，sqlBasePackage是sql所在的包。注意sql的名称与Dao的名称要一致。
+basePackage是要扫描的Dao所在的包  
+sqlBasePackage是sql所在的包  
+注意sql的名称与Dao的名称要一致
 
 
 
@@ -360,7 +373,7 @@ basePackage是要扫描的Dao所在的包，sqlBasePackage是sql所在的包。�
         <dependency>
     		<groupId>org.jujubeframework</groupId>
     		<artifactId>jujube-jdbc</artifactId>
-    		<version>2.1</version>
+    		<version>${version}</version>
         </dependency>
 ```
 - 因为这个框架是基于Spring JDBC的，所以你需要先配置一下DataSource和JdbcTemplate。之后加上如下配置：
