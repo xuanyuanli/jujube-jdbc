@@ -37,7 +37,7 @@ import java.util.stream.Stream;
  */
 @Slf4j
 public class DaoSqlRegistry {
-    private static final Set<SqlQueryPostHandler> SQL_QUERY_POST_HANDLERS = new HashSet<>();
+    private static final List<SqlQueryPostHandler> SQL_QUERY_POST_HANDLERS = new ArrayList<>();
 
     /** 模板方法支持的返回类型 */
     private final static List<Class<?>> METHOD_SQL_ALLOW_RETURN_TYPE = Dynamics.listOf(Record.class, Pageable.class, List.class, Double.class, Float.class, String.class,
@@ -272,7 +272,7 @@ public class DaoSqlRegistry {
         });
     }
 
-    public static Set<SqlQueryPostHandler> getSqlQueryPostHandlers() {
+    public static List<SqlQueryPostHandler> getSqlQueryPostHandlers() {
         return SQL_QUERY_POST_HANDLERS;
     }
 

@@ -253,7 +253,7 @@ public class BaseDaoSupport<T extends BaseEntity, PK extends Serializable> imple
 
     /** sql后置处理 */
     private SqlQueryPostHandler.SqlQuery sqlPostHandle(String sql, Object[] params) {
-        Set<SqlQueryPostHandler> sqlQueryPostHandlers = DaoSqlRegistry.getSqlQueryPostHandlers();
+        List<SqlQueryPostHandler> sqlQueryPostHandlers = DaoSqlRegistry.getSqlQueryPostHandlers();
         if (!sqlQueryPostHandlers.isEmpty()) {
             for (SqlQueryPostHandler sqlQueryPostHandler : sqlQueryPostHandlers) {
                 SqlQueryPostHandler.SqlQuery sqlQuery = sqlQueryPostHandler.postHandle(sql, params);
